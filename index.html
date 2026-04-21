@@ -1,0 +1,1316 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SociaLife - Social Media Lingkungan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        brand: { 
+                            50: '#fff0e8',   // Peach sangat muda (bg)
+                            100: '#ffe0d1',  // Peach muda
+                            300: '#ffb394', 
+                            400: '#ff946b',
+                            500: '#ff7a59',  // Peach utama (Primary)
+                            600: '#e56243',  // Peach gelap (Hover)
+                            700: '#cc5235'
+                        },
+                        beige: {
+                            50: '#fdf8f5',   // Beige background utama
+                            100: '#f4ede4',  // Beige elemen sekunder
+                            200: '#e8dfd1',  // Beige border
+                            300: '#d5c8b5'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .fade-in { animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background-color: #d5c8b5; border-radius: 10px; }
+        
+        .toast {
+            visibility: hidden; min-width: 250px; background-color: #e56243; color: #fff;
+            text-align: center; border-radius: 8px; padding: 16px; position: fixed;
+            z-index: 100; left: 50%; bottom: 80px; transform: translateX(-50%); font-size: 14px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 2.5s; }
+        @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 80px; opacity: 1;} }
+        @keyframes fadeout { from {bottom: 80px; opacity: 1;} to {bottom: 0; opacity: 0;} }
+        
+        .pet-bounce { animation: bounce 2s infinite; }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+        
+        .glass-header { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+        .like-animation { animation: pop 0.3s ease; }
+        @keyframes pop { 0% { transform: scale(1); } 50% { transform: scale(1.3); color: #ef4444; } 100% { transform: scale(1); color: #ef4444; } }
+
+        /* Responsive Nav active states */
+        .nav-btn.active { color: #e56243; font-weight: 600; }
+        .nav-btn:not(.active) { color: #a8a29e; }
+        
+        /* Hide scrollbar for highlights */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* Additional Environment Features Styles */
+        .eco-news-glow { box-shadow: 0 0 10px rgba(255, 122, 89, 0.2); }
+    </style>
+</head>
+<body class="bg-beige-50 flex h-screen text-stone-800 font-sans antialiased overflow-hidden">
+
+    <nav class="glass-header z-40 flex flex-row md:flex-col justify-around md:justify-start items-center md:items-stretch h-16 md:h-screen w-full md:w-20 lg:w-64 border-t md:border-t-0 md:border-r border-beige-200 absolute md:relative bottom-0 px-2 md:px-0 md:pt-6 shrink-0 transition-all bg-white">
+        
+        <div class="hidden md:flex items-center justify-center lg:justify-start px-0 lg:px-6 mb-8 text-brand-600 w-full">
+            <i class="fa-solid fa-earth-americas text-3xl lg:mr-3"></i>
+            <h1 class="text-2xl font-bold hidden lg:block tracking-tight">SociaLife</h1>
+        </div>
+
+        <button onclick="switchTab('feed', this)" class="nav-btn active flex flex-col md:flex-row items-center md:justify-center lg:justify-start w-full h-full md:h-auto md:py-4 lg:px-6 space-y-1 md:space-y-0 hover:text-brand-500 hover:bg-brand-50 transition md:rounded-r-full lg:rounded-full md:mx-2 lg:mx-3">
+            <i class="fa-solid fa-house text-xl md:text-2xl lg:w-8 transition-transform duration-200"></i>
+            <span class="text-[10px] md:text-base md:hidden lg:block mt-1 md:mt-0 font-medium">Beranda</span>
+        </button>
+        <button onclick="switchTab('challenges', this)" class="nav-btn flex flex-col md:flex-row items-center md:justify-center lg:justify-start w-full h-full md:h-auto md:py-4 lg:px-6 space-y-1 md:space-y-0 hover:text-brand-500 hover:bg-brand-50 transition md:rounded-r-full lg:rounded-full md:mx-2 lg:mx-3">
+            <i class="fa-solid fa-clipboard-list text-xl md:text-2xl lg:w-8 transition-transform duration-200"></i>
+            <span class="text-[10px] md:text-base md:hidden lg:block mt-1 md:mt-0 font-medium">Tantangan</span>
+        </button>
+        
+        <button onclick="switchTab('chatbot', this)" class="nav-btn flex flex-col md:flex-row items-center md:justify-center lg:justify-start w-full h-full md:h-auto md:py-4 lg:px-6 space-y-1 md:space-y-0 hover:text-brand-500 transition relative group md:rounded-r-full lg:rounded-full md:mx-2 lg:mx-3 md:hover:bg-brand-50 mt-1 md:mt-2">
+            <div class="absolute md:relative -top-5 md:top-0 bg-gradient-to-tr from-brand-500 to-brand-400 text-white w-14 h-14 md:w-8 md:h-8 lg:w-10 lg:h-10 rounded-full flex items-center justify-center shadow-[0_0_15px_rgba(255,122,89,0.5)] md:shadow-none border-4 border-white md:border-none group-hover:scale-110 transition-all duration-300 md:mr-0 lg:mr-3">
+                <i class="fa-solid fa-robot text-2xl md:text-lg"></i>
+            </div>
+            <span class="text-[10px] md:text-base font-bold text-brand-600 md:font-medium md:text-inherit mt-7 md:mt-0 md:hidden lg:block">EcoBot</span>
+        </button>
+
+        <button onclick="switchTab('messages', this)" class="nav-btn flex flex-col md:flex-row items-center md:justify-center lg:justify-start w-full h-full md:h-auto md:py-4 lg:px-6 space-y-1 md:space-y-0 hover:text-brand-500 hover:bg-brand-50 transition md:rounded-r-full lg:rounded-full md:mx-2 lg:mx-3 relative">
+            <div class="relative lg:w-8">
+                <i class="fa-solid fa-message text-xl md:text-2xl transition-transform duration-200"></i>
+                <span class="absolute -top-1 -right-2 md:right-0 lg:right-2 flex h-3.5 w-3.5">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-3.5 w-3.5 bg-red-50 border-2 border-white"></span>
+                </span>
+            </div>
+            <span class="text-[10px] md:text-base md:hidden lg:block mt-1 md:mt-0 font-medium">Pesan</span>
+        </button>
+        <button onclick="switchTab('profile', this)" class="nav-btn flex flex-col md:flex-row items-center md:justify-center lg:justify-start w-full h-full md:h-auto md:py-4 lg:px-6 space-y-1 md:space-y-0 hover:text-brand-500 hover:bg-brand-50 transition md:rounded-r-full lg:rounded-full md:mx-2 lg:mx-3">
+            <i class="fa-regular fa-user text-xl md:text-2xl lg:w-8 transition-transform duration-200"></i>
+            <span class="text-[10px] md:text-base md:hidden lg:block mt-1 md:mt-0 font-medium">Profil</span>
+        </button>
+    </nav>
+
+    <div class="flex-1 flex flex-col relative overflow-hidden bg-beige-50 w-full">
+        
+        <header class="glass-header px-4 pt-4 pb-3 shadow-sm z-20 md:hidden border-b border-beige-100">
+            <div class="flex justify-between items-center mb-3">
+                <h1 class="text-2xl font-bold text-brand-600 tracking-tight"><i class="fa-solid fa-earth-americas mr-2"></i>SociaLife</h1>
+                <div class="flex space-x-3">
+                    <button class="text-stone-500 hover:text-brand-500 transition"><i class="fa-regular fa-bell text-xl"></i></button>
+                </div>
+            </div>
+        </header>
+
+        <div class="hidden md:flex glass-header px-8 py-4 border-b border-beige-200 sticky top-0 z-20 items-center justify-between">
+            <h2 class="text-xl font-bold text-stone-800" id="desktop-page-title">Beranda</h2>
+            <div class="relative w-96">
+                <input type="text" onkeyup="searchPosts(this.value)" placeholder="Cari teman, topik, atau kampanye..." class="w-full bg-beige-100 text-stone-700 text-sm rounded-full py-2.5 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-brand-500 border border-transparent focus:border-brand-300 transition">
+                <i class="fa-solid fa-search absolute left-4 top-3 text-stone-400"></i>
+            </div>
+        </div>
+
+        <div class="md:hidden px-4 pt-2 pb-1 relative z-10 bg-beige-50" id="mobile-search">
+            <div class="relative">
+                <input type="text" onkeyup="searchPosts(this.value)" placeholder="Cari..." class="w-full bg-white text-stone-700 text-sm rounded-full py-2.5 pl-10 pr-4 focus:outline-none shadow-sm border border-beige-200">
+                <i class="fa-solid fa-search absolute left-4 top-3 text-stone-400"></i>
+            </div>
+        </div>
+
+        <main class="flex-1 overflow-y-auto pb-20 md:pb-6 relative w-full h-full">
+            
+            <div id="view-feed" class="view-section fade-in max-w-2xl mx-auto pt-2 md:pt-6 px-4">
+                
+                <div class="bg-brand-100 border border-brand-300 p-3 mb-4 rounded-xl flex items-center eco-news-glow">
+                    <span class="bg-brand-500 text-white text-[10px] font-bold px-2 py-1 rounded-md mr-3 uppercase tracking-wider">Eco-News</span>
+                    <marquee class="text-xs font-medium text-brand-700">Polusi udara hari ini menurun 5% di Jakarta! • Yuk ikut gerakan tanam 1000 bakau besok! • Tips: Gunakan wadah sendiri saat beli kopi untuk kurangi sampah plastik.</marquee>
+                </div>
+
+                <div class="bg-white p-5 mb-4 flex items-center space-x-4 shadow-sm md:rounded-2xl border border-beige-100">
+                    <img src="https://ui-avatars.com/api/?name=Anda&background=ff7a59&color=fff" alt="User" class="w-11 h-11 rounded-full shadow-sm border-2 border-brand-50">
+                    <div class="flex-1 bg-beige-100 rounded-full py-2.5 px-4 text-sm text-stone-500 cursor-pointer hover:bg-beige-200 transition ring-1 ring-transparent hover:ring-brand-300" onclick="openModal('modal-post')">
+                        Bagikan aksi lingkunganmu hari ini...
+                    </div>
+                    <button class="text-brand-500 hover:text-brand-600 transition p-2 bg-brand-50 rounded-full" onclick="document.getElementById('real-post-image-input').setAttribute('capture', 'environment'); document.getElementById('real-post-image-input').click(); openModal('modal-post');"><i class="fa-solid fa-camera"></i></button>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div class="bg-white p-4 rounded-2xl border border-beige-100 shadow-sm flex items-center justify-between">
+                        <div>
+                            <p class="text-[10px] text-stone-400 font-bold uppercase">Water Intake</p>
+                            <p class="text-sm font-bold text-brand-600"><span id="water-count">0</span>/8 Gelas</p>
+                        </div>
+                        <button onclick="addWater()" class="bg-blue-50 text-blue-500 w-10 h-10 rounded-full hover:bg-blue-100 transition"><i class="fa-solid fa-droplet"></i></button>
+                    </div>
+                    <div class="bg-white p-4 rounded-2xl border border-beige-100 shadow-sm flex items-center justify-between">
+                        <div>
+                            <p class="text-[10px] text-stone-400 font-bold uppercase">Kualitas Udara</p>
+                            <p class="text-sm font-bold text-green-500">Baik (42 AQI)</p>
+                        </div>
+                        <div class="w-10 h-10 rounded-full bg-green-50 flex items-center justify-center text-green-500"><i class="fa-solid fa-wind"></i></div>
+                    </div>
+                </div>
+
+                <div id="feed-container">
+                    <div class="text-center py-10 text-stone-500 animate-pulse">
+                        <i class="fa-solid fa-spinner fa-spin text-3xl mb-2 text-brand-500"></i>
+                        <p class="text-sm font-semibold mt-3">Memuat aksi lingkungan global...</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="view-challenges" class="view-section hidden fade-in max-w-2xl mx-auto pt-2 md:pt-6 px-4">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-beige-100 mb-6">
+                    <h2 class="text-2xl font-bold mb-1 text-stone-800">Tantangan Hari Ini</h2>
+                    <p class="text-sm text-stone-500 mb-6">Selesaikan tantangan untuk mengumpulkan EcoPoin dan merawat EcoPet-mu!</p>
+
+                    <div class="space-y-4" id="challenge-list">
+                        </div>
+                </div>
+                
+                <div class="bg-brand-50 p-6 rounded-2xl border border-brand-100 shadow-sm">
+                    <h3 class="font-bold text-lg text-brand-600 mb-4"><i class="fa-solid fa-trophy mr-2"></i>Leaderboard Mingguan</h3>
+                    <div class="flex justify-between items-center text-sm py-3 border-b border-brand-200">
+                        <span class="font-semibold flex items-center text-stone-800"><span class="w-6 text-brand-500">1.</span> RezaP</span> <span class="text-brand-600 font-bold">1500 Poin</span>
+                    </div>
+                    <div class="flex justify-between items-center text-sm py-3 border-b border-brand-200 bg-brand-100 rounded-lg px-2 -mx-2">
+                        <span class="font-semibold flex items-center text-stone-800"><span class="w-6 text-brand-500">2.</span> Anda</span> <span class="text-brand-600 font-bold" id="leaderboard-my-points">450 Poin</span>
+                    </div>
+                    <div class="flex justify-between items-center text-sm py-3">
+                        <span class="font-semibold flex items-center text-stone-800"><span class="w-6 text-brand-500">3.</span> DewiL</span> <span class="text-brand-600 font-bold">420 Poin</span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="view-chatbot" class="view-section hidden fade-in h-full flex flex-col max-w-4xl mx-auto border-x border-beige-100 bg-white shadow-sm md:my-4 md:rounded-2xl md:border md:h-[calc(100vh-8rem)]">
+                <div class="p-4 bg-white border-b border-beige-100 flex items-center space-x-4 shadow-sm z-10 md:rounded-t-2xl">
+                    <div class="w-12 h-12 bg-gradient-to-tr from-brand-500 to-brand-400 text-white rounded-full flex items-center justify-center text-xl shadow-md"><i class="fa-solid fa-robot"></i></div>
+                    <div>
+                        <h2 class="text-lg font-bold text-stone-800">EcoBot AI</h2>
+                        <p class="text-xs text-brand-500 font-medium"><i class="fa-solid fa-circle text-[8px] text-green-500 mr-1 animate-pulse"></i>Online • Ditenagai oleh AI</p>
+                    </div>
+                </div>
+                
+                <div class="flex-1 p-4 md:p-6 space-y-4 overflow-y-auto bg-beige-50 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]" id="bot-messages">
+                    <div class="flex justify-start fade-in">
+                        <div class="bg-white border border-beige-200 text-stone-800 rounded-2xl rounded-tl-sm py-3 px-5 text-sm max-w-[85%] shadow-sm leading-relaxed">
+                            Halo! Aku <b>EcoBot</b> 🤖<br><br>Aku adalah AI pintar. Kirimkan <b>foto makananmu</b> untuk tahu estimasi gizinya, atau jadikan aku <b>teman curhat</b>-mu hari ini. Ada yang bisa kubantu? 🌱
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-4 bg-white border-t border-beige-100 flex items-center space-x-3 z-20 md:rounded-b-2xl shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+                    <button onclick="document.getElementById('bot-image-input').click()" class="text-brand-500 hover:text-white hover:bg-brand-500 bg-brand-50 transition p-2 rounded-full w-10 h-10 flex items-center justify-center shadow-sm shrink-0 tooltip" title="Kirim Gambar">
+                        <i class="fa-solid fa-camera"></i>
+                    </button>
+                    <input type="file" id="bot-image-input" accept="image/*" capture="environment" class="hidden" onchange="handleBotImageUpload(event)">
+                    
+                    <input type="text" id="bot-input" placeholder="Tulis pesan atau kirim foto..." class="flex-1 bg-beige-100 border border-transparent rounded-full py-2.5 px-4 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-300 text-sm transition" onkeypress="if(event.key === 'Enter') sendBotMessage()">
+                    
+                    <button onclick="sendBotMessage()" class="bg-brand-600 text-white w-10 h-10 rounded-full flex items-center justify-center hover:bg-brand-700 transition transform active:scale-95 shadow-md shrink-0">
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div id="view-messages" class="view-section hidden fade-in max-w-2xl mx-auto pt-2 md:pt-6 px-4">
+                <div class="bg-white rounded-2xl shadow-sm border border-beige-100 overflow-hidden">
+                    <div class="p-5 border-b border-beige-100 bg-white">
+                        <h2 class="text-xl font-bold text-stone-800">Komunitas Global</h2>
+                    </div>
+                    <div class="divide-y divide-beige-100">
+                        <div onclick="openGlobalChat()" class="flex items-center space-x-4 p-4 bg-white hover:bg-brand-50 cursor-pointer transition">
+                            <div class="w-14 h-14 bg-brand-500 text-white rounded-full flex items-center justify-center shadow-sm text-2xl"><i class="fa-solid fa-earth-asia"></i></div>
+                            <div class="flex-1 overflow-hidden">
+                                <div class="flex justify-between items-baseline mb-1">
+                                    <h3 class="font-bold text-stone-800 text-sm">Obrolan Lingkungan Global</h3>
+                                    <span class="text-xs text-green-500 font-semibold">Aktif</span>
+                                </div>
+                                <p class="text-sm text-stone-500 truncate">Gabung dengan ratusan pejuang bumi lainnya!</p>
+                            </div>
+                            <div class="w-3 h-3 bg-brand-500 rounded-full shadow-sm animate-pulse"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="view-chat-detail" class="view-section hidden fade-in h-full flex flex-col max-w-4xl mx-auto border-x border-beige-100 bg-white shadow-sm md:my-4 md:rounded-2xl md:border md:h-[calc(100vh-8rem)]">
+                <div class="p-4 bg-white border-b border-beige-100 flex items-center space-x-3 shadow-sm z-10 md:rounded-t-2xl">
+                    <button onclick="closeGlobalChat()" class="text-stone-500 hover:text-brand-600 p-2 transition"><i class="fa-solid fa-arrow-left text-lg"></i></button>
+                    <div class="w-10 h-10 bg-brand-500 text-white rounded-full flex items-center justify-center shadow-sm border border-beige-100"><i class="fa-solid fa-earth-asia"></i></div>
+                    <div>
+                        <h2 class="text-base font-bold text-stone-800">Obrolan Global</h2>
+                        <p class="text-[10px] text-green-500 font-medium">Real-time chat</p>
+                    </div>
+                </div>
+                
+                <div class="flex-1 p-4 md:p-6 space-y-3 overflow-y-auto bg-beige-50 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]" id="dm-messages">
+                    </div>
+
+                <div class="p-4 bg-white border-t border-beige-100 flex items-center space-x-3 z-20 md:rounded-b-2xl shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+                    <input type="text" id="dm-input" placeholder="Kirim pesan ke komunitas..." class="flex-1 bg-beige-100 border border-transparent rounded-full py-2.5 px-4 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-300 text-sm transition" onkeypress="if(event.key === 'Enter') sendGlobalMessage()">
+                    <button onclick="sendGlobalMessage()" class="bg-brand-600 text-white w-10 h-10 rounded-full flex items-center justify-center hover:bg-brand-700 transition transform active:scale-95 shadow-md shrink-0">
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div id="view-profile" class="view-section hidden fade-in max-w-2xl mx-auto md:pt-4 md:px-4 h-full bg-white md:bg-transparent">
+                <div class="bg-white md:rounded-2xl md:shadow-sm md:border border-beige-100 overflow-hidden min-h-screen md:min-h-0">
+                    
+                    <div class="flex justify-between items-center px-4 py-3 border-b border-beige-100 bg-white sticky top-0 z-10 md:hidden">
+                        <div class="flex items-center space-x-2">
+                            <i class="fa-solid fa-lock text-sm text-stone-800"></i>
+                            <h2 class="text-xl font-bold text-stone-900 tracking-tight">pengguna.aktif</h2>
+                            <i class="fa-solid fa-chevron-down text-xs text-stone-500"></i>
+                        </div>
+                        <div class="flex space-x-5 text-xl text-stone-900">
+                            <i class="fa-regular fa-square-plus cursor-pointer" onclick="openModal('modal-post')"></i>
+                            <i class="fa-solid fa-bars cursor-pointer"></i>
+                        </div>
+                    </div>
+
+                    <div class="px-4 pt-4 flex items-center bg-white">
+                        <div class="relative shrink-0 cursor-pointer">
+                            <div class="w-20 h-20 md:w-28 md:h-28 rounded-full p-1 bg-gradient-to-tr from-yellow-400 via-brand-500 to-rose-400 flex items-center justify-center">
+                                <div class="bg-white p-0.5 rounded-full w-full h-full">
+                                    <img src="https://ui-avatars.com/api/?name=Anda&background=ff7a59&color=fff&size=256" alt="Profile" class="w-full h-full rounded-full object-cover">
+                                </div>
+                            </div>
+                            <div class="absolute bottom-0 right-0 md:bottom-2 md:right-2 bg-brand-500 text-white rounded-full w-6 h-6 md:w-8 md:h-8 flex items-center justify-center border-2 border-white cursor-pointer hover:bg-brand-600">
+                                <i class="fa-solid fa-plus text-xs md:text-sm"></i>
+                            </div>
+                        </div>
+
+                        <div class="flex-1 flex justify-evenly ml-4 md:ml-8 text-center">
+                            <div class="flex flex-col">
+                                <span class="text-lg md:text-xl font-bold text-stone-900">12</span>
+                                <span class="text-[11px] md:text-sm text-stone-500">Postingan</span>
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="text-lg md:text-xl font-bold text-stone-900" id="profile-challenges">24</span>
+                                <span class="text-[11px] md:text-sm text-stone-500">Tantangan</span>
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="text-lg md:text-xl font-bold text-stone-900" id="profile-followers-count">124</span>
+                                <span class="text-[11px] md:text-sm text-stone-500">Pengikut</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="px-4 pt-3 pb-3 bg-white">
+                        <h3 class="font-bold text-sm md:text-base text-stone-900" id="profile-name-display">Pejuang Bumi 🌍</h3>
+                        <p class="text-sm text-stone-800 mt-0.5 leading-snug" id="profile-bio-display">Mencintai bumi satu langkah kecil setiap harinya. Pecinta tanaman dan sepeda. Mari hijaukan sekitar kita! 🌱🚲</p>
+                        <a href="#" class="text-brand-600 text-sm font-medium mt-1 inline-block"><i class="fa-solid fa-link mr-1"></i>linktr.ee/pejuangbumi</a>
+                    </div>
+
+                    <div class="px-4 flex space-x-2 bg-white pb-4">
+                        <button onclick="openModal('modal-edit-profile')" class="flex-1 bg-beige-100 hover:bg-beige-200 text-stone-900 font-semibold py-1.5 rounded-lg text-sm transition">Edit profil</button>
+                        <button onclick="shareAction('Profil')" class="flex-1 bg-beige-100 hover:bg-beige-200 text-stone-900 font-semibold py-1.5 rounded-lg text-sm transition">Bagikan profil</button>
+                        <button onclick="showToast('Fitur Donasi Pohon sedang disiapkan! 🌳')" class="flex-1 bg-green-500 hover:bg-green-600 text-white font-semibold py-1.5 rounded-lg text-sm transition flex items-center justify-center space-x-2">
+                            <i class="fa-solid fa-tree"></i>
+                            <span>Donasi Pohon</span>
+                        </button>
+                    </div>
+
+                    <div class="px-4 py-2 bg-white flex space-x-4 overflow-x-auto no-scrollbar border-b border-beige-100">
+                        <div class="flex flex-col items-center space-y-1 cursor-pointer shrink-0">
+                            <div class="w-16 h-16 md:w-20 md:h-20 rounded-full border border-beige-300 p-1">
+                                <div class="bg-beige-50 w-full h-full rounded-full flex items-center justify-center text-xl md:text-2xl text-green-500"><i class="fa-solid fa-tree"></i></div>
+                            </div>
+                            <span class="text-[11px] md:text-xs text-stone-800 font-medium">Tanam</span>
+                        </div>
+                        <div class="flex flex-col items-center space-y-1 cursor-pointer shrink-0">
+                            <div class="w-16 h-16 md:w-20 md:h-20 rounded-full border border-beige-300 p-1">
+                                <div class="bg-beige-50 w-full h-full rounded-full flex items-center justify-center text-xl md:text-2xl text-brand-500"><i class="fa-solid fa-recycle"></i></div>
+                            </div>
+                            <span class="text-[11px] md:text-xs text-stone-800 font-medium">Daur Ulang</span>
+                        </div>
+                        <div class="flex flex-col items-center space-y-1 cursor-pointer shrink-0">
+                            <div class="w-16 h-16 md:w-20 md:h-20 rounded-full border border-beige-300 p-1">
+                                <div class="bg-beige-50 w-full h-full rounded-full flex items-center justify-center text-xl md:text-2xl text-orange-500"><i class="fa-solid fa-bicycle"></i></div>
+                            </div>
+                            <span class="text-[11px] md:text-xs text-stone-800 font-medium">Gowes</span>
+                        </div>
+                        <div class="flex flex-col items-center space-y-1 cursor-pointer shrink-0">
+                            <div class="w-16 h-16 md:w-20 md:h-20 rounded-full border border-beige-300 p-1">
+                                <div class="bg-beige-50 w-full h-full rounded-full flex items-center justify-center text-xl md:text-2xl text-stone-400"><i class="fa-solid fa-plus"></i></div>
+                            </div>
+                            <span class="text-[11px] md:text-xs text-stone-800 font-medium">Baru</span>
+                        </div>
+                    </div>
+
+                    <div class="flex bg-white">
+                        <button onclick="switchProfileTab('grid')" id="ptab-grid" class="flex-1 py-3 border-b-2 border-stone-900 text-stone-900 flex justify-center items-center transition">
+                            <i class="fa-solid fa-table-cells text-xl"></i>
+                        </button>
+                        <button onclick="switchProfileTab('leaf')" id="ptab-leaf" class="flex-1 py-3 text-stone-400 border-b-2 border-transparent hover:text-stone-900 transition flex justify-center items-center">
+                            <i class="fa-solid fa-leaf text-xl"></i>
+                        </button>
+                        <button onclick="switchProfileTab('bookmark')" id="ptab-bookmark" class="flex-1 py-3 text-stone-400 border-b-2 border-transparent hover:text-stone-900 transition flex justify-center items-center">
+                            <i class="fa-regular fa-bookmark text-xl"></i>
+                        </button>
+                    </div>
+
+                    <div id="profile-grid-content" class="grid grid-cols-3 gap-0.5 bg-white pb-20 md:pb-4">
+                        <div class="aspect-square bg-beige-200 cursor-pointer group relative">
+                            <img src="https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&w=300&q=80" alt="Post" class="w-full h-full object-cover">
+                            <div class="absolute inset-0 bg-black/30 hidden group-hover:flex items-center justify-center space-x-4 text-white text-sm font-bold transition">
+                                <span><i class="fa-solid fa-heart mr-1"></i> 124</span>
+                            </div>
+                        </div>
+                        <div class="aspect-square bg-beige-200 cursor-pointer group relative">
+                            <img src="https://images.unsplash.com/photo-1558449028-b53a39d100fc?auto=format&fit=crop&w=300&q=80" alt="Post" class="w-full h-full object-cover">
+                            <div class="absolute top-1 right-2 text-white drop-shadow-md"><i class="fa-solid fa-clone text-xs"></i></div>
+                            <div class="absolute inset-0 bg-black/30 hidden group-hover:flex items-center justify-center space-x-4 text-white text-sm font-bold transition">
+                                <span><i class="fa-solid fa-heart mr-1"></i> 89</span>
+                            </div>
+                        </div>
+                        <div class="aspect-square bg-beige-200 cursor-pointer group relative">
+                            <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=300&q=80" alt="Post" class="w-full h-full object-cover">
+                            <div class="absolute inset-0 bg-black/30 hidden group-hover:flex items-center justify-center space-x-4 text-white text-sm font-bold transition">
+                                <span><i class="fa-solid fa-heart mr-1"></i> 56</span>
+                            </div>
+                        </div>
+                        <div class="aspect-square bg-beige-200 cursor-pointer group relative">
+                            <img src="https://images.unsplash.com/photo-1610484826967-09c5720778c7?auto=format&fit=crop&w=300&q=80" alt="Post" class="w-full h-full object-cover">
+                            <div class="absolute inset-0 bg-black/30 hidden group-hover:flex items-center justify-center space-x-4 text-white text-sm font-bold transition">
+                                <span><i class="fa-solid fa-heart mr-1"></i> 210</span>
+                            </div>
+                        </div>
+                        <div class="aspect-square bg-beige-200 cursor-pointer group relative">
+                            <img src="https://images.unsplash.com/photo-1416879598555-ce7f64dfcd6b?auto=format&fit=crop&w=300&q=80" alt="Post" class="w-full h-full object-cover">
+                            <div class="absolute top-1 right-2 text-white drop-shadow-md"><i class="fa-solid fa-play text-xs"></i></div>
+                            <div class="absolute inset-0 bg-black/30 hidden group-hover:flex items-center justify-center space-x-4 text-white text-sm font-bold transition">
+                                <span><i class="fa-solid fa-heart mr-1"></i> 45</span>
+                            </div>
+                        </div>
+                        <div class="aspect-square bg-beige-50 cursor-pointer group relative flex items-center justify-center hover:bg-beige-100 transition" onclick="openModal('modal-post')">
+                            <div class="text-stone-400 text-center">
+                                <i class="fa-solid fa-camera text-3xl mb-1"></i>
+                                <p class="text-xs font-semibold">Post Baru</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="profile-leaf-content" class="hidden bg-white pb-20 md:pb-4 px-4 pt-4">
+                        <div class="text-center text-stone-500 py-10">
+                            <div class="w-16 h-16 bg-green-50 text-green-500 rounded-full flex items-center justify-center mx-auto mb-3"><i class="fa-solid fa-seedling text-2xl"></i></div>
+                            <h4 class="font-bold text-stone-800">Catatan Aksi Lingkungan</h4>
+                            <p class="text-sm mt-1">Semua tantangan dan aksi peduli bumi yang sudah diselesaikan akan muncul di sini.</p>
+                        </div>
+                    </div>
+
+                    <div id="profile-bookmark-content" class="hidden bg-white pb-20 md:pb-4 px-4 pt-4">
+                        <div class="text-center text-stone-500 py-10">
+                            <div class="w-16 h-16 bg-brand-50 text-brand-500 rounded-full flex items-center justify-center mx-auto mb-3"><i class="fa-regular fa-bookmark text-2xl"></i></div>
+                            <h4 class="font-bold text-stone-800">Disimpan</h4>
+                            <p class="text-sm mt-1">Postingan dan artikel lingkungan yang kamu simpan.</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </main>
+
+        <div onclick="openModal('modal-pet')" class="fixed bottom-20 md:bottom-8 right-4 md:right-8 z-40 bg-white/90 backdrop-blur-md p-3 rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-brand-100 cursor-pointer hover:scale-110 hover:bg-brand-50 transition-all duration-300 animate-bounce group flex items-center space-x-2">
+            <div id="floating-pet-icon" class="text-4xl drop-shadow-md">🌱</div>
+            <div class="w-0 overflow-hidden group-hover:w-24 transition-all duration-300 whitespace-nowrap">
+                <span class="text-sm font-bold text-brand-600 ml-2">Pipi si Bibit</span>
+            </div>
+        </div>
+
+    </div>
+
+    <div id="toast" class="toast">Pesan Notifikasi</div>
+
+    <div id="modal-pet" class="fixed inset-0 bg-stone-900 bg-opacity-60 z-50 hidden flex items-center justify-center transition-opacity backdrop-blur-sm p-4">
+        <div class="bg-white w-full max-w-md rounded-[2rem] p-8 transform transition-transform scale-95 duration-300 shadow-2xl relative" id="modal-pet-content">
+            <button onclick="closeModalPet()" class="absolute top-5 right-5 text-stone-400 hover:text-stone-600 bg-beige-50 hover:bg-beige-100 w-10 h-10 rounded-full flex items-center justify-center transition"><i class="fa-solid fa-xmark text-xl"></i></button>
+            
+            <div class="flex justify-between items-center mb-8 mt-2">
+                <div>
+                    <p class="text-xs font-semibold text-stone-500 mb-1 uppercase tracking-wider">Poin Milikmu</p>
+                    <p class="font-bold text-brand-600 text-2xl" id="pet-points">450 <i class="fa-solid fa-leaf text-lg"></i></p>
+                </div>
+                <div class="text-right">
+                    <p class="text-xs font-semibold text-stone-500 mb-1 uppercase tracking-wider">Streak Harian</p>
+                    <p class="font-bold text-orange-500 text-2xl"><i class="fa-solid fa-fire"></i> 5 Hari</p>
+                </div>
+            </div>
+
+            <div class="flex flex-col items-center justify-center w-full">
+                <h2 class="text-3xl font-bold mb-2 text-stone-800">Pipi si Bibit</h2>
+                <p class="text-sm font-medium text-brand-500 mb-8 bg-brand-50 px-4 py-1 rounded-full" id="pet-status">Level 1: Benih Kecil</p>
+                
+                <div class="w-48 h-48 bg-gradient-to-b from-brand-50 to-white border-2 border-brand-100 rounded-full flex items-center justify-center shadow-inner mb-8 relative">
+                    <div id="pet-icon-modal" class="text-[5rem] pet-bounce">🌱</div>
+                    <i class="fa-solid fa-sparkles absolute top-4 right-8 text-yellow-400 hidden text-xl" id="sparkle1"></i>
+                </div>
+
+                <div class="w-full bg-beige-100 rounded-full h-4 mb-3 shadow-inner overflow-hidden">
+                    <div id="pet-progress" class="bg-brand-500 h-full rounded-full transition-all duration-500" style="width: 30%"></div>
+                </div>
+                <p class="text-xs font-medium text-stone-500 text-center mb-8"><span id="exp-text">30</span>/100 EXP untuk Level Berikutnya</p>
+
+                <button class="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold py-4 px-6 rounded-2xl shadow-lg transition transform hover:scale-[1.02] active:scale-95 flex items-center justify-center text-lg" onclick="feedPet()">
+                    <i class="fa-solid fa-droplet mr-3 text-brand-100"></i> Siram & Beri Pupuk (50 Poin)
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-post" class="fixed inset-0 bg-stone-900 bg-opacity-60 z-50 hidden flex items-end sm:items-center justify-center transition-opacity backdrop-blur-sm p-0 md:p-4">
+        <div class="bg-white w-full max-w-lg rounded-t-3xl sm:rounded-3xl p-6 md:p-8 transform transition-transform translate-y-full sm:translate-y-0 duration-300 shadow-2xl" id="modal-post-content">
+            <div class="flex justify-between items-center mb-6 border-b border-beige-100 pb-4">
+                <h3 class="font-bold text-xl text-stone-800">Buat Postingan</h3>
+                <button onclick="closeModal('modal-post')" class="text-stone-400 hover:text-stone-600 bg-beige-50 hover:bg-beige-100 w-10 h-10 rounded-full flex items-center justify-center transition"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            
+            <div class="flex items-center space-x-3 mb-4">
+                <img src="https://ui-avatars.com/api/?name=Anda&background=ff7a59&color=fff" class="w-12 h-12 rounded-full border border-beige-100">
+                <div>
+                    <p class="font-bold text-stone-800">Anda</p>
+                    <span class="bg-brand-50 text-brand-600 text-[10px] px-2 py-1 rounded-md font-semibold mt-0.5 inline-block"><i class="fa-solid fa-earth-asia mr-1"></i>Publik</span>
+                </div>
+            </div>
+
+            <textarea id="new-post-text" class="w-full bg-transparent border-none p-0 focus:ring-0 resize-none text-lg text-stone-800 placeholder-stone-400 mb-2" rows="4" placeholder="Bagikan aksi lingkunganmu hari ini..."></textarea>
+            
+            <div id="post-image-preview" class="hidden mt-2 mb-4 relative rounded-2xl overflow-hidden h-56 bg-beige-100 border border-beige-200 shadow-sm group">
+                <img id="real-post-preview-img" src="" alt="Preview" class="w-full h-full object-contain">
+                <button onclick="removePostImage()" class="absolute top-3 right-3 bg-stone-900 bg-opacity-60 text-white rounded-full w-10 h-10 flex items-center justify-center hover:bg-opacity-80 backdrop-blur-sm transition shadow-lg opacity-0 group-hover:opacity-100"><i class="fa-solid fa-times"></i></button>
+            </div>
+
+            <div class="flex justify-between items-center mt-4 pt-4 border-t border-beige-100">
+                <div class="flex space-x-2 text-brand-500">
+                    <input type="file" id="real-post-image-input" accept="image/*" capture="environment" class="hidden" onchange="handleRealPostImageUpload(event)">
+                    <button onclick="document.getElementById('real-post-image-input').setAttribute('capture', 'environment'); document.getElementById('real-post-image-input').click();" class="w-12 h-12 hover:bg-brand-50 bg-beige-50 md:bg-transparent rounded-full flex items-center justify-center transition" title="Tambah Foto Kamera">
+                        <i class="fa-solid fa-camera text-xl"></i>
+                    </button>
+                    <button onclick="document.getElementById('real-post-image-input').removeAttribute('capture'); document.getElementById('real-post-image-input').click();" class="w-12 h-12 hover:bg-brand-50 bg-beige-50 md:bg-transparent rounded-full flex items-center justify-center transition" title="Pilih dari Galeri">
+                        <i class="fa-regular fa-image text-xl"></i>
+                    </button>
+                </div>
+                <button onclick="submitPost()" class="bg-brand-600 text-white px-8 py-3 rounded-full font-bold hover:bg-brand-700 transition transform active:scale-95 shadow-lg shadow-brand-500/30">Posting</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-edit-profile" class="fixed inset-0 bg-stone-900 bg-opacity-60 z-50 hidden flex items-center justify-center transition-opacity backdrop-blur-sm p-4">
+        <div class="bg-white w-full max-w-sm rounded-[2rem] p-6 transform transition-transform scale-95 duration-300 shadow-2xl relative" id="modal-edit-profile-content">
+            <h3 class="font-bold text-xl text-stone-800 mb-4 border-b border-beige-100 pb-2">Edit Profil</h3>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-stone-500 mb-1">Nama Tampilan</label>
+                    <input type="text" id="edit-profile-name" class="w-full bg-beige-50 border border-beige-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition" value="Pejuang Bumi 🌍">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-stone-500 mb-1">Bio</label>
+                    <textarea id="edit-profile-bio" rows="3" class="w-full bg-beige-50 border border-beige-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition resize-none">Mencintai bumi satu langkah kecil setiap harinya. Pecinta tanaman dan sepeda. Mari hijaukan sekitar kita! 🌱🚲</textarea>
+                </div>
+            </div>
+            <div class="mt-6 flex space-x-3">
+                <button onclick="closeModal('modal-edit-profile')" class="flex-1 bg-beige-100 hover:bg-beige-200 text-stone-700 py-2 rounded-full font-bold transition text-sm">Batal</button>
+                <button onclick="saveProfile()" class="flex-1 bg-brand-600 hover:bg-brand-700 text-white py-2 rounded-full font-bold transition text-sm shadow-md">Simpan</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-comment" class="fixed inset-0 bg-stone-900 bg-opacity-60 z-50 hidden flex items-end sm:items-center justify-center transition-opacity backdrop-blur-sm p-0 md:p-4">
+        <div class="bg-white w-full max-w-md rounded-t-3xl sm:rounded-[2rem] p-6 transform transition-transform translate-y-full sm:translate-y-0 duration-300 shadow-2xl relative" id="modal-comment-content">
+            <div class="flex justify-between items-center mb-4 border-b border-beige-100 pb-3">
+                <h3 class="font-bold text-lg text-stone-800">Komentar</h3>
+                <button onclick="closeModal('modal-comment')" class="text-stone-400 hover:text-stone-600 bg-beige-50 hover:bg-beige-100 w-8 h-8 rounded-full flex items-center justify-center transition"><i class="fa-solid fa-xmark text-sm"></i></button>
+            </div>
+            <div class="space-y-3 mb-4 max-h-40 overflow-y-auto">
+                <div class="flex space-x-2">
+                    <img src="https://ui-avatars.com/api/?name=User&background=random" class="w-8 h-8 rounded-full">
+                    <div class="bg-beige-50 p-2.5 rounded-xl text-sm flex-1">
+                        <p class="font-bold text-xs text-stone-800">User Hijau</p>
+                        <p class="text-stone-700 mt-0.5">Keren banget! Lanjutkan aksinya! 🔥</p>
+                    </div>
+                </div>
+            </div>
+            <div class="flex items-center space-x-2 pt-3 border-t border-beige-100">
+                <img src="https://ui-avatars.com/api/?name=Anda&background=ff7a59&color=fff" class="w-9 h-9 rounded-full">
+                <input type="text" id="new-comment-text" placeholder="Tambahkan komentar..." class="flex-1 bg-beige-100 border-none rounded-full py-2 px-4 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-500 text-sm transition" onkeypress="if(event.key === 'Enter') submitComment()">
+                <button onclick="submitComment()" class="text-brand-600 hover:text-brand-700 transition p-2"><i class="fa-solid fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-challenge" class="fixed inset-0 bg-stone-900 bg-opacity-80 z-50 hidden flex items-center justify-center transition-opacity backdrop-blur-md p-4">
+        <div class="bg-white w-full max-w-sm rounded-[2rem] p-6 transform transition-transform scale-95 duration-300 shadow-2xl relative" id="modal-challenge-content">
+            <button onclick="closeModal('modal-challenge')" class="absolute top-4 right-4 text-stone-400 hover:text-stone-600 bg-beige-50 hover:bg-beige-100 w-8 h-8 rounded-full flex items-center justify-center transition"><i class="fa-solid fa-xmark text-sm"></i></button>
+            <h3 class="font-bold text-xl text-stone-800 mb-2">Validasi AI</h3>
+            <p id="cv-title" class="text-brand-600 font-bold text-sm mb-1 leading-tight">Judul Tantangan</p>
+            <p id="cv-desc" class="text-xs text-stone-500 mb-5">Deskripsi tantangan akan muncul di sini.</p>
+            
+            <div id="cv-upload-area" class="border-2 border-dashed border-brand-300 bg-brand-50 rounded-2xl p-6 text-center cursor-pointer hover:bg-brand-100 transition-colors mb-4 group" onclick="document.getElementById('cv-image-input').click()">
+                <div class="w-14 h-14 bg-white rounded-full flex items-center justify-center mx-auto mb-3 shadow-sm group-hover:scale-110 transition-transform">
+                    <i class="fa-solid fa-camera text-2xl text-brand-500"></i>
+                </div>
+                <p class="text-sm text-brand-700 font-bold">Ambil Foto / Unggah</p>
+                <p class="text-[10px] text-brand-500 mt-1 font-medium">Buktikan aksimu untuk di-scan oleh AI</p>
+            </div>
+            <input type="file" id="cv-image-input" accept="image/*" capture="environment" class="hidden" onchange="handleChallengeImage(event)">
+            
+            <div id="cv-preview-area" class="hidden mb-4 relative rounded-2xl overflow-hidden h-48 bg-beige-100 border border-beige-200 shadow-inner">
+                <img id="cv-image" src="" class="w-full h-full object-cover">
+                <div id="cv-loading" class="absolute inset-0 bg-stone-900/70 flex flex-col items-center justify-center text-white backdrop-blur-sm hidden">
+                    <div class="relative w-16 h-16 mb-3">
+                        <div class="absolute inset-0 border-4 border-white/20 rounded-full"></div>
+                        <div class="absolute inset-0 border-4 border-brand-400 rounded-full border-t-transparent animate-spin"></div>
+                        <i class="fa-solid fa-robot absolute inset-0 flex items-center justify-center text-xl animate-pulse"></i>
+                    </div>
+                    <p class="text-xs font-bold tracking-wider">AI SEDANG MEMINDAI...</p>
+                </div>
+            </div>
+
+            <div id="cv-result" class="hidden p-4 rounded-xl mb-4 text-sm font-medium text-center shadow-sm"></div>
+
+            <button onclick="closeModal('modal-challenge')" class="w-full bg-beige-100 hover:bg-beige-200 text-stone-700 font-bold py-3 rounded-xl transition text-sm">Batal</button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInWithCustomToken, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // ==========================================
+        // SETUP DATABASE CLOUD & LOKAL FALLBACK
+        // ==========================================
+        
+        let myFirebaseConfig = {
+            apiKey: "AIzaSyD2vM1dU_YuLGPYtPqN8DqM_qxq4CqDLLU",
+            authDomain: "ecopulse-f8b26.firebaseapp.com",
+            databaseURL: "https://ecopulse-f8b26-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "ecopulse-f8b26",
+            storageBucket: "ecopulse-f8b26.firebasestorage.app",
+            messagingSenderId: "369786445975",
+            appId: "1:369786445975:web:ebfe8a06019761572309d2",
+            measurementId: "G-H27BJRTCHJ"
+        }; 
+
+        let firebaseConfig = myFirebaseConfig;
+        let useFirebase = false;
+
+        try { 
+            if (typeof __firebase_config !== 'undefined' && __firebase_config) {
+                firebaseConfig = JSON.parse(__firebase_config);
+            }
+            if (firebaseConfig && firebaseConfig.projectId) {
+                useFirebase = true;
+            }
+        } catch(e) {}
+        
+        let app, auth, db, currentUser = null;
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'socialife-global';
+
+        if (useFirebase) {
+            try {
+                app = initializeApp(firebaseConfig);
+                auth = getAuth(app);
+                db = getFirestore(app);
+            } catch(e) {
+                console.warn("Koneksi Database Cloud ditangguhkan, beralih ke mode lokal.", e);
+                useFirebase = false;
+            }
+        }
+
+        // GLOBAL GEMINI API SETUP
+        // BERIKUT ADALAH API KEY ANDA YANG TELAH DIMASUKKAN
+        const apiKey = "AIzaSyAiOKxoWlyKt78wx5rn5GbZHJpoa4uHgOc"; 
+
+        // State Application
+        let ecoPoints = 450;
+        let petExp = 30;
+        let petLevel = 1;
+        let completedChallenges = 24;
+        let currentChallengeValidationId = null;
+        let currentPostImageBase64 = null;
+        let waterGlass = 0; // State untuk Fitur Water Tracker
+
+        // Data Lokal (Mencegah layar kosong saat dites tanpa Firebase)
+        let localPosts = [
+            { id: 'local1', authorName: 'Budi Santoso', authorAvatar: 'https://ui-avatars.com/api/?name=Budi+Santoso&background=random', text: 'Hari ini mulai bersepeda ke kantor! Hitung-hitung olahraga dan mengurangi emisi karbon. Siapa yang mau ikutan besok? 🚴‍♂️💨 #BikeToWork #BebasPolusi', image: null, timestamp: Date.now() - 7200000, likes: 124, comments: 18 }
+        ];
+        let localChat = [];
+
+        // Data Tantangan
+        const challenges = [
+            { id: 1, title: "Bawa Botol Minum Sendiri", points: 20, desc: "Hindari membeli air kemasan plastik hari ini.", done: false, icon: "fa-bottle-water" },
+            { id: 2, title: "Gunakan Transportasi Umum", points: 50, desc: "Naik bus, KRL, atau transportasi umum lainnya.", done: false, icon: "fa-bus" },
+            { id: 3, title: "Cabut Kabel Tidak Terpakai", points: 15, desc: "Hemat listrik dengan mencabut charger/alat elektronik.", done: false, icon: "fa-plug" },
+            { id: 4, title: "Bawa Tas Belanja Sendiri", points: 30, desc: "Kurangi penggunaan kantong plastik saat berbelanja.", done: false, icon: "fa-bag-shopping" },
+            { id: 5, title: "Habiskan Makananmu", points: 25, desc: "Jangan sisakan makanan untuk mencegah sampah organik.", done: false, icon: "fa-utensils" },
+            { id: 6, title: "Matikan Lampu Siang Hari", points: 15, desc: "Manfaatkan cahaya matahari untuk penerangan ruangan.", done: false, icon: "fa-lightbulb" },
+            { id: 7, title: "Pisahkan Sampah", points: 40, desc: "Pisahkan sampah organik dan anorganik di rumah.", done: false, icon: "fa-recycle" },
+            { id: 8, title: "Tanam Tanaman Baru", points: 100, desc: "Tanam bibit pohon atau tanaman hias hari ini.", done: false, icon: "fa-seedling" }
+        ];
+
+        // ----------------------------------------------------
+        // [FITUR LINGKUNGAN BARU]: FUNGSI LOGIKA
+        // ----------------------------------------------------
+        window.addWater = function() {
+            if (waterGlass < 8) {
+                waterGlass++;
+                document.getElementById('water-count').innerText = waterGlass;
+                window.showToast("🥤 Bagus! Tubuh terhidrasi, sampah plastik berkurang!");
+            } else {
+                window.showToast("🌟 Kamu sudah cukup minum hari ini!");
+            }
+        };
+
+        // ----------------------------------------------------
+        // LOGIKA DATABASE REAL-TIME / LOKAL (FEED & CHAT)
+        // ----------------------------------------------------
+        
+        function listenToPosts() {
+            if (!currentUser || !useFirebase) return;
+            const postsRef = collection(db, 'artifacts', appId, 'public', 'data', 'posts');
+            onSnapshot(postsRef, (snapshot) => {
+                const posts = [];
+                snapshot.forEach(doc => posts.push({ id: doc.id, ...doc.data() }));
+                posts.sort((a, b) => b.timestamp - a.timestamp);
+                window.renderPosts(posts);
+            }, (error) => console.error(error));
+        }
+
+        window.renderPosts = function(posts) {
+            const container = document.getElementById('feed-container');
+            container.innerHTML = '';
+            if (posts.length === 0) {
+                container.innerHTML = '<div class="text-center py-10 text-stone-500 font-medium">Belum ada aksi peduli lingkungan yang dibagikan hari ini. Jadilah yang pertama! 🌱</div>';
+                return;
+            }
+
+            posts.forEach(post => {
+                const timeString = new Date(post.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                const imageHtml = post.image ? `
+                    <div class="mt-3 mb-4 rounded-2xl overflow-hidden bg-beige-100 border border-beige-200 shadow-sm flex justify-center max-h-96">
+                        <img src="${post.image}" class="w-full h-full object-contain">
+                    </div>` : '';
+
+                const html = `
+                    <div class="bg-white p-5 mb-4 shadow-sm post-item md:rounded-2xl border border-beige-100 fade-in">
+                        <div class="flex justify-between items-center mb-4">
+                            <div class="flex items-center space-x-3">
+                                <img src="${post.authorAvatar}" class="w-11 h-11 rounded-full shadow-sm">
+                                <div>
+                                    <p class="font-bold text-sm text-stone-800">${post.authorName}</p>
+                                    <p class="text-xs text-stone-500">${timeString} • 🌍 Global</p>
+                                </div>
+                            </div>
+                        </div>
+                        ${post.text ? `<p class="text-sm mb-4 text-stone-700 leading-relaxed">${post.text}</p>` : ''}
+                        ${imageHtml}
+                        <div class="flex justify-between text-stone-500 border-t border-beige-100 pt-3 text-sm font-medium px-2">
+                            <button class="flex items-center space-x-2 hover:text-red-500 transition px-2 py-1 rounded-lg" onclick="toggleGlobalLike('${post.id}', this)">
+                                <i class="fa-regular fa-heart"></i> <span class="like-count">${post.likes || 0}</span>
+                            </button>
+                            <button class="flex items-center space-x-2 hover:text-brand-600 transition px-2 py-1 rounded-lg" onclick="openCommentModal(this)">
+                                <i class="fa-regular fa-comment"></i> <span class="comment-count">${post.comments || 0}</span>
+                            </button>
+                            <button class="flex items-center space-x-2 hover:text-brand-600 transition px-2 py-1 rounded-lg" onclick="shareAction('Postingan')">
+                                <i class="fa-solid fa-share-nodes"></i> <span>Bagikan</span>
+                            </button>
+                        </div>
+                    </div>`;
+                container.insertAdjacentHTML('beforeend', html);
+            });
+        }
+
+        window.submitPost = async function() {
+            const text = document.getElementById('new-post-text').value;
+            if(!text.trim() && !currentPostImageBase64) return window.showToast("Postingan atau gambar tidak boleh kosong!");
+            
+            const newPost = {
+                authorName: document.getElementById('profile-name-display').innerText || 'Pejuang Bumi',
+                authorAvatar: `https://ui-avatars.com/api/?name=${document.getElementById('profile-name-display').innerText || 'User'}&background=ff7a59&color=fff`,
+                text: text,
+                image: currentPostImageBase64,
+                timestamp: Date.now(),
+                likes: 0,
+                comments: 0
+            };
+
+            try {
+                if (useFirebase && currentUser) {
+                    await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'posts'), newPost);
+                } else {
+                    newPost.id = 'local_' + Date.now();
+                    localPosts.unshift(newPost);
+                    window.renderPosts(localPosts);
+                }
+                window.closeModal('modal-post');
+                document.getElementById('new-post-text').value = '';
+                window.removePostImage();
+                window.showToast("Berhasil membagikan aksi Anda! 🌱");
+            } catch (e) {
+                console.error(e);
+                window.showToast("Gagal mengirim postingan.");
+            }
+        }
+
+        window.toggleGlobalLike = async function(postId, btn) {
+            const icon = btn.querySelector('i');
+            const countSpan = btn.querySelector('.like-count');
+            let currentLikes = parseInt(countSpan.innerText);
+            
+            let newLikes = currentLikes;
+            if(icon.classList.contains('fa-regular')) {
+                icon.classList.replace('fa-regular', 'fa-solid');
+                icon.classList.add('text-red-500', 'like-animation');
+                btn.classList.add('text-red-500');
+                newLikes = currentLikes + 1;
+            } else {
+                icon.classList.replace('fa-solid', 'fa-regular');
+                icon.classList.remove('text-red-500', 'like-animation');
+                btn.classList.remove('text-red-500');
+                newLikes = currentLikes - 1;
+            }
+            countSpan.innerText = newLikes;
+            setTimeout(() => icon.classList.remove('like-animation'), 300);
+
+            if (useFirebase && currentUser && !postId.startsWith('local')) {
+                try {
+                    const postRef = doc(db, 'artifacts', appId, 'public', 'data', 'posts', postId);
+                    await updateDoc(postRef, { likes: newLikes });
+                } catch (e) { console.error("Error like:", e); }
+            }
+        }
+
+        function listenToGlobalChat() {
+            if (!currentUser || !useFirebase) return;
+            const chatRef = collection(db, 'artifacts', appId, 'public', 'data', 'global_chat');
+            onSnapshot(chatRef, (snapshot) => {
+                const messages = [];
+                snapshot.forEach(doc => messages.push({ id: doc.id, ...doc.data() }));
+                messages.sort((a, b) => a.timestamp - b.timestamp);
+                window.renderGlobalChat(messages);
+            }, (error) => console.error(error));
+        }
+
+        window.renderGlobalChat = function(messages) {
+            const dmBox = document.getElementById('dm-messages');
+            dmBox.innerHTML = '<div class="flex justify-center mb-4"><span class="text-[10px] text-stone-500 bg-beige-200 px-3 py-1 rounded-full font-semibold">Ruang Obrolan Sedunia</span></div>';
+            
+            messages.forEach(msg => {
+                const isMe = msg.userId === (currentUser ? currentUser.uid : 'local_user');
+                if (isMe) {
+                    dmBox.innerHTML += `
+                        <div class="flex justify-end mb-3 fade-in">
+                            <div class="bg-brand-500 text-white rounded-2xl rounded-tr-sm py-2 px-3 text-sm max-w-[80%] shadow-sm">
+                                ${msg.text}
+                            </div>
+                        </div>`;
+                } else {
+                    dmBox.innerHTML += `
+                        <div class="flex justify-start mb-3 fade-in">
+                            <div class="flex flex-col max-w-[80%]">
+                                <span class="text-[10px] text-stone-500 ml-2 mb-0.5 font-bold">${msg.authorName}</span>
+                                <div class="bg-white border border-beige-100 text-stone-800 rounded-2xl rounded-tl-sm py-2 px-3 text-sm shadow-sm">
+                                    ${msg.text}
+                                </div>
+                            </div>
+                        </div>`;
+                }
+            });
+            dmBox.scrollTop = dmBox.scrollHeight;
+        }
+
+        window.sendGlobalMessage = async function() {
+            const input = document.getElementById('dm-input');
+            const text = input.value.trim();
+            if(!text) return;
+            
+            input.value = ''; 
+            const newMsg = {
+                text: text,
+                userId: currentUser ? currentUser.uid : 'local_user',
+                authorName: document.getElementById('profile-name-display').innerText || 'Pejuang Bumi',
+                timestamp: Date.now()
+            };
+
+            if (useFirebase && currentUser) {
+                try { await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'global_chat'), newMsg); } 
+                catch(e) { console.error("Error chat", e); }
+            } else {
+                localChat.push(newMsg);
+                window.renderGlobalChat(localChat);
+            }
+        }
+
+        // ----------------------------------------------------
+        // SEMUA FUNGSI UI & KOMPRESI KAMERA
+        // ----------------------------------------------------
+        function compressImage(file, callback) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    let width = img.width;
+                    let height = img.height;
+                    const MAX_DIM = 800; // Kompresi agar hemat storage
+                    if (width > height) {
+                        if (width > MAX_DIM) { height *= MAX_DIM / width; width = MAX_DIM; }
+                    } else {
+                        if (height > MAX_DIM) { width *= MAX_DIM / height; height = MAX_DIM; }
+                    }
+                    canvas.width = width; canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+                    callback(canvas.toDataURL('image/jpeg', 0.7)); // Kompres ke JPEG 70%
+                }
+                img.src = e.target.result;
+            }
+            reader.readAsDataURL(file);
+        }
+
+        window.handleRealPostImageUpload = function(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            compressImage(file, (base64) => {
+                currentPostImageBase64 = base64;
+                const previewDiv = document.getElementById('post-image-preview');
+                document.getElementById('real-post-preview-img').src = base64;
+                previewDiv.classList.remove('hidden');
+                window.showToast("📸 Gambar berhasil diproses!");
+            });
+            event.target.value = '';
+        }
+
+        window.removePostImage = function() {
+            currentPostImageBase64 = null;
+            document.getElementById('post-image-preview').classList.add('hidden');
+            document.getElementById('real-post-preview-img').src = "";
+        }
+
+        window.switchTab = function(tabId, element) {
+            document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`view-${tabId}`).classList.remove('hidden');
+
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active', 'text-brand-600');
+                btn.classList.add('text-stone-400');
+                const petIcon = btn.querySelector('.bg-brand-600');
+                if(petIcon) { petIcon.classList.remove('bg-brand-600'); petIcon.classList.add('bg-brand-500'); }
+            });
+            
+            element.classList.remove('text-stone-400');
+            element.classList.add('active', 'text-brand-600');
+            
+            const activePetIcon = element.querySelector('.from-brand-500');
+            if(activePetIcon) { activePetIcon.classList.add('scale-110'); setTimeout(()=> activePetIcon.classList.remove('scale-110'),300); }
+
+            const titles = { 'feed': 'Beranda', 'challenges': 'Tantangan', 'chatbot': 'EcoBot AI', 'messages': 'Komunitas', 'profile': 'Profil' };
+            const desktopTitle = document.getElementById('desktop-page-title');
+            if(desktopTitle) desktopTitle.innerText = titles[tabId];
+            
+            const mobileSearch = document.getElementById('mobile-search');
+            if(mobileSearch) mobileSearch.style.display = (tabId === 'feed') ? 'block' : 'none';
+        }
+
+        window.renderChallenges = function() {
+            const list = document.getElementById('challenge-list');
+            list.innerHTML = '';
+            challenges.forEach(c => {
+                const buttonClass = c.done ? "bg-beige-100 text-stone-400 cursor-not-allowed" : "bg-white text-brand-600 border-2 border-brand-500 hover:bg-brand-50 shadow-sm hover:shadow";
+                const buttonText = c.done ? '<i class="fa-solid fa-check mr-1"></i> Selesai' : 'Selesaikan';
+                const html = `
+                    <div class="bg-white p-4 rounded-xl border border-beige-100 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between border-l-4 border-l-brand-500 transition hover:shadow-md">
+                        <div class="flex items-center space-x-4 mb-3 sm:mb-0">
+                            <div class="bg-brand-50 text-brand-600 w-12 h-12 rounded-full flex items-center justify-center shrink-0">
+                                <i class="fa-solid ${c.icon} text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-stone-800">${c.title}</h3>
+                                <p class="text-sm text-stone-500 mt-0.5">${c.desc}</p>
+                                <p class="text-xs font-bold text-orange-500 mt-1 bg-orange-50 inline-block px-2 py-0.5 rounded-md">+${c.points} Poin</p>
+                            </div>
+                        </div>
+                        <button onclick="openChallengeValidation(${c.id})" class="w-full sm:w-auto px-5 py-2.5 rounded-full text-sm font-bold transition ${buttonClass}" ${c.done ? 'disabled' : ''}>
+                            ${buttonText}
+                        </button>
+                    </div>
+                `;
+                list.insertAdjacentHTML('beforeend', html);
+            });
+        }
+
+        window.openChallengeValidation = function(id) {
+            const challenge = challenges.find(c => c.id === id);
+            if(challenge.done) return;
+            
+            currentChallengeValidationId = id;
+            document.getElementById('cv-title').innerText = challenge.title;
+            document.getElementById('cv-desc').innerText = challenge.desc;
+            
+            document.getElementById('cv-upload-area').classList.remove('hidden');
+            document.getElementById('cv-preview-area').classList.add('hidden');
+            document.getElementById('cv-loading').classList.add('hidden');
+            document.getElementById('cv-result').classList.add('hidden');
+            document.getElementById('cv-image-input').value = '';
+            
+            window.openModal('modal-challenge');
+        }
+
+        window.handleChallengeImage = function(event) {
+            const file = event.target.files[0];
+            if(!file) return;
+
+            compressImage(file, (base64Image) => {
+                document.getElementById('cv-image').src = base64Image;
+                
+                document.getElementById('cv-upload-area').classList.add('hidden');
+                document.getElementById('cv-preview-area').classList.remove('hidden');
+                document.getElementById('cv-loading').classList.remove('hidden');
+                document.getElementById('cv-result').classList.add('hidden');
+
+                verifyChallengeWithAI(base64Image);
+            });
+        }
+
+        async function verifyChallengeWithAI(base64Image) {
+            const challenge = challenges.find(c => c.id === currentChallengeValidationId);
+            const systemPrompt = `Kamu adalah Juri AI yang cerdas untuk aplikasi peduli lingkungan "SociaLife". Tugasmu: Verifikasi apakah foto yang diunggah membuktikan pengguna melakukan tantangan: "${challenge.title}".
+Format jawabanmu WAJIB hanya menggunakan struktur ini:
+STATUS: [Tulis persis kata "VALID" atau "TIDAK VALID"]
+ALASAN: [Tuliskan alasan 1 kalimat singkat maksimal 15 kata]`;
+
+            const responseText = await window.fetchGeminiAPI("Silakan periksa foto bukti ini.", base64Image, systemPrompt);
+            
+            document.getElementById('cv-loading').classList.add('hidden');
+            const resultDiv = document.getElementById('cv-result');
+            resultDiv.classList.remove('hidden');
+
+            if(responseText.includes("STATUS: VALID")) {
+                resultDiv.className = "p-4 rounded-xl mb-4 text-sm font-bold text-center bg-green-50 text-green-700 border border-green-200 shadow-sm";
+                const reasonMatch = responseText.match(/ALASAN:\s*(.*)/i);
+                const reason = reasonMatch ? reasonMatch[1] : "Aksi lingkungan terverifikasi dengan baik!";
+                resultDiv.innerHTML = `<i class="fa-solid fa-circle-check mb-2 text-3xl"></i><br>Validasi Berhasil!<br><span class="text-xs font-medium text-green-600 mt-1 block">${reason}</span>`;
+                
+                setTimeout(() => {
+                    finalizeChallenge(currentChallengeValidationId);
+                    window.closeModal('modal-challenge');
+                }, 3000);
+            } else {
+                resultDiv.className = "p-4 rounded-xl mb-4 text-sm font-bold text-center bg-red-50 text-red-700 border border-red-200 shadow-sm";
+                const reasonMatch = responseText.match(/ALASAN:\s*(.*)/i);
+                const reason = reasonMatch ? reasonMatch[1] : "AI tidak dapat menemukan kaitan foto dengan tantangan.";
+                resultDiv.innerHTML = `<i class="fa-solid fa-circle-xmark mb-2 text-3xl"></i><br>Validasi Gagal!<br><span class="text-xs font-medium text-red-600 mt-1 block">${reason}</span>`;
+                
+                const uploadArea = document.getElementById('cv-upload-area');
+                uploadArea.classList.remove('hidden');
+                uploadArea.querySelector('p.font-bold').innerText = "Coba Kamera / Foto Lain";
+            }
+        }
+
+        function finalizeChallenge(id) {
+            const challenge = challenges.find(c => c.id === id);
+            if(challenge && !challenge.done) {
+                challenge.done = true;
+                ecoPoints += challenge.points;
+                completedChallenges++;
+                window.updateStats();
+                window.renderChallenges();
+                window.showToast(`🎉 Kerja bagus! +${challenge.points} EcoPoin ditambahkan.`);
+            }
+        }
+
+        window.feedPet = function() {
+            const cost = 50;
+            if(ecoPoints >= cost) {
+                ecoPoints -= cost;
+                petExp += 40;
+                if(petExp >= 100) {
+                    petExp = petExp - 100;
+                    petLevel++;
+                    window.showToast(`🌟 SELAMAT! Pipi si Bibit naik ke Level ${petLevel}!`);
+                    window.updatePetVisuals();
+                } else {
+                    window.showToast("💧 Pipi merasa senang diberi air!");
+                }
+                const sparkle = document.getElementById('sparkle1');
+                sparkle.classList.remove('hidden');
+                setTimeout(() => sparkle.classList.add('hidden'), 1000);
+                window.updateStats();
+            } else {
+                window.showToast("❌ EcoPoin tidak cukup. Selesaikan tantangan dulu!");
+            }
+        }
+
+        window.updatePetVisuals = function() {
+            const iconElModal = document.getElementById('pet-icon-modal');
+            const iconElFloat = document.getElementById('floating-pet-icon');
+            const statusEl = document.getElementById('pet-status');
+            if(petLevel === 1) { iconElModal.innerText = "🌱"; iconElFloat.innerText = "🌱"; statusEl.innerText = "Level 1: Benih Kecil"; } 
+            else if (petLevel === 2) { iconElModal.innerText = "🌿"; iconElFloat.innerText = "🌿"; statusEl.innerText = "Level 2: Tunas Hijau"; iconElModal.classList.add('text-green-500'); } 
+            else { iconElModal.innerText = "🌳"; iconElFloat.innerText = "🌳"; statusEl.innerText = `Level ${petLevel}: Pohon Muda`; iconElModal.classList.replace('text-green-500', 'text-green-700'); }
+        }
+
+        window.updateStats = function() {
+            document.getElementById('pet-points').innerHTML = `${ecoPoints} <i class="fa-solid fa-leaf text-sm"></i>`;
+            document.getElementById('leaderboard-my-points').innerText = `${ecoPoints} Poin`;
+            document.getElementById('profile-challenges').innerText = completedChallenges;
+            document.getElementById('exp-text').innerText = petExp;
+            document.getElementById('pet-progress').style.width = `${petExp}%`;
+        }
+
+        window.showToast = function(message) {
+            const toast = document.getElementById("toast");
+            toast.innerText = message;
+            toast.className = "toast show";
+            setTimeout(function(){ toast.className = toast.className.replace("show", ""); }, 3000);
+        }
+
+        window.searchPosts = function(keyword) {
+            const filter = keyword.toLowerCase();
+            document.querySelectorAll('.post-item').forEach(post => {
+                post.style.display = post.innerText.toLowerCase().includes(filter) ? "" : "none";
+            });
+        }
+
+        window.openModal = function(id) {
+            const modal = document.getElementById(id);
+            const content = document.getElementById(id + '-content');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                if (content.classList.contains('scale-95')) content.classList.replace('scale-95', 'scale-100');
+                else if (content.classList.contains('translate-y-full')) content.classList.remove('translate-y-full');
+            }, 10);
+        }
+
+        window.closeModal = function(id) {
+            const content = document.getElementById(id + '-content');
+            if (content.classList.contains('scale-100')) content.classList.replace('scale-100', 'scale-95');
+            else content.classList.add('translate-y-full');
+            setTimeout(() => { document.getElementById(id).classList.add('hidden'); }, 300);
+            if(id === 'modal-challenge') currentChallengeValidationId = null;
+        }
+        
+        window.closeModalPet = function() { window.closeModal('modal-pet'); }
+
+        window.openGlobalChat = function() {
+            document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
+            document.getElementById('view-chat-detail').classList.remove('hidden');
+            const dmBox = document.getElementById('dm-messages');
+            dmBox.scrollTop = dmBox.scrollHeight;
+        }
+
+        window.closeGlobalChat = function() {
+            document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
+            document.getElementById('view-messages').classList.remove('hidden');
+        }
+
+        let currentCommentBtn = null;
+        window.openCommentModal = function(btn) {
+            currentCommentBtn = btn;
+            window.openModal('modal-comment');
+        }
+
+        window.submitComment = function() {
+            const input = document.getElementById('new-comment-text');
+            if(!input.value.trim()) return;
+            if(currentCommentBtn) {
+                const countSpan = currentCommentBtn.querySelector('.comment-count');
+                if(countSpan) countSpan.innerText = parseInt(countSpan.innerText) + 1;
+            }
+            input.value = '';
+            window.closeModal('modal-comment');
+            window.showToast("Komentar berhasil ditambahkan!");
+        }
+
+        window.shareAction = function(type) {
+            const dummy = document.createElement('input');
+            document.body.appendChild(dummy);
+            dummy.value = "https://socialife.app/share/" + Date.now();
+            dummy.select();
+            document.execCommand('copy');
+            document.body.removeChild(dummy);
+            window.showToast(`Tautan ${type} berhasil disalin! 🔗`);
+        }
+
+        window.toggleFollow = function(btn) {
+            const icon = btn.querySelector('i');
+            const countDisplay = document.getElementById('profile-followers-count');
+            let followers = parseInt(countDisplay.innerText);
+
+            if(icon.classList.contains('fa-user-plus')) {
+                icon.classList.replace('fa-user-plus', 'fa-user-check');
+                btn.classList.replace('bg-brand-500', 'bg-beige-100');
+                btn.classList.replace('text-white', 'text-stone-900');
+                btn.classList.replace('hover:bg-brand-600', 'hover:bg-beige-200');
+                countDisplay.innerText = followers + 1;
+                window.showToast("Berhasil mengikuti pengguna ini!");
+            } else {
+                icon.classList.replace('fa-user-check', 'fa-user-plus');
+                btn.classList.replace('bg-beige-100', 'bg-brand-500');
+                btn.classList.replace('text-stone-900', 'text-white');
+                btn.classList.replace('hover:bg-beige-200', 'hover:bg-brand-600');
+                countDisplay.innerText = followers - 1;
+            }
+        }
+
+        window.saveProfile = function() {
+            const newName = document.getElementById('edit-profile-name').value;
+            const newBio = document.getElementById('edit-profile-bio').value;
+            if(newName.trim()) document.getElementById('profile-name-display').innerText = newName;
+            if(newBio.trim()) document.getElementById('profile-bio-display').innerText = newBio;
+            window.closeModal('modal-edit-profile');
+            window.showToast("Profil berhasil diperbarui!");
+        }
+
+        window.switchProfileTab = function(tabName) {
+            ['grid', 'leaf', 'bookmark'].forEach(t => {
+                const btn = document.getElementById('ptab-' + t);
+                btn.classList.remove('border-stone-900', 'text-stone-900');
+                btn.classList.add('border-transparent', 'text-stone-400');
+                document.getElementById('profile-' + t + '-content').classList.add('hidden');
+            });
+            const activeBtn = document.getElementById('ptab-' + tabName);
+            activeBtn.classList.remove('border-transparent', 'text-stone-400');
+            activeBtn.classList.add('border-stone-900', 'text-stone-900');
+            document.getElementById('profile-' + tabName + '-content').classList.remove('hidden');
+        }
+
+        // ==========================================
+        // REAL AI INTEGRATION (GEMINI API)
+        // ==========================================
+        window.fetchGeminiAPI = async function(promptText, base64Image = null, customSystemPrompt = null) {
+            // MENGGUNAKAN VERSI 1.5 FLASH (VERSI PALING STABIL)
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+            let parts = [];
+            if(promptText) parts.push({ text: promptText });
+            if(base64Image) {
+                const mimeMatch = base64Image.match(/data:(.*?);base64,/);
+                if(mimeMatch) parts.push({ inlineData: { mimeType: mimeMatch[1], data: base64Image.split(',')[1] } });
+            }
+
+            const systemPrompt = customSystemPrompt || "Kamu adalah EcoBot, asisten AI ramah dari aplikasi sosial media lingkungan 'SociaLife'. Tugas utamamu: 1) Jika dikirim foto makanan atau nama makanan, berikan estimasi gizinya (Kalori, Protein, Karbohidrat) dan ingatkan tentang bahaya food waste bagi lingkungan. 2) Menjadi teman curhat yang empatik dan selalu menyisipkan pesan positif. 3) Gunakan bahasa Indonesia yang santai, gaul, sopan (gunakan emoji secukupnya). Jawaban harus ringkas dan diformat dengan baik menggunakan HTML tag sederhana seperti <b> atau <br>. Jangan gunakan Markdown asterisk (**) langsung.";
+
+            const payload = { contents: [{ parts: parts }], systemInstruction: { parts: [{ text: systemPrompt }] } };
+
+            try {
+                const response = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                const result = await response.json();
+                if (result.candidates && result.candidates.length > 0) {
+                    let outText = result.candidates[0].content.parts[0].text;
+                    outText = outText.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
+                    return outText;
+                }
+                return "Maaf, sistem AI sedang sibuk saat ini. 🌍";
+            } catch (error) {
+                console.error("Gemini AI Error:", error);
+                return "Waduh, koneksiku terganggu. Pastikan kamu memiliki koneksi internet yang stabil! 📡";
+            }
+        }
+
+        window.sendBotMessage = function() {
+            const input = document.getElementById('bot-input');
+            const text = input.value.trim();
+            if(!text) return;
+            appendUserText(text);
+            input.value = '';
+            processBotRequest(text, null);
+        }
+
+        window.handleBotImageUpload = function(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            compressImage(file, (base64Image) => {
+                appendUserImage(base64Image);
+                processBotRequest("Tolong analisis foto makanan ini. Berapa estimasi gizinya dan apa saranmu untuk lingkungan?", base64Image);
+            });
+            event.target.value = '';
+        }
+
+        function appendUserText(text) {
+            const chatBox = document.getElementById('bot-messages');
+            chatBox.innerHTML += `<div class="flex justify-end mb-4 fade-in"><div class="bg-brand-500 text-white rounded-2xl rounded-tr-sm py-3 px-5 text-sm max-w-[85%] shadow-sm">${text}</div></div>`;
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function appendUserImage(imageUrl) {
+            const chatBox = document.getElementById('bot-messages');
+            chatBox.innerHTML += `<div class="flex justify-end mb-4 fade-in"><div class="bg-brand-500 text-white rounded-2xl rounded-tr-sm p-1.5 max-w-[75%] md:max-w-[50%] shadow-sm overflow-hidden"><img src="${imageUrl}" class="w-full h-auto rounded-xl border border-brand-400"></div></div>`;
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        async function processBotRequest(prompt, base64Image) {
+            const chatBox = document.getElementById('bot-messages');
+            const typingId = 'typing-' + Date.now();
+            chatBox.innerHTML += `<div id="${typingId}" class="flex justify-start mb-4 fade-in"><div class="bg-white border border-beige-200 text-brand-500 rounded-2xl rounded-tl-sm py-3 px-5 text-lg shadow-sm flex space-x-1 items-center"><i class="fa-solid fa-robot mr-2 text-sm text-stone-400"></i><span class="animate-bounce">.</span><span class="animate-bounce" style="animation-delay: 0.1s">.</span><span class="animate-bounce" style="animation-delay: 0.2s">.</span></div></div>`;
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            const aiResponseText = await window.fetchGeminiAPI(prompt, base64Image);
+
+            const typingEl = document.getElementById(typingId);
+            if(typingEl) typingEl.remove();
+
+            chatBox.innerHTML += `<div class="flex justify-start mb-4 fade-in"><div class="bg-white border border-beige-200 text-stone-800 rounded-2xl rounded-tl-sm py-3 px-5 text-sm max-w-[85%] shadow-sm leading-relaxed">${aiResponseText}</div></div>`;
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        // ==========================================
+        // INISIALISASI AUTENTIKASI & START
+        // ==========================================
+        async function initAuth() {
+            try {
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+            } catch (error) { console.error("Sistem Auth Gagal:", error); }
+        }
+
+        if (useFirebase) {
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    currentUser = user;
+                    listenToPosts();
+                    listenToGlobalChat();
+                }
+            });
+        } else {
+            window.renderPosts(localPosts);
+            window.renderGlobalChat(localChat);
+        }
+
+        window.onload = () => {
+            if (useFirebase) initAuth();
+            window.renderChallenges();
+            window.updateStats();
+        };
+    </script>
+</body>
+</html>
