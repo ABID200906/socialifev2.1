@@ -243,17 +243,12 @@
                 <h3 class="font-bold text-lg text-stone-800">Komentar</h3>
                 <button onclick="closeModal('modal-comment')" class="text-stone-400 bg-beige-50 hover:bg-beige-100 w-8 h-8 rounded-full transition"><i class="fa-solid fa-xmark text-sm"></i></button>
             </div>
-            <div class="space-y-3 mb-4 max-h-40 overflow-y-auto">
-                <div class="flex space-x-2">
-                    <img src="https://ui-avatars.com/api/?name=User&background=random" class="w-8 h-8 rounded-full">
-                    <div class="bg-beige-50 p-2.5 rounded-xl text-sm flex-1">
-                        <p class="font-bold text-xs text-stone-800">Sobat Hijau</p>
-                        <p class="text-stone-700 mt-0.5">Wah keren banget aksinya! Lanjutkan! 🔥</p>
-                    </div>
-                </div>
+            <div id="comment-list-container" class="space-y-3 mb-4 max-h-40 overflow-y-auto">
+                <!-- Komentar palsu sudah dihapus, diganti pesan default -->
+                <div class="text-center text-stone-400 text-sm py-4" id="empty-comment-msg">Belum ada komentar. Jadilah yang pertama!</div>
             </div>
             <div class="flex items-center space-x-2 pt-3 border-t border-beige-100">
-                <img src="https://ui-avatars.com/api/?name=Anda&background=ff7a59&color=fff" class="w-9 h-9 rounded-full">
+                <img src="https://ui-avatars.com/api/?name=Anda&background=ff7a59&color=fff" class="w-9 h-9 rounded-full" id="my-comment-avatar">
                 <input type="text" id="new-comment-text" placeholder="Tambahkan komentar..." class="flex-1 bg-beige-100 border-none rounded-full py-2 px-4 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-500 text-sm transition" onkeypress="if(event.key === 'Enter') submitComment()">
                 <button onclick="submitComment()" class="text-brand-600 hover:text-brand-700 transition p-2"><i class="fa-solid fa-paper-plane"></i></button>
             </div>
@@ -484,6 +479,14 @@
             currentCommentPostId = postId;
             currentCommentBtn = btn;
             document.getElementById('new-comment-text').value = '';
+            
+            // Perbarui avatar milik Anda
+            document.getElementById('my-comment-avatar').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(appState.userName)}&background=ff7a59&color=fff`;
+
+            // Kosongkan isi komentar (Reset saat membuka post baru)
+            const container = document.getElementById('comment-list-container');
+            container.innerHTML = '<div class="text-center text-stone-400 text-sm py-4" id="empty-comment-msg">Belum ada komentar. Jadilah yang pertama!</div>';
+
             window.openModal('modal-comment');
         };
 
@@ -498,9 +501,24 @@
                 newCommentCount = (parseInt(countSpan.innerText) || 0) + 1;
                 countSpan.innerText = newCommentCount;
             }
+
+            // Tampilkan komentar yang baru diketik ke layar
+            const container = document.getElementById('comment-list-container');
+            const emptyMsg = document.getElementById('empty-comment-msg');
+            if (emptyMsg) emptyMsg.style.display = 'none';
+
+            const newCommentHtml = `
+                <div class="flex space-x-2 fade-in mb-3">
+                    <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(appState.userName)}&background=ff7a59&color=fff" class="w-8 h-8 rounded-full">
+                    <div class="bg-beige-50 p-2.5 rounded-xl text-sm flex-1">
+                        <p class="font-bold text-xs text-stone-800">${appState.userName}</p>
+                        <p class="text-stone-700 mt-0.5">${text}</p>
+                    </div>
+                </div>`;
+            container.insertAdjacentHTML('beforeend', newCommentHtml);
+            container.scrollTop = container.scrollHeight;
             
             input.value = '';
-            window.closeModal('modal-comment');
             window.showToast("Komentar berhasil ditambahkan!");
 
             if (currentUser && currentCommentPostId && !currentCommentPostId.startsWith('local')) {
