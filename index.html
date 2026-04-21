@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>SociaLife - Social Media Lingkungan</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -14,7 +14,7 @@
                     fontFamily: { sans: ['Inter', 'sans-serif'] },
                     colors: {
                         brand: { 
-                       SE     50: '#fff0e8',   100: '#ffe0d1',  300: '#ffb394', 
+                            50: '#fff0e8',   100: '#ffe0d1',  300: '#ffb394', 
                             400: '#ff946b',  500: '#ff7a59',  600: '#e56243',  700: '#cc5235'
                         },
                         beige: {
@@ -58,10 +58,12 @@
         .eco-news-glow { box-shadow: 0 0 10px rgba(255, 122, 89, 0.2); }
     </style>
 </head>
-<body class="bg-beige-50 flex h-screen text-stone-800 font-sans antialiased overflow-hidden">
 
-    <!-- BOTTOM NAVBAR / SIDEBAR -->
-    <nav class="glass-header z-40 flex flex-row md:flex-col justify-around md:justify-start items-center md:items-stretch h-16 md:h-screen w-full md:w-20 lg:w-64 border-t md:border-t-0 md:border-r border-beige-200 absolute md:relative bottom-0 px-2 md:px-0 md:pt-6 shrink-0 transition-all bg-white">
+<!-- STRUKTUR LAYOUT DIPERBAIKI: Menggunakan flex-col untuk mobile dan flex-row untuk desktop (100dvh mendukung keyboard dinamis) -->
+<body class="bg-beige-50 flex flex-col md:flex-row h-screen text-stone-800 font-sans antialiased overflow-hidden" style="height: 100dvh;">
+
+    <!-- NAVBAR: Tidak lagi menggunakan absolute, otomatis mengambil tempat di bawah pada mobile -->
+    <nav class="glass-header z-40 flex flex-row md:flex-col justify-around md:justify-start items-center md:items-stretch h-16 md:h-full w-full md:w-20 lg:w-64 border-t md:border-t-0 md:border-r border-beige-200 px-2 md:px-0 md:pt-6 shrink-0 transition-all bg-white order-2 md:order-1">
         <div class="hidden md:flex items-center justify-center lg:justify-start px-0 lg:px-6 mb-8 text-brand-600 w-full">
             <i class="fa-solid fa-earth-americas text-3xl lg:mr-3"></i>
             <h1 class="text-2xl font-bold hidden lg:block tracking-tight">SociaLife</h1>
@@ -91,16 +93,17 @@
         </button>
     </nav>
 
-    <div class="flex-1 flex flex-col relative overflow-hidden bg-beige-50 w-full">
-        <header class="glass-header px-4 pt-4 pb-3 shadow-sm z-20 md:hidden border-b border-beige-100">
-            <div class="flex justify-between items-center mb-3">
+    <!-- WRAPPER KONTEN UTAMA -->
+    <div class="flex-1 flex flex-col relative overflow-hidden bg-beige-50 w-full order-1 md:order-2">
+        <header class="glass-header px-4 pt-4 pb-3 shadow-sm z-20 md:hidden border-b border-beige-100 shrink-0">
+            <div class="flex justify-between items-center">
                 <h1 class="text-2xl font-bold text-brand-600 tracking-tight">SociaLife</h1>
                 <button class="text-stone-500"><i class="fa-regular fa-bell text-xl"></i></button>
             </div>
         </header>
 
         <!-- Search Desktop -->
-        <div class="hidden md:flex glass-header px-8 py-4 border-b border-beige-200 sticky top-0 z-20 items-center justify-between">
+        <div class="hidden md:flex glass-header px-8 py-4 border-b border-beige-200 sticky top-0 z-20 items-center justify-between shrink-0">
             <h2 class="text-xl font-bold text-stone-800" id="desktop-page-title">Beranda</h2>
             <div class="relative w-96">
                 <input type="text" onkeyup="searchPosts(this.value)" placeholder="Cari aksi lingkungan..." class="w-full bg-beige-100 text-stone-700 text-sm rounded-full py-2.5 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-brand-500 transition">
@@ -108,7 +111,15 @@
             </div>
         </div>
 
-        <main class="flex-1 overflow-y-auto pb-20 md:pb-6 relative w-full h-full">
+        <div class="md:hidden px-4 pt-2 pb-1 relative z-10 bg-beige-50 shrink-0" id="mobile-search">
+            <div class="relative">
+                <input type="text" onkeyup="searchPosts(this.value)" placeholder="Cari..." class="w-full bg-white text-stone-700 text-sm rounded-full py-2.5 pl-10 pr-4 focus:outline-none shadow-sm border border-beige-200">
+                <i class="fa-solid fa-search absolute left-4 top-3 text-stone-400"></i>
+            </div>
+        </div>
+
+        <!-- KONTEN SCROLLABLE -->
+        <main class="flex-1 overflow-y-auto pb-6 relative w-full h-full">
             
             <!-- FEED VIEW -->
             <div id="view-feed" class="view-section fade-in max-w-2xl mx-auto pt-2 md:pt-6 px-4">
@@ -137,95 +148,97 @@
                 </div>
             </div>
 
-            <!-- CHATBOT VIEW (FIXED KEYBOARD COVERING) -->
+            <!-- CHATBOT VIEW (FIXED KEYBOARD & NAVBAR) -->
             <div id="view-chatbot" class="view-section hidden fade-in h-full flex flex-col bg-white md:rounded-2xl md:my-4 md:mx-auto md:max-w-4xl border">
                 <div class="p-4 bg-white border-b flex items-center space-x-4 shadow-sm shrink-0">
                     <div class="w-10 h-10 bg-brand-500 text-white rounded-full flex items-center justify-center"><i class="fa-solid fa-robot"></i></div>
                     <h2 class="font-bold">EcoBot AI</h2>
                 </div>
                 <div class="flex-1 p-4 space-y-4 overflow-y-auto bg-beige-50" id="bot-messages"></div>
-                <!-- Input Box (Flex Layout, Anti Tertutup Keyboard) -->
+                <!-- Input Box -->
                 <div class="p-4 bg-white border-t flex items-center space-x-2 shrink-0">
-                    <button onclick="document.getElementById('bot-image-input').click()" class="text-brand-500 p-2"><i class="fa-solid fa-camera"></i></button>
+                    <button onclick="document.getElementById('bot-image-input').click()" class="text-brand-500 p-2"><i class="fa-solid fa-camera text-xl"></i></button>
                     <input type="file" id="bot-image-input" accept="image/*" class="hidden" onchange="handleBotImageUpload(event)">
-                    <input type="text" id="bot-input" placeholder="Tulis pesan..." class="flex-1 bg-beige-100 rounded-full py-2 px-4 outline-none border-none text-sm" onkeypress="if(event.key === 'Enter') sendBotMessage()">
+                    <input type="text" id="bot-input" placeholder="Tulis pesan..." class="flex-1 bg-beige-100 rounded-full py-2.5 px-4 outline-none border-none text-sm" onkeypress="if(event.key === 'Enter') sendBotMessage()">
                     <button onclick="sendBotMessage()" class="bg-brand-500 text-white p-2 w-10 h-10 rounded-full flex items-center justify-center"><i class="fa-solid fa-paper-plane"></i></button>
                 </div>
             </div>
 
             <!-- MESSAGES VIEW -->
             <div id="view-messages" class="view-section hidden fade-in max-w-2xl mx-auto pt-4 px-4">
-                <div class="bg-white rounded-2xl shadow-sm p-4 cursor-pointer" onclick="openGlobalChat()">
+                <div class="bg-white rounded-2xl shadow-sm p-4 cursor-pointer hover:bg-brand-50 transition" onclick="openGlobalChat()">
                     <div class="flex items-center space-x-4">
-                        <div class="w-12 h-12 bg-brand-500 text-white rounded-full flex items-center justify-center"><i class="fa-solid fa-earth-asia"></i></div>
+                        <div class="w-12 h-12 bg-brand-500 text-white rounded-full flex items-center justify-center text-xl shadow-sm"><i class="fa-solid fa-earth-asia"></i></div>
                         <div class="flex-1">
-                            <h3 class="font-bold">Obrolan Lingkungan Global</h3>
-                            <p class="text-xs text-stone-500">Klik untuk bergabung...</p>
+                            <h3 class="font-bold text-stone-800">Obrolan Lingkungan Global</h3>
+                            <p class="text-xs text-stone-500">Klik untuk bergabung bersama komunitas...</p>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- CHAT DETAIL VIEW (FIXED KEYBOARD COVERING) -->
+            <!-- CHAT DETAIL VIEW (FIXED KEYBOARD & NAVBAR) -->
             <div id="view-chat-detail" class="view-section hidden fade-in h-full flex flex-col bg-white md:rounded-2xl md:my-4 md:mx-auto md:max-w-4xl border">
-                <div class="p-4 border-b flex items-center space-x-3 bg-white shrink-0">
-                    <button onclick="closeGlobalChat()"><i class="fa-solid fa-arrow-left"></i></button>
-                    <h2 class="font-bold">Obrolan Global</h2>
+                <div class="p-4 border-b flex items-center space-x-3 bg-white shrink-0 shadow-sm">
+                    <button onclick="closeGlobalChat()" class="text-stone-500 hover:text-brand-600 p-2"><i class="fa-solid fa-arrow-left text-lg"></i></button>
+                    <h2 class="font-bold text-stone-800">Obrolan Global</h2>
                 </div>
                 <div class="flex-1 p-4 space-y-3 overflow-y-auto bg-beige-50" id="dm-messages"></div>
-                <!-- Input Box (Flex Layout) -->
+                <!-- Input Box -->
                 <div class="p-4 bg-white border-t flex items-center space-x-2 shrink-0">
-                    <input type="text" id="dm-input" placeholder="Kirim pesan..." class="flex-1 bg-beige-100 rounded-full py-2 px-4 outline-none text-sm" onkeypress="if(event.key === 'Enter') sendGlobalMessage()">
+                    <input type="text" id="dm-input" placeholder="Kirim pesan ke komunitas..." class="flex-1 bg-beige-100 rounded-full py-2.5 px-4 outline-none text-sm" onkeypress="if(event.key === 'Enter') sendGlobalMessage()">
                     <button onclick="sendGlobalMessage()" class="bg-brand-600 text-white p-2 w-10 h-10 rounded-full"><i class="fa-solid fa-paper-plane"></i></button>
                 </div>
             </div>
 
-            <!-- PROFILE VIEW (DYNAMIC CONTENT) -->
+            <!-- PROFILE VIEW -->
             <div id="view-profile" class="view-section hidden fade-in max-w-2xl mx-auto pt-4 px-4">
                 <div class="bg-white rounded-2xl p-6 shadow-sm mb-4">
                     <div class="flex items-center space-x-6 mb-6">
-                        <img src="https://ui-avatars.com/api/?name=Anda&background=ff7a59&color=fff" class="w-20 h-20 rounded-full border-4 border-brand-100">
-                        <div class="flex-1 grid grid-cols-3 gap-2 text-center">
-                            <div><p class="font-bold" id="profile-post-count">0</p><p class="text-[10px]">Posts</p></div>
-                            <div><p class="font-bold" id="profile-challenges-done">0</p><p class="text-[10px]">Aksi</p></div>
-                            <div><p class="font-bold">124</p><p class="text-[10px]">Pengikut</p></div>
+                        <img src="https://ui-avatars.com/api/?name=Anda&background=ff7a59&color=fff" class="w-20 h-20 rounded-full border-4 border-brand-100 shadow-sm">
+                        <div class="flex-1 grid grid-cols-3 gap-2 text-center text-stone-800">
+                            <div><p class="font-bold text-lg" id="profile-post-count">0</p><p class="text-[10px] text-stone-500 font-medium">Posts</p></div>
+                            <div><p class="font-bold text-lg" id="profile-challenges-done">0</p><p class="text-[10px] text-stone-500 font-medium">Aksi</p></div>
+                            <div><p class="font-bold text-lg">124</p><p class="text-[10px] text-stone-500 font-medium">Pengikut</p></div>
                         </div>
                     </div>
-                    <h3 class="font-bold" id="profile-name-display">Pejuang Bumi 🌍</h3>
-                    <p class="text-sm text-stone-600 mb-4" id="profile-bio-display">Mencintai bumi satu langkah kecil setiap harinya.</p>
-                    <button onclick="openModal('modal-edit-profile')" class="w-full bg-beige-100 py-2 rounded-lg font-bold text-sm">Edit Profil</button>
+                    <h3 class="font-bold text-lg text-stone-800" id="profile-name-display">Pejuang Bumi 🌍</h3>
+                    <p class="text-sm text-stone-500 mb-4 mt-1" id="profile-bio-display">Mencintai bumi satu langkah kecil setiap harinya.</p>
+                    <button onclick="openModal('modal-edit-profile')" class="w-full bg-beige-100 hover:bg-beige-200 transition py-2.5 rounded-xl font-bold text-sm text-stone-700">Edit Profil</button>
                 </div>
-                <!-- Grid Content (Injected by JS) -->
-                <div id="profile-grid-content" class="grid grid-cols-3 gap-1 pb-24"></div>
+                <div id="profile-grid-content" class="grid grid-cols-3 gap-1 pb-10"></div>
             </div>
 
         </main>
 
         <!-- FLOATING PET -->
-        <div onclick="openModal('modal-pet')" class="fixed bottom-20 md:bottom-8 right-4 z-40 bg-white p-3 rounded-full shadow-lg border border-brand-100 pet-bounce cursor-pointer flex items-center space-x-2 group">
+        <div onclick="openModal('modal-pet')" class="absolute bottom-6 right-4 z-40 bg-white p-3 rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-brand-100 pet-bounce cursor-pointer flex items-center space-x-2 group">
             <div id="floating-pet-icon" class="text-3xl">🌱</div>
-            <span class="hidden group-hover:block text-xs font-bold text-brand-600">Level <span id="pet-level-float">1</span></span>
+            <span class="hidden group-hover:block text-xs font-bold text-brand-600 px-2">Level <span id="pet-level-float">1</span></span>
         </div>
     </div>
 
-    <!-- TOAST -->
+    <!-- TOAST NOTIFICATION -->
     <div id="toast" class="toast">Notifikasi</div>
 
     <!-- MODAL POST -->
-    <div id="modal-post" class="fixed inset-0 bg-stone-900 bg-opacity-60 z-50 hidden flex items-end sm:items-center justify-center p-0 md:p-4 transition-opacity">
+    <div id="modal-post" class="fixed inset-0 bg-stone-900 bg-opacity-60 z-50 hidden flex items-end sm:items-center justify-center p-0 md:p-4 transition-opacity backdrop-blur-sm">
         <div class="bg-white w-full max-w-lg rounded-t-3xl sm:rounded-3xl p-6 transform transition-all translate-y-full sm:translate-y-0" id="modal-post-content">
-            <div class="flex justify-between items-center mb-6 border-b pb-4">
-                <h3 class="font-bold text-xl">Buat Postingan</h3>
-                <button onclick="closeModal('modal-post')"><i class="fa-solid fa-xmark text-lg"></i></button>
+            <div class="flex justify-between items-center mb-6 border-b border-beige-100 pb-4">
+                <h3 class="font-bold text-xl text-stone-800">Buat Postingan</h3>
+                <button onclick="closeModal('modal-post')" class="text-stone-400 hover:text-stone-600 bg-beige-50 w-10 h-10 rounded-full"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
-            <textarea id="new-post-text" class="w-full outline-none border-none resize-none text-lg mb-4" rows="4" placeholder="Bagikan aksi lingkunganmu..."></textarea>
-            <div id="post-image-preview" class="hidden mb-4 rounded-xl overflow-hidden h-48 border"><img id="real-post-preview-img" src="" class="w-full h-full object-cover"></div>
-            <div class="flex justify-between items-center pt-4 border-t">
-                <div class="flex space-x-2">
+            <textarea id="new-post-text" class="w-full outline-none border-none resize-none text-lg mb-4 text-stone-800 placeholder-stone-400" rows="4" placeholder="Bagikan aksi lingkunganmu..."></textarea>
+            <div id="post-image-preview" class="hidden mb-4 rounded-xl overflow-hidden h-48 border border-beige-200 relative group">
+                <img id="real-post-preview-img" src="" class="w-full h-full object-cover">
+                <button onclick="removePostImage()" class="absolute top-3 right-3 bg-stone-900 bg-opacity-60 text-white rounded-full w-10 h-10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition"><i class="fa-solid fa-times"></i></button>
+            </div>
+            <div class="flex justify-between items-center pt-4 border-t border-beige-100">
+                <div class="flex space-x-2 text-brand-500">
                     <input type="file" id="real-post-image-input" accept="image/*" class="hidden" onchange="handleRealPostImageUpload(event)">
-                    <button onclick="document.getElementById('real-post-image-input').click()" class="bg-beige-100 p-3 rounded-full"><i class="fa-solid fa-camera"></i></button>
+                    <button onclick="document.getElementById('real-post-image-input').click()" class="bg-beige-50 hover:bg-beige-100 transition p-3 w-12 h-12 rounded-full"><i class="fa-solid fa-camera"></i></button>
                 </div>
-                <button onclick="submitPost()" class="bg-brand-600 text-white px-8 py-2 rounded-full font-bold">Posting</button>
+                <button onclick="submitPost()" class="bg-brand-600 hover:bg-brand-700 transition text-white px-8 py-3 rounded-full font-bold shadow-sm">Posting</button>
             </div>
         </div>
     </div>
@@ -233,502 +246,53 @@
     <!-- MODAL PET -->
     <div id="modal-pet" class="fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white w-full max-w-md rounded-[2rem] p-8 shadow-2xl relative scale-95" id="modal-pet-content">
-            <button onclick="closeModal('modal-pet')" class="absolute top-5 right-5 text-stone-400 bg-beige-50 w-10 h-10 rounded-full flex items-center justify-center transition"><i class="fa-solid fa-xmark"></i></button>
+            <button onclick="closeModal('modal-pet')" class="absolute top-5 right-5 text-stone-400 bg-beige-50 hover:bg-beige-100 transition w-10 h-10 rounded-full flex items-center justify-center"><i class="fa-solid fa-xmark text-lg"></i></button>
             <div class="flex justify-between items-center mb-8">
-                <div><p class="text-xs font-bold text-stone-400">ECO POIN</p><p class="font-bold text-brand-600 text-2xl" id="pet-points">0</p></div>
+                <div><p class="text-xs font-bold text-stone-400">ECO POIN</p><p class="font-bold text-brand-600 text-2xl" id="pet-points">0 <i class="fa-solid fa-leaf text-sm"></i></p></div>
                 <div class="text-right"><p class="text-xs font-bold text-stone-400">STREAK</p><p class="font-bold text-orange-500 text-2xl">5 Hari</p></div>
             </div>
             <div class="flex flex-col items-center justify-center">
-                <h2 class="text-2xl font-bold mb-1">Pipi si Pohon</h2>
-                <p class="text-xs bg-brand-50 text-brand-500 px-4 py-1 rounded-full mb-8 font-bold uppercase" id="pet-status">Level 1</p>
+                <h2 class="text-2xl font-bold mb-2 text-stone-800">Pipi si Pohon</h2>
+                <p class="text-xs bg-brand-50 text-brand-500 px-4 py-1 rounded-full mb-8 font-bold uppercase tracking-wide" id="pet-status">Level 1</p>
                 <div id="pet-icon-modal" class="text-[5rem] pet-bounce mb-8">🌱</div>
-                <div class="w-full bg-beige-100 rounded-full h-3 mb-2 overflow-hidden"><div id="pet-progress" class="bg-brand-500 h-full transition-all duration-500" style="width: 0%"></div></div>
-                <p class="text-[10px] text-stone-400 mb-8 font-bold"><span id="exp-text">0</span> / 100 EXP</p>
-                <button class="w-full bg-brand-600 text-white font-bold py-4 rounded-2xl" onclick="feedPet()">SIRAM & PUPUK (50 Poin)</button>
+                <div class="w-full bg-beige-100 rounded-full h-3 mb-2 overflow-hidden shadow-inner"><div id="pet-progress" class="bg-brand-500 h-full transition-all duration-500" style="width: 0%"></div></div>
+                <p class="text-[10px] text-stone-400 mb-8 font-bold tracking-widest"><span id="exp-text">0</span> / 100 EXP</p>
+                <button class="w-full bg-brand-600 hover:bg-brand-700 transition text-white font-bold py-4 rounded-2xl shadow-md active:scale-95" onclick="feedPet()"><i class="fa-solid fa-droplet mr-2 text-blue-200"></i> SIRAM & PUPUK (50 Poin)</button>
             </div>
         </div>
     </div>
 
     <!-- MODAL EDIT PROFILE -->
-    <div id="modal-edit-profile" class="fixed inset-0 bg-stone-900/60 z-50 hidden flex items-center justify-center p-4">
+    <div id="modal-edit-profile" class="fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white w-full max-w-sm rounded-[2rem] p-6 shadow-xl relative scale-95" id="modal-edit-profile-content">
-            <h3 class="font-bold text-xl mb-4">Edit Profil</h3>
+            <h3 class="font-bold text-xl mb-4 text-stone-800">Edit Profil</h3>
             <div class="space-y-4">
-                <input type="text" id="edit-profile-name" class="w-full bg-beige-50 p-3 rounded-xl border-none outline-none" value="Pejuang Bumi 🌍">
-                <textarea id="edit-profile-bio" rows="3" class="w-full bg-beige-50 p-3 rounded-xl border-none outline-none">Mencintai bumi satu langkah kecil setiap harinya.</textarea>
+                <div>
+                    <p class="text-xs font-bold text-stone-500 mb-1 ml-1">Nama Tampilan</p>
+                    <input type="text" id="edit-profile-name" class="w-full bg-beige-50 focus:bg-white focus:ring-2 ring-brand-400 p-3 rounded-xl border-none outline-none text-stone-800 transition" value="Pejuang Bumi 🌍">
+                </div>
+                <div>
+                    <p class="text-xs font-bold text-stone-500 mb-1 ml-1">Bio</p>
+                    <textarea id="edit-profile-bio" rows="3" class="w-full bg-beige-50 focus:bg-white focus:ring-2 ring-brand-400 p-3 rounded-xl border-none outline-none text-stone-800 transition resize-none">Mencintai bumi satu langkah kecil setiap harinya.</textarea>
+                </div>
             </div>
             <div class="mt-6 flex space-x-3">
-                <button onclick="closeModal('modal-edit-profile')" class="flex-1 bg-beige-100 py-2 rounded-xl font-bold">Batal</button>
-                <button onclick="saveProfile()" class="flex-1 bg-brand-600 text-white py-2 rounded-xl font-bold">Simpan</button>
+                <button onclick="closeModal('modal-edit-profile')" class="flex-1 bg-beige-100 hover:bg-beige-200 transition py-3 rounded-xl font-bold text-stone-600">Batal</button>
+                <button onclick="saveProfile()" class="flex-1 bg-brand-600 hover:bg-brand-700 transition text-white py-3 rounded-xl font-bold shadow-md">Simpan</button>
             </div>
         </div>
     </div>
 
-    <!-- Firebase & Logic Module (DIPERBAIKI SECARA PENUH) -->
+    <!-- Firebase & Core Logic -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, query } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // CONFIG (Your Provided Config)
+        // FIREBASE CONFIG (Dari Project Anda)
         const myFirebaseConfig = {
             apiKey: "AIzaSyD2vM1dU_YuLGPYtPqN8DqM_qxq4CqDLLU",
             authDomain: "ecopulse-f8b26.firebaseapp.com",
             databaseURL: "https://ecopulse-f8b26-default-rtdb.asia-southeast1.firebasedatabase.app",
             projectId: "ecopulse-f8b26",
-            storageBucket: "ecopulse-f8b26.firebasestorage.app",
-            messagingSenderId: "369786445975",
-            appId: "1:369786445975:web:ebfe8a06019761572309d2"
-        }; 
-
-        const apiKey = "AIzaSyAiOKxoWlyKt78wx5rn5GbZHJpoa4uHgOc"; 
-        const appId = 'socialife-global';
-        let firebaseApp, auth, db, currentUser = null;
-
-        // Persistensi Data (Anti-Reset) menggunakan LocalStorage
-        let appState = JSON.parse(localStorage.getItem('socialife_state')) || { 
-            points: 450, 
-            exp: 30, 
-            level: 1, 
-            aksiCount: 24,
-            userName: "Pejuang Bumi 🌍",
-            userBio: "Mencintai bumi satu langkah kecil setiap harinya."
-        };
-
-        const saveState = () => {
-            localStorage.setItem('socialife_state', JSON.stringify(appState));
-            window.updateStats();
-        };
-
-        try {
-            firebaseApp = initializeApp(myFirebaseConfig);
-            auth = getAuth(firebaseApp);
-            db = getFirestore(firebaseApp);
-        } catch(e) { console.error(e); }
-
-        const challenges = [
-            { id: 1, title: "Bawa Botol Minum", points: 20, desc: "Kurangi sampah botol plastik.", done: false, icon: "fa-bottle-water" },
-            { id: 8, title: "Tanam Tanaman Baru", points: 100, desc: "Tanam bibit pohon hari ini.", done: false, icon: "fa-seedling" }
-        ];
-
-        // SINKRONISASI UI PROFIL & PET
-        window.updateStats = () => {
-            document.getElementById('pet-points').innerText = appState.points;
-            document.getElementById('profile-challenges-done').innerText = appState.aksiCount;
-            document.getElementById('exp-text').innerText = appState.exp;
-            document.getElementById('pet-progress').style.width = appState.exp + '%';
-            document.getElementById('pet-level-float').innerText = appState.level;
-            
-            const petIcons = ["🌱", "🌿", "🌳", "🌲", "🍀"];
-            const idx = Math.min(appState.level - 1, petIcons.length - 1);
-            document.getElementById('pet-icon-modal').innerText = petIcons[idx];
-            document.getElementById('floating-pet-icon').innerText = petIcons[idx];
-            document.getElementById('pet-status').innerText = "LEVEL " + appState.level;
-
-            document.getElementById('profile-name-display').innerText = appState.userName;
-            document.getElementById('profile-bio-display').innerText = appState.userBio;
-            document.getElementById('edit-profile-name').value = appState.userName;
-            document.getElementById('edit-profile-bio').value = appState.userBio;
-        };
-
-        window.feedPet = () => {
-            if(appState.points >= 50) {
-                appState.points -= 50;
-                appState.exp += 40;
-                if(appState.exp >= 100) { appState.exp -= 100; appState.level++; window.showToast("🌟 LEVEL UP!"); }
-                else { window.showToast("💧 Segarrr!"); }
-                saveState();
-            } else window.showToast("❌ Poin kurang!");
-        };
-
-        // RENDER POSTS & SINKRONISASI KE PROFIL GRID
-        window.renderPosts = (posts) => {
-            const container = document.getElementById('feed-container');
-            const grid = document.getElementById('profile-grid-content');
-            container.innerHTML = '';
-            grid.innerHTML = '';
-            
-            let userPostCount = 0;
-            posts.forEach(p => {
-                const html = `<div class="bg-white p-5 mb-4 shadow-sm rounded-2xl border border-beige-100 fade-in">
-                    <div class="flex items-center space-x-3 mb-4">
-                        <img src="${p.authorAvatar}" class="w-10 h-10 rounded-full">
-                        <div><p class="font-bold text-sm">${p.authorName}</p><p class="text-[10px] text-stone-400">BumiKita</p></div>
-                    </div>
-                    <p class="text-sm mb-4">${p.text}</p>
-                    ${p.image ? `<img src="${p.image}" class="w-full rounded-xl mb-4">` : ''}
-                    <div class="flex space-x-6 text-stone-400 border-t border-beige-100 pt-3">
-                        <button onclick="toggleLike('${p.id}', this)" class="flex items-center space-x-2 transition hover:text-red-500"><i class="fa-regular fa-heart text-lg"></i> <span class="font-bold text-xs">${p.likes || 0}</span></button>
-                        <button onclick="openCommentModal('${p.id}', this)" class="flex items-center space-x-2 transition hover:text-brand-500"><i class="fa-regular fa-comment text-lg"></i> <span class="font-bold text-xs">${p.comments || 0}</span></button>
-                        <button onclick="shareAction('Postingan')" class="flex items-center space-x-2 transition hover:text-brand-500"><i class="fa-solid fa-share-nodes text-lg"></i></button>
-                    </div>
-                </div>`;
-                container.insertAdjacentHTML('beforeend', html);
-
-                // Jika nama pembuat sama dengan nama di Profil, sinkronkan gambar ke Tab Profil
-                if(p.authorName === appState.userName) {
-                    userPostCount++;
-                    if(p.image) {
-                        grid.insertAdjacentHTML('beforeend', `<div class="aspect-square border border-white cursor-pointer bg-stone-100"><img src="${p.image}" class="w-full h-full object-cover"></div>`);
-                    }
-                }
-            });
-            document.getElementById('profile-post-count').innerText = userPostCount;
-        };
-
-        // FITUR INTERAKSI POSTINGAN (LIKE, COMMENT, SHARE, FOLLOW)
-        window.toggleLike = async (postId, btn) => {
-            const icon = btn.querySelector('i');
-            const countSpan = btn.querySelector('span');
-            let currentLikes = parseInt(countSpan.innerText) || 0;
-            
-            if(icon.classList.contains('fa-regular')) {
-                icon.classList.replace('fa-regular', 'fa-solid');
-                icon.classList.add('text-red-500', 'like-animation');
-                btn.classList.add('text-red-500');
-                currentLikes++;
-            } else {
-                icon.classList.replace('fa-solid', 'fa-regular');
-                icon.classList.remove('text-red-500', 'like-animation');
-                btn.classList.remove('text-red-500');
-                currentLikes--;
-            }
-            countSpan.innerText = currentLikes;
-            setTimeout(() => icon.classList.remove('like-animation'), 300);
-
-            if (currentUser && postId && !postId.startsWith('local')) {
-                try {
-                    const postRef = doc(db, 'artifacts', appId, 'public', 'data', 'posts', postId);
-                    await updateDoc(postRef, { likes: currentLikes });
-                } catch (e) { console.error("Error like:", e); }
-            }
-        };
-
-        let currentCommentPostId = null;
-        let currentCommentBtn = null;
-
-        window.openCommentModal = (postId, btn) => {
-            currentCommentPostId = postId;
-            currentCommentBtn = btn;
-            document.getElementById('new-comment-text').value = '';
-            window.openModal('modal-comment');
-        };
-
-        window.submitComment = async () => {
-            const input = document.getElementById('new-comment-text');
-            const text = input.value.trim();
-            if(!text) return;
-            
-            let newCommentCount = 1;
-            if(currentCommentBtn) {
-                const countSpan = currentCommentBtn.querySelector('span');
-                newCommentCount = (parseInt(countSpan.innerText) || 0) + 1;
-                countSpan.innerText = newCommentCount;
-            }
-            
-            input.value = '';
-            window.closeModal('modal-comment');
-            window.showToast("Komentar berhasil ditambahkan!");
-
-            if (currentUser && currentCommentPostId && !currentCommentPostId.startsWith('local')) {
-                try {
-                    const postRef = doc(db, 'artifacts', appId, 'public', 'data', 'posts', currentCommentPostId);
-                    await updateDoc(postRef, { comments: newCommentCount });
-                } catch (e) { console.error("Error comment:", e); }
-            }
-        };
-
-        window.shareAction = (type) => {
-            const dummy = document.createElement('input');
-            document.body.appendChild(dummy);
-            dummy.value = "https://socialife.app/share/" + Date.now();
-            dummy.select();
-            document.execCommand('copy');
-            document.body.removeChild(dummy);
-            window.showToast(`Tautan ${type} berhasil disalin! 🔗`);
-        };
-
-        window.toggleFollow = (btn) => {
-            const icon = btn.querySelector('i');
-            const countDisplay = document.getElementById('profile-followers-count');
-            let followers = parseInt(countDisplay.innerText);
-
-            if(icon.classList.contains('fa-user-plus')) {
-                icon.classList.replace('fa-user-plus', 'fa-user-check');
-                btn.classList.replace('bg-brand-500', 'bg-beige-100');
-                btn.classList.replace('text-white', 'text-stone-900');
-                btn.classList.replace('hover:bg-brand-600', 'hover:bg-beige-200');
-                countDisplay.innerText = followers + 1;
-                window.showToast("Berhasil mengikuti pengguna ini!");
-            } else {
-                icon.classList.replace('fa-user-check', 'fa-user-plus');
-                btn.classList.replace('bg-beige-100', 'bg-brand-500');
-                btn.classList.replace('text-stone-900', 'text-white');
-                btn.classList.replace('hover:bg-beige-200', 'hover:bg-brand-600');
-                countDisplay.innerText = followers - 1;
-            }
-        };
-
-        // SUBMIT POST
-        let currentPostImageBase64 = null;
-        window.submitPost = async () => {
-            const text = document.getElementById('new-post-text').value;
-            if(!text.trim() && !currentPostImageBase64) return;
-            const newPost = {
-                authorName: appState.userName,
-                authorAvatar: 'https://ui-avatars.com/api/?name=Anda&background=ff7a59&color=fff',
-                text, image: currentPostImageBase64, timestamp: Date.now(), likes: 0, comments: 0
-            };
-            await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'posts'), newPost);
-            window.closeModal('modal-post');
-            document.getElementById('new-post-text').value = '';
-            window.removePostImage();
-            window.showToast("🎉 Berhasil posting!");
-        };
-
-        // UTILS KAMERA
-        window.handleRealPostImageUpload = (e) => {
-            const file = e.target.files[0]; if(!file) return;
-            const r = new FileReader();
-            r.onload = (ev) => { 
-                currentPostImageBase64 = ev.target.result; 
-                document.getElementById('real-post-preview-img').src = ev.target.result; 
-                document.getElementById('post-image-preview').classList.remove('hidden'); 
-            };
-            r.readAsDataURL(file);
-        };
-        window.removePostImage = () => { currentPostImageBase64 = null; document.getElementById('post-image-preview').classList.add('hidden'); };
-        
-        // UTILS MODAL & TAB
-        window.showToast = (m) => { const t = document.getElementById("toast"); t.innerText = m; t.className = "toast show"; setTimeout(() => t.className = "toast", 3000); };
-        window.openModal = (id) => { document.getElementById(id).classList.remove('hidden'); setTimeout(() => document.getElementById(id + '-content').classList.remove('translate-y-full', 'scale-95'), 10); };
-        window.closeModal = (id) => { document.getElementById(id + '-content').classList.add('translate-y-full', 'scale-95'); setTimeout(() => document.getElementById(id).classList.add('hidden'), 300); };
-        window.switchTab = (id, el) => {
-            document.querySelectorAll('.view-section').forEach(v => v.classList.add('hidden'));
-            document.getElementById('view-'+id).classList.remove('hidden');
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-            el.classList.add('active');
-            if(document.getElementById('desktop-page-title')) document.getElementById('desktop-page-title').innerText = id.charAt(0).toUpperCase() + id.slice(1);
-        };
-        window.closeModalPet = () => window.closeModal('modal-pet');
-
-        window.openGlobalChat = () => { document.querySelectorAll('.view-section').forEach(v => v.classList.add('hidden')); document.getElementById('view-chat-detail').classList.remove('hidden'); };
-        window.closeGlobalChat = () => { document.querySelectorAll('.view-section').forEach(v => v.classList.add('hidden')); document.getElementById('view-messages').classList.remove('hidden'); };
-
-        window.saveProfile = () => { 
-            appState.userName = document.getElementById('edit-profile-name').value;
-            appState.userBio = document.getElementById('edit-profile-bio').value;
-            saveState();
-            window.closeModal('modal-edit-profile');
-            window.showToast("Profil berhasil diperbarui!");
-        };
-
-        // CHALLENGE & AI VALIDATION
-        let currentChallengeValidationId = null;
-        window.renderChallenges = function() {
-            const list = document.getElementById('challenge-list');
-            list.innerHTML = '';
-            challenges.forEach(c => {
-                const buttonClass = c.done ? "bg-beige-100 text-stone-400 cursor-not-allowed" : "bg-white text-brand-600 border-2 border-brand-500 hover:bg-brand-50 shadow-sm hover:shadow";
-                const buttonText = c.done ? '<i class="fa-solid fa-check mr-1"></i> Selesai' : 'Selesaikan';
-                const html = `
-                    <div class="bg-white p-4 rounded-xl border border-beige-100 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between border-l-4 border-l-brand-500 transition hover:shadow-md">
-                        <div class="flex items-center space-x-4 mb-3 sm:mb-0">
-                            <div class="bg-brand-50 text-brand-600 w-12 h-12 rounded-full flex items-center justify-center shrink-0">
-                                <i class="fa-solid ${c.icon} text-xl"></i>
-                            </div>
-                            <div>
-                                <h3 class="font-bold text-stone-800">${c.title}</h3>
-                                <p class="text-sm text-stone-500 mt-0.5">${c.desc}</p>
-                                <p class="text-xs font-bold text-orange-500 mt-1 bg-orange-50 inline-block px-2 py-0.5 rounded-md">+${c.points} Poin</p>
-                            </div>
-                        </div>
-                        <button onclick="openChallengeValidation(${c.id})" class="w-full sm:w-auto px-5 py-2.5 rounded-full text-sm font-bold transition ${buttonClass}" ${c.done ? 'disabled' : ''}>
-                            ${buttonText}
-                        </button>
-                    </div>`;
-                list.insertAdjacentHTML('beforeend', html);
-            });
-        };
-
-        window.openChallengeValidation = function(id) {
-            const challenge = challenges.find(c => c.id === id);
-            if(challenge.done) return;
-            
-            currentChallengeValidationId = id;
-            document.getElementById('cv-title').innerText = challenge.title;
-            document.getElementById('cv-desc').innerText = challenge.desc;
-            
-            document.getElementById('cv-upload-area').classList.remove('hidden');
-            document.getElementById('cv-preview-area').classList.add('hidden');
-            document.getElementById('cv-result').classList.add('hidden');
-            document.getElementById('cv-image-input').value = '';
-            
-            window.openModal('modal-challenge');
-        };
-
-        window.handleChallengeImage = function(event) {
-            const file = event.target.files[0];
-            if(!file) return;
-
-            const reader = new FileReader();
-            reader.onload = (e) => { 
-                const b64 = e.target.result;
-                document.getElementById('cv-image').src = b64;
-                document.getElementById('cv-upload-area').classList.add('hidden');
-                document.getElementById('cv-preview-area').classList.remove('hidden');
-                document.getElementById('cv-loading').classList.remove('hidden');
-                verifyChallengeWithAI(b64);
-            };
-            reader.readAsDataURL(file);
-        };
-
-        async function verifyChallengeWithAI(base64Image) {
-            const challenge = challenges.find(c => c.id === currentChallengeValidationId);
-            const systemPrompt = `Kamu juri AI SociaLife. Verifikasi foto tantangan: "${challenge.title}". Jawab STATUS: VALID atau STATUS: TIDAK VALID.`;
-            
-            const responseText = await window.fetchGeminiAPI("Periksa foto ini.", base64Image, systemPrompt);
-            document.getElementById('cv-loading').classList.add('hidden');
-            
-            const resultDiv = document.getElementById('cv-result');
-            resultDiv.classList.remove('hidden');
-
-            if(responseText && responseText.includes("VALID") && !responseText.includes("TIDAK")) {
-                resultDiv.className = "p-4 rounded-xl mb-4 text-sm font-bold text-center bg-green-50 text-green-700 border border-green-200 shadow-sm";
-                resultDiv.innerHTML = `<i class="fa-solid fa-circle-check mb-2 text-3xl"></i><br>Validasi Berhasil!`;
-                setTimeout(() => {
-                    const c = challenges.find(x => x.id === currentChallengeValidationId);
-                    c.done = true;
-                    appState.points += c.points;
-                    appState.aksiCount++;
-                    saveState();
-                    window.renderChallenges();
-                    window.closeModal('modal-challenge');
-                    window.showToast(`+${c.points} Poin didapat!`);
-                }, 2500);
-            } else {
-                resultDiv.className = "p-4 rounded-xl mb-4 text-sm font-bold text-center bg-red-50 text-red-700 border border-red-200 shadow-sm";
-                resultDiv.innerHTML = `<i class="fa-solid fa-circle-xmark mb-2 text-3xl"></i><br>Validasi Gagal!`;
-                document.getElementById('cv-upload-area').classList.remove('hidden');
-            }
-        }
-
-        // GLOBAL CHAT
-        window.sendGlobalMessage = async function() {
-            const input = document.getElementById('dm-input');
-            const text = input.value.trim();
-            if(!text) return;
-            
-            input.value = ''; 
-            const newMsg = {
-                text: text,
-                userId: currentUser ? currentUser.uid : 'local_user',
-                authorName: appState.userName,
-                timestamp: Date.now()
-            };
-
-            if (currentUser) {
-                try { await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'global_chat'), newMsg); } 
-                catch(e) { console.error("Error chat", e); }
-            }
-        };
-
-        window.renderGlobalChat = function(messages) {
-            const dmBox = document.getElementById('dm-messages');
-            dmBox.innerHTML = '<div class="flex justify-center mb-4"><span class="text-[10px] text-stone-500 bg-beige-200 px-3 py-1 rounded-full font-semibold">Ruang Obrolan Sedunia</span></div>';
-            
-            messages.forEach(msg => {
-                const isMe = msg.userId === (currentUser ? currentUser.uid : 'local_user');
-                if (isMe) {
-                    dmBox.innerHTML += `<div class="flex justify-end mb-3 fade-in"><div class="bg-brand-500 text-white rounded-2xl rounded-tr-sm py-2 px-3 text-sm max-w-[80%] shadow-sm">${msg.text}</div></div>`;
-                } else {
-                    dmBox.innerHTML += `<div class="flex justify-start mb-3 fade-in"><div class="flex flex-col max-w-[80%]"><span class="text-[10px] text-stone-500 ml-2 mb-0.5 font-bold">${msg.authorName}</span><div class="bg-white border border-beige-100 text-stone-800 rounded-2xl rounded-tl-sm py-2 px-3 text-sm shadow-sm">${msg.text}</div></div></div>`;
-                }
-            });
-            dmBox.scrollTop = dmBox.scrollHeight;
-        };
-
-        // ECOBOT AI
-        window.fetchGeminiAPI = async function(promptText, base64Image = null, customSystemPrompt = null) {
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-            let parts = [{ text: promptText }];
-            if(base64Image) {
-                const mimeMatch = base64Image.match(/data:(.*?);base64,/);
-                if(mimeMatch) parts.push({ inlineData: { mimeType: mimeMatch[1], data: base64Image.split(',')[1] } });
-            }
-
-            const systemPrompt = customSystemPrompt || "Kamu adalah EcoBot, asisten AI ramah dari SociaLife. Bantu hitung gizi makanan atau jadi teman curhat.";
-            const payload = { contents: [{ parts: parts }], systemInstruction: { parts: [{ text: systemPrompt }] } };
-
-            try {
-                const response = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-                const result = await response.json();
-                if (result.candidates) return result.candidates[0].content.parts[0].text.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
-                return "Sistem AI sedang sibuk 🌍";
-            } catch (error) { return "Koneksi terganggu 📡"; }
-        };
-
-        window.sendBotMessage = function() {
-            const input = document.getElementById('bot-input');
-            const text = input.value.trim();
-            if(!text) return;
-            const chatBox = document.getElementById('bot-messages');
-            chatBox.innerHTML += `<div class="flex justify-end mb-4 fade-in"><div class="bg-brand-500 text-white rounded-2xl rounded-tr-sm py-3 px-5 text-sm max-w-[85%] shadow-sm">${text}</div></div>`;
-            chatBox.scrollTop = chatBox.scrollHeight;
-            input.value = '';
-            processBotRequest(text, null);
-        };
-
-        window.handleBotImageUpload = function(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                const chatBox = document.getElementById('bot-messages');
-                chatBox.innerHTML += `<div class="flex justify-end mb-4 fade-in"><div class="bg-brand-500 text-white rounded-2xl rounded-tr-sm p-1.5 max-w-[75%] md:max-w-[50%] shadow-sm overflow-hidden"><img src="${e.target.result}" class="w-full rounded-xl border border-brand-400"></div></div>`;
-                chatBox.scrollTop = chatBox.scrollHeight;
-                processBotRequest("Tolong analisis foto ini. Berapa estimasi gizinya?", e.target.result);
-            };
-            reader.readAsDataURL(file);
-            event.target.value = '';
-        };
-
-        async function processBotRequest(prompt, base64Image) {
-            const chatBox = document.getElementById('bot-messages');
-            const typingId = 'typing-' + Date.now();
-            chatBox.innerHTML += `<div id="${typingId}" class="flex justify-start mb-4 fade-in"><div class="bg-white border border-beige-200 text-brand-500 rounded-2xl rounded-tl-sm py-3 px-5 text-lg shadow-sm flex space-x-1 items-center"><i class="fa-solid fa-robot mr-2 text-sm text-stone-400"></i><span class="animate-bounce">.</span><span class="animate-bounce" style="animation-delay: 0.1s">.</span><span class="animate-bounce" style="animation-delay: 0.2s">.</span></div></div>`;
-            chatBox.scrollTop = chatBox.scrollHeight;
-
-            const aiResponseText = await window.fetchGeminiAPI(prompt, base64Image);
-            document.getElementById(typingId).remove();
-
-            chatBox.innerHTML += `<div class="flex justify-start mb-4 fade-in"><div class="bg-white border border-beige-200 text-stone-800 rounded-2xl rounded-tl-sm py-3 px-5 text-sm max-w-[85%] shadow-sm leading-relaxed">${aiResponseText}</div></div>`;
-            chatBox.scrollTop = chatBox.scrollHeight;
-        }
-
-        // INIT APP
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                currentUser = user;
-                onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'posts'), (s) => {
-                    const ps = []; s.forEach(d => ps.push({id: d.id, ...d.data()}));
-                    ps.sort((a,b) => b.timestamp - a.timestamp);
-                    window.renderPosts(ps);
-                });
-                onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'global_chat'), (s) => {
-                    const messages = []; s.forEach(doc => messages.push({ id: doc.id, ...doc.data() }));
-                    messages.sort((a, b) => a.timestamp - b.timestamp);
-                    window.renderGlobalChat(messages);
-                });
-            }
-        });
-
-        window.onload = () => {
-            signInAnonymously(auth);
-            window.updateStats();
-            window.renderChallenges();
-        };
-
-    </script>
-</body>
-</html>
+            storageBucket: "ecopulse-f
