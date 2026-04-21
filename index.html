@@ -139,13 +139,13 @@
 
             <!-- CHATBOT VIEW (FIXED KEYBOARD COVERING) -->
             <div id="view-chatbot" class="view-section hidden fade-in h-full flex flex-col bg-white md:rounded-2xl md:my-4 md:mx-auto md:max-w-4xl border">
-                <div class="p-4 bg-white border-b flex items-center space-x-4 shadow-sm">
+                <div class="p-4 bg-white border-b flex items-center space-x-4 shadow-sm shrink-0">
                     <div class="w-10 h-10 bg-brand-500 text-white rounded-full flex items-center justify-center"><i class="fa-solid fa-robot"></i></div>
                     <h2 class="font-bold">EcoBot AI</h2>
                 </div>
-                <div class="flex-1 p-4 space-y-4 overflow-y-auto bg-beige-50 pb-32" id="bot-messages"></div>
-                <!-- Input Box adjusted for Mobile Navbar -->
-                <div class="p-4 bg-white border-t flex items-center space-x-2 absolute bottom-16 md:bottom-0 w-full z-30">
+                <div class="flex-1 p-4 space-y-4 overflow-y-auto bg-beige-50" id="bot-messages"></div>
+                <!-- Input Box (Flex Layout, Anti Tertutup Keyboard) -->
+                <div class="p-4 bg-white border-t flex items-center space-x-2 shrink-0">
                     <button onclick="document.getElementById('bot-image-input').click()" class="text-brand-500 p-2"><i class="fa-solid fa-camera"></i></button>
                     <input type="file" id="bot-image-input" accept="image/*" class="hidden" onchange="handleBotImageUpload(event)">
                     <input type="text" id="bot-input" placeholder="Tulis pesan..." class="flex-1 bg-beige-100 rounded-full py-2 px-4 outline-none border-none text-sm" onkeypress="if(event.key === 'Enter') sendBotMessage()">
@@ -168,12 +168,13 @@
 
             <!-- CHAT DETAIL VIEW (FIXED KEYBOARD COVERING) -->
             <div id="view-chat-detail" class="view-section hidden fade-in h-full flex flex-col bg-white md:rounded-2xl md:my-4 md:mx-auto md:max-w-4xl border">
-                <div class="p-4 border-b flex items-center space-x-3 bg-white">
+                <div class="p-4 border-b flex items-center space-x-3 bg-white shrink-0">
                     <button onclick="closeGlobalChat()"><i class="fa-solid fa-arrow-left"></i></button>
                     <h2 class="font-bold">Obrolan Global</h2>
                 </div>
-                <div class="flex-1 p-4 space-y-3 overflow-y-auto bg-beige-50 pb-32" id="dm-messages"></div>
-                <div class="p-4 bg-white border-t flex items-center space-x-2 absolute bottom-16 md:bottom-0 w-full z-30">
+                <div class="flex-1 p-4 space-y-3 overflow-y-auto bg-beige-50" id="dm-messages"></div>
+                <!-- Input Box (Flex Layout) -->
+                <div class="p-4 bg-white border-t flex items-center space-x-2 shrink-0">
                     <input type="text" id="dm-input" placeholder="Kirim pesan..." class="flex-1 bg-beige-100 rounded-full py-2 px-4 outline-none text-sm" onkeypress="if(event.key === 'Enter') sendGlobalMessage()">
                     <button onclick="sendGlobalMessage()" class="bg-brand-600 text-white p-2 w-10 h-10 rounded-full"><i class="fa-solid fa-paper-plane"></i></button>
                 </div>
@@ -263,7 +264,7 @@
         </div>
     </div>
 
-    <!-- Firebase & Logic Module -->
+    <!-- Firebase & Logic Module (DIPERBAIKI SECARA PENUH) -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
@@ -284,8 +285,20 @@
         const appId = 'socialife-global';
         let firebaseApp, auth, db, currentUser = null;
 
-        // Persist Pet State (Lokal)
-        let petData = JSON.parse(localStorage.getItem('petData')) || { points: 450, exp: 30, level: 1, aksiCount: 24 };
+        // Persistensi Data (Anti-Reset) menggunakan LocalStorage
+        let appState = JSON.parse(localStorage.getItem('socialife_state')) || { 
+            points: 450, 
+            exp: 30, 
+            level: 1, 
+            aksiCount: 24,
+            userName: "Pejuang Bumi 🌍",
+            userBio: "Mencintai bumi satu langkah kecil setiap harinya."
+        };
+
+        const saveState = () => {
+            localStorage.setItem('socialife_state', JSON.stringify(appState));
+            window.updateStats();
+        };
 
         try {
             firebaseApp = initializeApp(myFirebaseConfig);
@@ -298,34 +311,37 @@
             { id: 8, title: "Tanam Tanaman Baru", points: 100, desc: "Tanam bibit pohon hari ini.", done: false, icon: "fa-seedling" }
         ];
 
-        // SINKRONISASI PET & STATS
+        // SINKRONISASI UI PROFIL & PET
         window.updateStats = () => {
-            document.getElementById('pet-points').innerText = petData.points;
-            document.getElementById('profile-challenges-done').innerText = petData.aksiCount;
-            document.getElementById('exp-text').innerText = petData.exp;
-            document.getElementById('pet-progress').style.width = petData.exp + '%';
-            document.getElementById('pet-level-float').innerText = petData.level;
+            document.getElementById('pet-points').innerText = appState.points;
+            document.getElementById('profile-challenges-done').innerText = appState.aksiCount;
+            document.getElementById('exp-text').innerText = appState.exp;
+            document.getElementById('pet-progress').style.width = appState.exp + '%';
+            document.getElementById('pet-level-float').innerText = appState.level;
             
             const petIcons = ["🌱", "🌿", "🌳", "🌲", "🍀"];
-            const idx = Math.min(petData.level - 1, petIcons.length - 1);
+            const idx = Math.min(appState.level - 1, petIcons.length - 1);
             document.getElementById('pet-icon-modal').innerText = petIcons[idx];
             document.getElementById('floating-pet-icon').innerText = petIcons[idx];
-            document.getElementById('pet-status').innerText = "LEVEL " + petData.level;
-            
-            localStorage.setItem('petData', JSON.stringify(petData));
+            document.getElementById('pet-status').innerText = "LEVEL " + appState.level;
+
+            document.getElementById('profile-name-display').innerText = appState.userName;
+            document.getElementById('profile-bio-display').innerText = appState.userBio;
+            document.getElementById('edit-profile-name').value = appState.userName;
+            document.getElementById('edit-profile-bio').value = appState.userBio;
         };
 
         window.feedPet = () => {
-            if(petData.points >= 50) {
-                petData.points -= 50;
-                petData.exp += 40;
-                if(petData.exp >= 100) { petData.exp -= 100; petData.level++; window.showToast("🌟 LEVEL UP!"); }
+            if(appState.points >= 50) {
+                appState.points -= 50;
+                appState.exp += 40;
+                if(appState.exp >= 100) { appState.exp -= 100; appState.level++; window.showToast("🌟 LEVEL UP!"); }
                 else { window.showToast("💧 Segarrr!"); }
-                window.updateStats();
+                saveState();
             } else window.showToast("❌ Poin kurang!");
         };
 
-        // RENDER POSTS & PROFILE GRID
+        // RENDER POSTS & SINKRONISASI KE PROFIL GRID
         window.renderPosts = (posts) => {
             const container = document.getElementById('feed-container');
             const grid = document.getElementById('profile-grid-content');
@@ -334,7 +350,6 @@
             
             let userPostCount = 0;
             posts.forEach(p => {
-                // Post Card
                 const html = `<div class="bg-white p-5 mb-4 shadow-sm rounded-2xl border border-beige-100 fade-in">
                     <div class="flex items-center space-x-3 mb-4">
                         <img src="${p.authorAvatar}" class="w-10 h-10 rounded-full">
@@ -349,24 +364,24 @@
                 </div>`;
                 container.insertAdjacentHTML('beforeend', html);
 
-                // Sinkron ke Profile Grid (Hanya yang dikirim user saat ini / dummy author "Anda")
-                if(p.authorName.includes("Anda") || p.authorName.includes(petData.name || "Pejuang")) {
+                // Jika nama pembuat sama dengan nama di Profil, sinkronkan gambar ke Tab Profil
+                if(p.authorName === appState.userName) {
+                    userPostCount++;
                     if(p.image) {
-                        grid.insertAdjacentHTML('beforeend', `<div class="aspect-square border bg-stone-100"><img src="${p.image}" class="w-full h-full object-cover"></div>`);
-                        userPostCount++;
+                        grid.insertAdjacentHTML('beforeend', `<div class="aspect-square border border-white cursor-pointer bg-stone-100"><img src="${p.image}" class="w-full h-full object-cover"></div>`);
                     }
                 }
             });
             document.getElementById('profile-post-count').innerText = userPostCount;
         };
 
-        // SUBMIT POST (TANPA BOT KOMEN)
+        // SUBMIT POST
         let currentPostImageBase64 = null;
         window.submitPost = async () => {
             const text = document.getElementById('new-post-text').value;
             if(!text.trim() && !currentPostImageBase64) return;
             const newPost = {
-                authorName: document.getElementById('profile-name-display').innerText,
+                authorName: appState.userName,
                 authorAvatar: 'https://ui-avatars.com/api/?name=Anda&background=ff7a59&color=fff',
                 text, image: currentPostImageBase64, timestamp: Date.now(), likes: 0, comments: 0
             };
@@ -377,13 +392,20 @@
             window.showToast("🎉 Berhasil posting!");
         };
 
-        // UTILS
+        // UTILS KAMERA
         window.handleRealPostImageUpload = (e) => {
+            const file = e.target.files[0]; if(!file) return;
             const r = new FileReader();
-            r.onload = (ev) => { currentPostImageBase64 = ev.target.result; document.getElementById('real-post-preview-img').src = ev.target.result; document.getElementById('post-image-preview').classList.remove('hidden'); };
-            r.readAsDataURL(e.target.files[0]);
+            r.onload = (ev) => { 
+                currentPostImageBase64 = ev.target.result; 
+                document.getElementById('real-post-preview-img').src = ev.target.result; 
+                document.getElementById('post-image-preview').classList.remove('hidden'); 
+            };
+            r.readAsDataURL(file);
         };
         window.removePostImage = () => { currentPostImageBase64 = null; document.getElementById('post-image-preview').classList.add('hidden'); };
+        
+        // UTILS MODAL & TAB
         window.showToast = (m) => { const t = document.getElementById("toast"); t.innerText = m; t.className = "toast show"; setTimeout(() => t.className = "toast", 3000); };
         window.openModal = (id) => { document.getElementById(id).classList.remove('hidden'); setTimeout(() => document.getElementById(id + '-content').classList.remove('translate-y-full', 'scale-95'), 10); };
         window.closeModal = (id) => { document.getElementById(id + '-content').classList.add('translate-y-full', 'scale-95'); setTimeout(() => document.getElementById(id).classList.add('hidden'), 300); };
@@ -396,14 +418,213 @@
         };
         window.closeModalPet = () => window.closeModal('modal-pet');
 
-        // FIREBASE CONNECT
-        onAuthStateChanged(auth, (u) => {
-            if (u) {
-                currentUser = u;
+        window.openGlobalChat = () => { document.querySelectorAll('.view-section').forEach(v => v.classList.add('hidden')); document.getElementById('view-chat-detail').classList.remove('hidden'); };
+        window.closeGlobalChat = () => { document.querySelectorAll('.view-section').forEach(v => v.classList.add('hidden')); document.getElementById('view-messages').classList.remove('hidden'); };
+
+        window.saveProfile = () => { 
+            appState.userName = document.getElementById('edit-profile-name').value;
+            appState.userBio = document.getElementById('edit-profile-bio').value;
+            saveState();
+            window.closeModal('modal-edit-profile');
+            window.showToast("Profil berhasil diperbarui!");
+        };
+
+        // CHALLENGE & AI VALIDATION
+        let currentChallengeValidationId = null;
+        window.renderChallenges = function() {
+            const list = document.getElementById('challenge-list');
+            list.innerHTML = '';
+            challenges.forEach(c => {
+                const buttonClass = c.done ? "bg-beige-100 text-stone-400 cursor-not-allowed" : "bg-white text-brand-600 border-2 border-brand-500 hover:bg-brand-50 shadow-sm hover:shadow";
+                const buttonText = c.done ? '<i class="fa-solid fa-check mr-1"></i> Selesai' : 'Selesaikan';
+                const html = `
+                    <div class="bg-white p-4 rounded-xl border border-beige-100 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between border-l-4 border-l-brand-500 transition hover:shadow-md">
+                        <div class="flex items-center space-x-4 mb-3 sm:mb-0">
+                            <div class="bg-brand-50 text-brand-600 w-12 h-12 rounded-full flex items-center justify-center shrink-0">
+                                <i class="fa-solid ${c.icon} text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-stone-800">${c.title}</h3>
+                                <p class="text-sm text-stone-500 mt-0.5">${c.desc}</p>
+                                <p class="text-xs font-bold text-orange-500 mt-1 bg-orange-50 inline-block px-2 py-0.5 rounded-md">+${c.points} Poin</p>
+                            </div>
+                        </div>
+                        <button onclick="openChallengeValidation(${c.id})" class="w-full sm:w-auto px-5 py-2.5 rounded-full text-sm font-bold transition ${buttonClass}" ${c.done ? 'disabled' : ''}>
+                            ${buttonText}
+                        </button>
+                    </div>`;
+                list.insertAdjacentHTML('beforeend', html);
+            });
+        };
+
+        window.openChallengeValidation = function(id) {
+            const challenge = challenges.find(c => c.id === id);
+            if(challenge.done) return;
+            
+            currentChallengeValidationId = id;
+            document.getElementById('cv-title').innerText = challenge.title;
+            document.getElementById('cv-desc').innerText = challenge.desc;
+            
+            document.getElementById('cv-upload-area').classList.remove('hidden');
+            document.getElementById('cv-preview-area').classList.add('hidden');
+            document.getElementById('cv-result').classList.add('hidden');
+            document.getElementById('cv-image-input').value = '';
+            
+            window.openModal('modal-challenge');
+        };
+
+        window.handleChallengeImage = function(event) {
+            const file = event.target.files[0];
+            if(!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (e) => { 
+                const b64 = e.target.result;
+                document.getElementById('cv-image').src = b64;
+                document.getElementById('cv-upload-area').classList.add('hidden');
+                document.getElementById('cv-preview-area').classList.remove('hidden');
+                document.getElementById('cv-loading').classList.remove('hidden');
+                verifyChallengeWithAI(b64);
+            };
+            reader.readAsDataURL(file);
+        };
+
+        async function verifyChallengeWithAI(base64Image) {
+            const challenge = challenges.find(c => c.id === currentChallengeValidationId);
+            const systemPrompt = `Kamu juri AI SociaLife. Verifikasi foto tantangan: "${challenge.title}". Jawab STATUS: VALID atau STATUS: TIDAK VALID.`;
+            
+            const responseText = await window.fetchGeminiAPI("Periksa foto ini.", base64Image, systemPrompt);
+            document.getElementById('cv-loading').classList.add('hidden');
+            
+            const resultDiv = document.getElementById('cv-result');
+            resultDiv.classList.remove('hidden');
+
+            if(responseText && responseText.includes("VALID") && !responseText.includes("TIDAK")) {
+                resultDiv.className = "p-4 rounded-xl mb-4 text-sm font-bold text-center bg-green-50 text-green-700 border border-green-200 shadow-sm";
+                resultDiv.innerHTML = `<i class="fa-solid fa-circle-check mb-2 text-3xl"></i><br>Validasi Berhasil!`;
+                setTimeout(() => {
+                    const c = challenges.find(x => x.id === currentChallengeValidationId);
+                    c.done = true;
+                    appState.points += c.points;
+                    appState.aksiCount++;
+                    saveState();
+                    window.renderChallenges();
+                    window.closeModal('modal-challenge');
+                    window.showToast(`+${c.points} Poin didapat!`);
+                }, 2500);
+            } else {
+                resultDiv.className = "p-4 rounded-xl mb-4 text-sm font-bold text-center bg-red-50 text-red-700 border border-red-200 shadow-sm";
+                resultDiv.innerHTML = `<i class="fa-solid fa-circle-xmark mb-2 text-3xl"></i><br>Validasi Gagal!`;
+                document.getElementById('cv-upload-area').classList.remove('hidden');
+            }
+        }
+
+        // GLOBAL CHAT
+        window.sendGlobalMessage = async function() {
+            const input = document.getElementById('dm-input');
+            const text = input.value.trim();
+            if(!text) return;
+            
+            input.value = ''; 
+            const newMsg = {
+                text: text,
+                userId: currentUser ? currentUser.uid : 'local_user',
+                authorName: appState.userName,
+                timestamp: Date.now()
+            };
+
+            if (currentUser) {
+                try { await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'global_chat'), newMsg); } 
+                catch(e) { console.error("Error chat", e); }
+            }
+        };
+
+        window.renderGlobalChat = function(messages) {
+            const dmBox = document.getElementById('dm-messages');
+            dmBox.innerHTML = '<div class="flex justify-center mb-4"><span class="text-[10px] text-stone-500 bg-beige-200 px-3 py-1 rounded-full font-semibold">Ruang Obrolan Sedunia</span></div>';
+            
+            messages.forEach(msg => {
+                const isMe = msg.userId === (currentUser ? currentUser.uid : 'local_user');
+                if (isMe) {
+                    dmBox.innerHTML += `<div class="flex justify-end mb-3 fade-in"><div class="bg-brand-500 text-white rounded-2xl rounded-tr-sm py-2 px-3 text-sm max-w-[80%] shadow-sm">${msg.text}</div></div>`;
+                } else {
+                    dmBox.innerHTML += `<div class="flex justify-start mb-3 fade-in"><div class="flex flex-col max-w-[80%]"><span class="text-[10px] text-stone-500 ml-2 mb-0.5 font-bold">${msg.authorName}</span><div class="bg-white border border-beige-100 text-stone-800 rounded-2xl rounded-tl-sm py-2 px-3 text-sm shadow-sm">${msg.text}</div></div></div>`;
+                }
+            });
+            dmBox.scrollTop = dmBox.scrollHeight;
+        };
+
+        // ECOBOT AI
+        window.fetchGeminiAPI = async function(promptText, base64Image = null, customSystemPrompt = null) {
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+            let parts = [{ text: promptText }];
+            if(base64Image) {
+                const mimeMatch = base64Image.match(/data:(.*?);base64,/);
+                if(mimeMatch) parts.push({ inlineData: { mimeType: mimeMatch[1], data: base64Image.split(',')[1] } });
+            }
+
+            const systemPrompt = customSystemPrompt || "Kamu adalah EcoBot, asisten AI ramah dari SociaLife. Bantu hitung gizi makanan atau jadi teman curhat.";
+            const payload = { contents: [{ parts: parts }], systemInstruction: { parts: [{ text: systemPrompt }] } };
+
+            try {
+                const response = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                const result = await response.json();
+                if (result.candidates) return result.candidates[0].content.parts[0].text.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
+                return "Sistem AI sedang sibuk 🌍";
+            } catch (error) { return "Koneksi terganggu 📡"; }
+        };
+
+        window.sendBotMessage = function() {
+            const input = document.getElementById('bot-input');
+            const text = input.value.trim();
+            if(!text) return;
+            const chatBox = document.getElementById('bot-messages');
+            chatBox.innerHTML += `<div class="flex justify-end mb-4 fade-in"><div class="bg-brand-500 text-white rounded-2xl rounded-tr-sm py-3 px-5 text-sm max-w-[85%] shadow-sm">${text}</div></div>`;
+            chatBox.scrollTop = chatBox.scrollHeight;
+            input.value = '';
+            processBotRequest(text, null);
+        };
+
+        window.handleBotImageUpload = function(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const chatBox = document.getElementById('bot-messages');
+                chatBox.innerHTML += `<div class="flex justify-end mb-4 fade-in"><div class="bg-brand-500 text-white rounded-2xl rounded-tr-sm p-1.5 max-w-[75%] md:max-w-[50%] shadow-sm overflow-hidden"><img src="${e.target.result}" class="w-full rounded-xl border border-brand-400"></div></div>`;
+                chatBox.scrollTop = chatBox.scrollHeight;
+                processBotRequest("Tolong analisis foto ini. Berapa estimasi gizinya?", e.target.result);
+            };
+            reader.readAsDataURL(file);
+            event.target.value = '';
+        };
+
+        async function processBotRequest(prompt, base64Image) {
+            const chatBox = document.getElementById('bot-messages');
+            const typingId = 'typing-' + Date.now();
+            chatBox.innerHTML += `<div id="${typingId}" class="flex justify-start mb-4 fade-in"><div class="bg-white border border-beige-200 text-brand-500 rounded-2xl rounded-tl-sm py-3 px-5 text-lg shadow-sm flex space-x-1 items-center"><i class="fa-solid fa-robot mr-2 text-sm text-stone-400"></i><span class="animate-bounce">.</span><span class="animate-bounce" style="animation-delay: 0.1s">.</span><span class="animate-bounce" style="animation-delay: 0.2s">.</span></div></div>`;
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            const aiResponseText = await window.fetchGeminiAPI(prompt, base64Image);
+            document.getElementById(typingId).remove();
+
+            chatBox.innerHTML += `<div class="flex justify-start mb-4 fade-in"><div class="bg-white border border-beige-200 text-stone-800 rounded-2xl rounded-tl-sm py-3 px-5 text-sm max-w-[85%] shadow-sm leading-relaxed">${aiResponseText}</div></div>`;
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        // INIT APP
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                currentUser = user;
                 onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'posts'), (s) => {
                     const ps = []; s.forEach(d => ps.push({id: d.id, ...d.data()}));
                     ps.sort((a,b) => b.timestamp - a.timestamp);
                     window.renderPosts(ps);
+                });
+                onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'global_chat'), (s) => {
+                    const messages = []; s.forEach(doc => messages.push({ id: doc.id, ...doc.data() }));
+                    messages.sort((a, b) => a.timestamp - b.timestamp);
+                    window.renderGlobalChat(messages);
                 });
             }
         });
@@ -411,16 +632,9 @@
         window.onload = () => {
             signInAnonymously(auth);
             window.updateStats();
+            window.renderChallenges();
         };
 
-        // Export for HTML
-        window.openGlobalChat = () => { document.querySelectorAll('.view-section').forEach(v => v.classList.add('hidden')); document.getElementById('view-chat-detail').classList.remove('hidden'); };
-        window.closeGlobalChat = () => { document.querySelectorAll('.view-section').forEach(v => v.classList.add('hidden')); document.getElementById('view-messages').classList.remove('hidden'); };
-        window.saveProfile = () => { 
-            document.getElementById('profile-name-display').innerText = document.getElementById('edit-profile-name').value;
-            document.getElementById('profile-bio-display').innerText = document.getElementById('edit-profile-bio').value;
-            window.closeModal('modal-edit-profile');
-        };
     </script>
 </body>
 </html>
