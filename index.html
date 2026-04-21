@@ -14,7 +14,7 @@
                     fontFamily: { sans: ['Inter', 'sans-serif'] },
                     colors: {
                         brand: { 
-                            50: '#fff0e8',   100: '#ffe0d1',  300: '#ffb394', 
+                       SE     50: '#fff0e8',   100: '#ffe0d1',  300: '#ffb394', 
                             400: '#ff946b',  500: '#ff7a59',  600: '#e56243',  700: '#cc5235'
                         },
                         beige: {
@@ -357,9 +357,10 @@
                     </div>
                     <p class="text-sm mb-4">${p.text}</p>
                     ${p.image ? `<img src="${p.image}" class="w-full rounded-xl mb-4">` : ''}
-                    <div class="flex space-x-4 text-stone-400 border-t pt-3">
-                        <button onclick="toggleLike(this)"><i class="fa-regular fa-heart"></i> ${p.likes || 0}</button>
-                        <button onclick="openCommentModal(this)"><i class="fa-regular fa-comment"></i> ${p.comments || 0}</button>
+                    <div class="flex space-x-6 text-stone-400 border-t border-beige-100 pt-3">
+                        <button onclick="toggleLike('${p.id}', this)" class="flex items-center space-x-2 transition hover:text-red-500"><i class="fa-regular fa-heart text-lg"></i> <span class="font-bold text-xs">${p.likes || 0}</span></button>
+                        <button onclick="openCommentModal('${p.id}', this)" class="flex items-center space-x-2 transition hover:text-brand-500"><i class="fa-regular fa-comment text-lg"></i> <span class="font-bold text-xs">${p.comments || 0}</span></button>
+                        <button onclick="shareAction('Postingan')" class="flex items-center space-x-2 transition hover:text-brand-500"><i class="fa-solid fa-share-nodes text-lg"></i></button>
                     </div>
                 </div>`;
                 container.insertAdjacentHTML('beforeend', html);
@@ -373,6 +374,99 @@
                 }
             });
             document.getElementById('profile-post-count').innerText = userPostCount;
+        };
+
+        // FITUR INTERAKSI POSTINGAN (LIKE, COMMENT, SHARE, FOLLOW)
+        window.toggleLike = async (postId, btn) => {
+            const icon = btn.querySelector('i');
+            const countSpan = btn.querySelector('span');
+            let currentLikes = parseInt(countSpan.innerText) || 0;
+            
+            if(icon.classList.contains('fa-regular')) {
+                icon.classList.replace('fa-regular', 'fa-solid');
+                icon.classList.add('text-red-500', 'like-animation');
+                btn.classList.add('text-red-500');
+                currentLikes++;
+            } else {
+                icon.classList.replace('fa-solid', 'fa-regular');
+                icon.classList.remove('text-red-500', 'like-animation');
+                btn.classList.remove('text-red-500');
+                currentLikes--;
+            }
+            countSpan.innerText = currentLikes;
+            setTimeout(() => icon.classList.remove('like-animation'), 300);
+
+            if (currentUser && postId && !postId.startsWith('local')) {
+                try {
+                    const postRef = doc(db, 'artifacts', appId, 'public', 'data', 'posts', postId);
+                    await updateDoc(postRef, { likes: currentLikes });
+                } catch (e) { console.error("Error like:", e); }
+            }
+        };
+
+        let currentCommentPostId = null;
+        let currentCommentBtn = null;
+
+        window.openCommentModal = (postId, btn) => {
+            currentCommentPostId = postId;
+            currentCommentBtn = btn;
+            document.getElementById('new-comment-text').value = '';
+            window.openModal('modal-comment');
+        };
+
+        window.submitComment = async () => {
+            const input = document.getElementById('new-comment-text');
+            const text = input.value.trim();
+            if(!text) return;
+            
+            let newCommentCount = 1;
+            if(currentCommentBtn) {
+                const countSpan = currentCommentBtn.querySelector('span');
+                newCommentCount = (parseInt(countSpan.innerText) || 0) + 1;
+                countSpan.innerText = newCommentCount;
+            }
+            
+            input.value = '';
+            window.closeModal('modal-comment');
+            window.showToast("Komentar berhasil ditambahkan!");
+
+            if (currentUser && currentCommentPostId && !currentCommentPostId.startsWith('local')) {
+                try {
+                    const postRef = doc(db, 'artifacts', appId, 'public', 'data', 'posts', currentCommentPostId);
+                    await updateDoc(postRef, { comments: newCommentCount });
+                } catch (e) { console.error("Error comment:", e); }
+            }
+        };
+
+        window.shareAction = (type) => {
+            const dummy = document.createElement('input');
+            document.body.appendChild(dummy);
+            dummy.value = "https://socialife.app/share/" + Date.now();
+            dummy.select();
+            document.execCommand('copy');
+            document.body.removeChild(dummy);
+            window.showToast(`Tautan ${type} berhasil disalin! 🔗`);
+        };
+
+        window.toggleFollow = (btn) => {
+            const icon = btn.querySelector('i');
+            const countDisplay = document.getElementById('profile-followers-count');
+            let followers = parseInt(countDisplay.innerText);
+
+            if(icon.classList.contains('fa-user-plus')) {
+                icon.classList.replace('fa-user-plus', 'fa-user-check');
+                btn.classList.replace('bg-brand-500', 'bg-beige-100');
+                btn.classList.replace('text-white', 'text-stone-900');
+                btn.classList.replace('hover:bg-brand-600', 'hover:bg-beige-200');
+                countDisplay.innerText = followers + 1;
+                window.showToast("Berhasil mengikuti pengguna ini!");
+            } else {
+                icon.classList.replace('fa-user-check', 'fa-user-plus');
+                btn.classList.replace('bg-beige-100', 'bg-brand-500');
+                btn.classList.replace('text-stone-900', 'text-white');
+                btn.classList.replace('hover:bg-beige-200', 'hover:bg-brand-600');
+                countDisplay.innerText = followers - 1;
+            }
         };
 
         // SUBMIT POST
