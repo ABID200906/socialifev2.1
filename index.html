@@ -116,17 +116,17 @@
             
             <!-- FEED VIEW -->
             <div id="view-feed" class="view-section fade-in max-w-2xl mx-auto pt-4 md:pt-6 px-4 pb-6">
-                <div class="bg-brand-100 border border-brand-300 p-3 mb-4 rounded-xl flex items-center eco-news-glow shrink-0">
-                    <span class="bg-brand-500 text-white text-[10px] font-bold px-2 py-1 rounded-md mr-3 uppercase tracking-wider shrink-0">Eco-News</span>
+                <div class="bg-brand-100 border border-brand-300 p-3 mb-6 rounded-full flex items-center eco-news-glow shrink-0">
+                    <span class="bg-brand-500 text-white text-[10px] font-bold px-3 py-1.5 rounded-full mr-3 uppercase tracking-wider shrink-0 shadow-sm">Eco-News</span>
                     <marquee class="text-xs font-medium text-brand-700" id="eco-news-ticker">Memuat berita lingkungan terbaru...</marquee>
                 </div>
 
-                <div class="bg-white p-5 mb-4 flex items-center space-x-4 shadow-sm md:rounded-2xl border border-beige-100 shrink-0">
-                    <img id="feed-input-avatar" src="https://ui-avatars.com/api/?name=Anda&background=ff7a59&color=fff" alt="User" class="w-11 h-11 rounded-full shadow-sm">
-                    <div class="flex-1 bg-beige-100 rounded-full py-2.5 px-4 text-sm text-stone-500 cursor-pointer hover:bg-beige-200 transition" onclick="openModal('modal-post')">
+                <div class="bg-white p-5 mb-8 flex items-center space-x-4 shadow-sm md:rounded-[2rem] rounded-[1.5rem] border border-beige-100 shrink-0">
+                    <img id="feed-input-avatar" src="https://ui-avatars.com/api/?name=Anda&background=ff7a59&color=fff" alt="User" class="w-12 h-12 rounded-full shadow-sm">
+                    <div class="flex-1 bg-beige-50 rounded-full py-3 px-5 text-sm text-stone-500 cursor-pointer hover:bg-beige-100 transition border border-beige-100" onclick="openModal('modal-post')">
                         Bagikan aksi lingkunganmu hari ini...
                     </div>
-                    <button class="text-brand-500 hover:text-brand-600 transition p-2 bg-brand-50 rounded-full" onclick="openModal('modal-post')"><i class="fa-solid fa-camera"></i></button>
+                    <button class="text-brand-500 hover:text-white hover:bg-brand-500 transition p-3 bg-brand-50 rounded-full w-12 h-12 flex items-center justify-center shadow-sm" onclick="openModal('modal-post')"><i class="fa-solid fa-camera"></i></button>
                 </div>
 
                 <div id="feed-container"></div>
@@ -134,73 +134,78 @@
 
             <!-- CHALLENGES VIEW -->
             <div id="view-challenges" class="view-section hidden fade-in max-w-2xl mx-auto pt-4 md:pt-6 px-4 pb-6">
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-beige-100 mb-6">
-                    <h2 class="text-2xl font-bold mb-1 text-stone-800">Tantangan Hari Ini</h2>
+                <div class="bg-white p-6 md:p-8 rounded-[2rem] shadow-sm border border-beige-100 mb-6">
+                    <h2 class="text-2xl font-bold mb-2 text-stone-800">Tantangan Hari Ini</h2>
                     <p class="text-sm text-stone-500 mb-6">Selesaikan aksi untuk mengumpulkan poin!</p>
-                    <div class="space-y-4" id="challenge-list"></div>
+                    <div class="space-y-5" id="challenge-list"></div>
                 </div>
             </div>
 
             <!-- CHATBOT VIEW -->
-            <div id="view-chatbot" class="view-section hidden fade-in h-full flex flex-col bg-white md:rounded-2xl md:my-4 md:mx-auto md:max-w-4xl border overflow-hidden">
-                <div class="p-4 bg-white border-b flex items-center space-x-4 shadow-sm shrink-0">
-                    <div class="w-10 h-10 bg-brand-500 text-white rounded-full flex items-center justify-center"><i class="fa-solid fa-robot"></i></div>
-                    <h2 class="font-bold">EcoBot AI</h2>
+            <div id="view-chatbot" class="view-section hidden fade-in h-full flex flex-col bg-white md:rounded-[2rem] md:my-4 md:mx-auto md:max-w-4xl border overflow-hidden shadow-sm">
+                <div class="p-5 bg-white border-b border-beige-100 flex items-center space-x-4 shadow-sm shrink-0 rounded-t-[2rem]">
+                    <div class="w-12 h-12 bg-gradient-to-tr from-brand-500 to-brand-400 text-white rounded-full flex items-center justify-center shadow-sm"><i class="fa-solid fa-robot text-xl"></i></div>
+                    <div>
+                        <h2 class="font-bold text-stone-800 text-lg">EcoBot AI</h2>
+                        <p class="text-[10px] text-green-500 font-semibold"><i class="fa-solid fa-circle text-[6px] mr-1 animate-pulse"></i>Online</p>
+                    </div>
                 </div>
-                <div class="flex-1 p-4 space-y-4 overflow-y-auto bg-beige-50" id="bot-messages"></div>
-                <div class="p-4 bg-white border-t flex items-center space-x-2 shrink-0">
-                    <button onclick="document.getElementById('bot-image-input').click()" class="text-brand-500 p-2"><i class="fa-solid fa-camera text-xl"></i></button>
+                <div class="flex-1 p-5 space-y-4 overflow-y-auto bg-beige-50" id="bot-messages"></div>
+                <div class="p-4 bg-white border-t border-beige-100 flex items-center space-x-3 shrink-0 rounded-b-[2rem]">
+                    <button onclick="document.getElementById('bot-image-input').click()" class="text-brand-500 hover:bg-brand-50 transition p-3 rounded-full w-12 h-12 flex items-center justify-center"><i class="fa-solid fa-camera text-xl"></i></button>
                     <input type="file" id="bot-image-input" accept="image/*" class="hidden" onchange="handleBotImageUpload(event)">
-                    <input type="text" id="bot-input" placeholder="Tulis pesan..." class="flex-1 bg-beige-100 rounded-full py-2.5 px-4 outline-none border-none text-sm" onkeypress="if(event.key === 'Enter') sendBotMessage()">
-                    <button onclick="sendBotMessage()" class="bg-brand-500 text-white p-2 w-10 h-10 rounded-full flex items-center justify-center"><i class="fa-solid fa-paper-plane"></i></button>
+                    <input type="text" id="bot-input" placeholder="Tulis pesan..." class="flex-1 bg-beige-100 rounded-full py-3 px-5 outline-none border-none text-sm focus:ring-2 focus:ring-brand-300 transition" onkeypress="if(event.key === 'Enter') sendBotMessage()">
+                    <button onclick="sendBotMessage()" class="bg-brand-500 text-white hover:bg-brand-600 transition p-3 w-12 h-12 rounded-full flex items-center justify-center shadow-md active:scale-95"><i class="fa-solid fa-paper-plane"></i></button>
                 </div>
             </div>
 
             <!-- MESSAGES VIEW -->
             <div id="view-messages" class="view-section hidden fade-in max-w-2xl mx-auto pt-4 px-4 pb-6">
-                <div class="bg-white rounded-2xl shadow-sm p-4 cursor-pointer hover:bg-brand-50 transition" onclick="openGlobalChat()">
-                    <div class="flex items-center space-x-4">
-                        <div class="w-12 h-12 bg-brand-500 text-white rounded-full flex items-center justify-center text-xl shadow-sm"><i class="fa-solid fa-earth-asia"></i></div>
+                <div class="bg-white rounded-[2rem] shadow-sm p-5 border border-beige-100 cursor-pointer hover:bg-brand-50 transition" onclick="openGlobalChat()">
+                    <div class="flex items-center space-x-5">
+                        <div class="w-14 h-14 bg-gradient-to-tr from-brand-500 to-brand-400 text-white rounded-full flex items-center justify-center text-2xl shadow-sm"><i class="fa-solid fa-earth-asia"></i></div>
                         <div class="flex-1">
-                            <h3 class="font-bold text-stone-800">Obrolan Lingkungan Global</h3>
-                            <p class="text-xs text-stone-500">Klik untuk bergabung bersama komunitas...</p>
+                            <h3 class="font-bold text-stone-800 text-lg">Obrolan Lingkungan Global</h3>
+                            <p class="text-xs text-stone-500 mt-1">Klik untuk bergabung bersama komunitas...</p>
                         </div>
+                        <i class="fa-solid fa-chevron-right text-stone-300"></i>
                     </div>
                 </div>
             </div>
 
             <!-- CHAT DETAIL VIEW -->
-            <div id="view-chat-detail" class="view-section hidden fade-in h-full flex flex-col bg-white md:rounded-2xl md:my-4 md:mx-auto md:max-w-4xl border overflow-hidden">
-                <div class="p-4 border-b flex items-center space-x-3 bg-white shrink-0 shadow-sm">
-                    <button onclick="closeGlobalChat()" class="text-stone-500 hover:text-brand-600 p-2"><i class="fa-solid fa-arrow-left text-lg"></i></button>
-                    <h2 class="font-bold text-stone-800">Obrolan Global</h2>
+            <div id="view-chat-detail" class="view-section hidden fade-in h-full flex flex-col bg-white md:rounded-[2rem] md:my-4 md:mx-auto md:max-w-4xl border overflow-hidden shadow-sm">
+                <div class="p-5 border-b border-beige-100 flex items-center space-x-4 bg-white shrink-0 shadow-sm rounded-t-[2rem]">
+                    <button onclick="closeGlobalChat()" class="text-stone-500 hover:text-brand-600 p-2 rounded-full hover:bg-beige-50 transition w-10 h-10 flex items-center justify-center"><i class="fa-solid fa-arrow-left text-lg"></i></button>
+                    <div class="w-10 h-10 bg-brand-500 text-white rounded-full flex items-center justify-center shadow-sm"><i class="fa-solid fa-earth-asia"></i></div>
+                    <h2 class="font-bold text-stone-800 text-lg">Obrolan Global</h2>
                 </div>
-                <div class="flex-1 p-4 space-y-3 overflow-y-auto bg-beige-50" id="dm-messages"></div>
-                <div class="p-4 bg-white border-t flex items-center space-x-2 shrink-0">
-                    <input type="text" id="dm-input" placeholder="Kirim pesan ke komunitas..." class="flex-1 bg-beige-100 rounded-full py-2.5 px-4 outline-none text-sm" onkeypress="if(event.key === 'Enter') sendGlobalMessage()">
-                    <button onclick="sendGlobalMessage()" class="bg-brand-600 text-white p-2 w-10 h-10 rounded-full"><i class="fa-solid fa-paper-plane"></i></button>
+                <div class="flex-1 p-5 space-y-4 overflow-y-auto bg-beige-50" id="dm-messages"></div>
+                <div class="p-4 bg-white border-t border-beige-100 flex items-center space-x-3 shrink-0 rounded-b-[2rem]">
+                    <input type="text" id="dm-input" placeholder="Kirim pesan ke komunitas..." class="flex-1 bg-beige-100 rounded-full py-3 px-5 outline-none text-sm focus:ring-2 focus:ring-brand-300 transition" onkeypress="if(event.key === 'Enter') sendGlobalMessage()">
+                    <button onclick="sendGlobalMessage()" class="bg-brand-600 hover:bg-brand-700 transition text-white p-3 w-12 h-12 rounded-full flex items-center justify-center shadow-md active:scale-95"><i class="fa-solid fa-paper-plane"></i></button>
                 </div>
             </div>
 
             <!-- PROFILE VIEW -->
             <div id="view-profile" class="view-section hidden fade-in max-w-2xl mx-auto pt-4 px-4 pb-6">
-                <div class="bg-white rounded-2xl p-6 shadow-sm mb-4">
-                    <div class="flex items-center space-x-4 mb-6">
-                        <div class="flex items-center justify-center w-20 h-20 rounded-full border-4 border-brand-100 shadow-sm overflow-hidden shrink-0">
+                <div class="bg-white rounded-[2.5rem] p-6 md:p-8 shadow-sm border border-beige-100 mb-8">
+                    <div class="flex items-center space-x-6 mb-8">
+                        <div class="flex items-center justify-center w-24 h-24 rounded-full border-4 border-brand-100 shadow-md overflow-hidden shrink-0">
                             <img id="main-profile-avatar" src="https://ui-avatars.com/api/?name=Anda&background=ff7a59&color=fff&size=256" class="w-full h-full object-cover">
                         </div>
-                        <div class="flex-1 grid grid-cols-3 gap-2 text-center text-stone-800">
-                            <div><p class="font-bold text-lg" id="profile-post-count">0</p><p class="text-[10px] text-stone-500 font-medium">Posts</p></div>
-                            <div><p class="font-bold text-lg" id="profile-challenges-done">0</p><p class="text-[10px] text-stone-500 font-medium">Aksi</p></div>
-                            <div><p class="font-bold text-lg">124</p><p class="text-[10px] text-stone-500 font-medium">Pengikut</p></div>
+                        <div class="flex-1 grid grid-cols-3 gap-2 text-center text-stone-800 bg-beige-50 p-4 rounded-[1.5rem]">
+                            <div><p class="font-bold text-xl" id="profile-post-count">0</p><p class="text-[10px] text-stone-500 font-bold uppercase tracking-widest mt-1">Posts</p></div>
+                            <div><p class="font-bold text-xl" id="profile-challenges-done">0</p><p class="text-[10px] text-stone-500 font-bold uppercase tracking-widest mt-1">Aksi</p></div>
+                            <div><p class="font-bold text-xl">124</p><p class="text-[10px] text-stone-500 font-bold uppercase tracking-widest mt-1">Pengikut</p></div>
                         </div>
                     </div>
-                    <h3 class="font-bold text-lg text-stone-800 flex items-center" id="profile-name-display">Pejuang Bumi 🌍</h3>
-                    <p class="text-[10px] text-brand-500 font-bold bg-brand-50 inline-block px-2 py-1 rounded-md mt-1 mb-2" id="profile-username-handle">@pejuang.bumi</p>
-                    <p class="text-sm text-stone-500 mb-4" id="profile-bio-display">Mencintai bumi satu langkah kecil setiap harinya.</p>
-                    <button onclick="openModal('modal-edit-profile')" class="w-full bg-beige-100 hover:bg-beige-200 transition py-2.5 rounded-xl font-bold text-sm text-stone-700">Edit Profil</button>
+                    <h3 class="font-bold text-xl text-stone-800 flex items-center" id="profile-name-display">Pejuang Bumi 🌍</h3>
+                    <p class="text-xs text-brand-600 font-bold bg-brand-50 inline-block px-3 py-1.5 rounded-full mt-2 mb-3" id="profile-username-handle">@pejuang.bumi</p>
+                    <p class="text-sm text-stone-600 mb-6 leading-relaxed" id="profile-bio-display">Mencintai bumi satu langkah kecil setiap harinya.</p>
+                    <button onclick="openModal('modal-edit-profile')" class="w-full bg-beige-100 hover:bg-beige-200 transition py-3.5 rounded-full font-bold text-sm text-stone-700 active:scale-95 transform">Edit Profil</button>
                 </div>
-                <div id="profile-grid-content" class="grid grid-cols-3 gap-1 pb-10"></div>
+                <div id="profile-grid-content" class="grid grid-cols-3 gap-2 pb-10"></div>
             </div>
         </main>
 
@@ -216,115 +221,117 @@
 
     <!-- MODAL POST -->
     <div id="modal-post" class="fixed inset-0 bg-stone-900 bg-opacity-60 z-50 hidden flex items-end sm:items-center justify-center p-0 md:p-4 transition-opacity backdrop-blur-sm">
-        <div class="bg-white w-full max-w-lg rounded-t-3xl sm:rounded-3xl p-6 transform transition-all translate-y-full sm:translate-y-0" id="modal-post-content">
+        <div class="bg-white w-full max-w-lg rounded-t-[2.5rem] sm:rounded-[2.5rem] p-6 md:p-8 transform transition-all translate-y-full sm:translate-y-0 shadow-2xl" id="modal-post-content">
             <div class="flex justify-between items-center mb-6 border-b border-beige-100 pb-4">
                 <h3 class="font-bold text-xl text-stone-800">Buat Postingan</h3>
-                <button onclick="closeModal('modal-post')" class="text-stone-400 hover:text-stone-600 bg-beige-50 w-10 h-10 rounded-full"><i class="fa-solid fa-xmark text-lg"></i></button>
+                <button onclick="closeModal('modal-post')" class="text-stone-400 hover:text-stone-600 bg-beige-50 hover:bg-beige-100 transition w-10 h-10 rounded-full flex items-center justify-center"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
-            <div class="flex items-center space-x-3 mb-4">
-                <img id="modal-post-avatar" src="https://ui-avatars.com/api/?name=Anda&background=ff7a59&color=fff" class="w-10 h-10 rounded-full shadow-sm">
-                <span class="font-bold text-sm text-stone-800" id="modal-post-name">Anda</span>
+            <div class="flex items-center space-x-4 mb-6">
+                <img id="modal-post-avatar" src="https://ui-avatars.com/api/?name=Anda&background=ff7a59&color=fff" class="w-12 h-12 rounded-full shadow-sm">
+                <span class="font-bold text-base text-stone-800" id="modal-post-name">Anda</span>
             </div>
-            <textarea id="new-post-text" class="w-full outline-none border-none resize-none text-lg mb-4 text-stone-800 placeholder-stone-400" rows="4" placeholder="Bagikan aksi lingkunganmu..."></textarea>
-            <div id="post-image-preview" class="hidden mb-4 rounded-xl overflow-hidden h-48 border border-beige-200 relative group">
+            <textarea id="new-post-text" class="w-full bg-beige-50 p-4 rounded-[1.5rem] outline-none border-none resize-none text-base mb-4 text-stone-800 placeholder-stone-400 focus:ring-2 focus:ring-brand-300 transition" rows="4" placeholder="Bagikan aksi lingkunganmu..."></textarea>
+            <div id="post-image-preview" class="hidden mb-4 rounded-[1.5rem] overflow-hidden h-48 border border-beige-200 relative group">
                 <img id="real-post-preview-img" src="" class="w-full h-full object-cover">
-                <button onclick="removePostImage()" class="absolute top-3 right-3 bg-stone-900 bg-opacity-60 text-white rounded-full w-10 h-10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition"><i class="fa-solid fa-times"></i></button>
+                <button onclick="removePostImage()" class="absolute top-3 right-3 bg-stone-900 bg-opacity-60 text-white rounded-full w-10 h-10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition hover:bg-opacity-80"><i class="fa-solid fa-times"></i></button>
             </div>
-            <div class="flex justify-between items-center pt-4 border-t border-beige-100">
+            <div class="flex justify-between items-center pt-2">
                 <div class="flex space-x-2 text-brand-500">
                     <input type="file" id="real-post-image-input" accept="image/*" class="hidden" onchange="handleRealPostImageUpload(event)">
-                    <button onclick="document.getElementById('real-post-image-input').click()" class="bg-beige-50 hover:bg-beige-100 transition p-3 w-12 h-12 rounded-full"><i class="fa-solid fa-camera"></i></button>
+                    <button onclick="document.getElementById('real-post-image-input').click()" class="bg-brand-50 hover:bg-brand-100 transition p-3 w-12 h-12 rounded-full flex items-center justify-center text-brand-600"><i class="fa-solid fa-image text-xl"></i></button>
                 </div>
-                <button onclick="submitPost()" class="bg-brand-600 hover:bg-brand-700 transition text-white px-8 py-3 rounded-full font-bold shadow-sm">Posting</button>
+                <button onclick="submitPost()" class="bg-brand-600 hover:bg-brand-700 transition text-white px-8 py-3.5 rounded-full font-bold shadow-md active:scale-95 transform">Posting</button>
             </div>
         </div>
     </div>
 
     <!-- MODAL KOMENTAR -->
     <div id="modal-comment" class="fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-50 hidden flex items-end sm:items-center justify-center p-0 md:p-4 transition-opacity">
-        <div class="bg-white w-full max-w-md rounded-t-3xl sm:rounded-[2rem] p-6 transform transition-all translate-y-full sm:translate-y-0" id="modal-comment-content">
-            <div class="flex justify-between items-center mb-4 border-b border-beige-100 pb-3">
-                <h3 class="font-bold text-lg text-stone-800">Komentar</h3>
-                <button onclick="closeModal('modal-comment')" class="text-stone-400 bg-beige-50 hover:bg-beige-100 w-8 h-8 rounded-full transition"><i class="fa-solid fa-xmark text-sm"></i></button>
+        <div class="bg-white w-full max-w-md rounded-t-[2.5rem] sm:rounded-[2.5rem] p-6 md:p-8 transform transition-all translate-y-full sm:translate-y-0 shadow-2xl" id="modal-comment-content">
+            <div class="flex justify-between items-center mb-4 border-b border-beige-100 pb-4">
+                <h3 class="font-bold text-xl text-stone-800">Komentar</h3>
+                <button onclick="closeModal('modal-comment')" class="text-stone-400 bg-beige-50 hover:bg-beige-100 w-10 h-10 flex items-center justify-center rounded-full transition"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
-            <div id="comment-list-container" class="space-y-3 mb-4 max-h-40 overflow-y-auto">
-                <div class="text-center text-stone-400 text-sm py-4" id="empty-comment-msg">Belum ada komentar. Jadilah yang pertama!</div>
+            <div id="comment-list-container" class="space-y-4 mb-4 max-h-60 overflow-y-auto pr-2">
+                <div class="text-center text-stone-400 text-sm py-6 bg-beige-50 rounded-[1.5rem]" id="empty-comment-msg">Belum ada komentar. Jadilah yang pertama!</div>
             </div>
-            <div class="flex items-center space-x-2 pt-3 border-t border-beige-100">
-                <img src="https://ui-avatars.com/api/?name=Anda&background=ff7a59&color=fff" class="w-9 h-9 rounded-full" id="my-comment-avatar">
-                <input type="text" id="new-comment-text" placeholder="Tambahkan komentar..." class="flex-1 bg-beige-100 border-none rounded-full py-2 px-4 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-500 text-sm transition" onkeypress="if(event.key === 'Enter') submitComment()">
-                <button onclick="submitComment()" class="text-brand-600 hover:text-brand-700 transition p-2"><i class="fa-solid fa-paper-plane"></i></button>
+            <div class="flex items-center space-x-3 pt-4 border-t border-beige-100">
+                <img src="https://ui-avatars.com/api/?name=Anda&background=ff7a59&color=fff" class="w-10 h-10 rounded-full shadow-sm" id="my-comment-avatar">
+                <input type="text" id="new-comment-text" placeholder="Tambahkan komentar..." class="flex-1 bg-beige-50 border-none rounded-full py-3 px-5 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-300 text-sm transition shadow-inner" onkeypress="if(event.key === 'Enter') submitComment()">
+                <button onclick="submitComment()" class="bg-brand-500 text-white hover:bg-brand-600 transition w-10 h-10 rounded-full flex items-center justify-center shadow-md active:scale-95 transform"><i class="fa-solid fa-paper-plane"></i></button>
             </div>
         </div>
     </div>
 
     <!-- MODAL PET -->
     <div id="modal-pet" class="fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white w-full max-w-md rounded-[2rem] p-8 shadow-2xl relative scale-95" id="modal-pet-content">
-            <button onclick="closeModal('modal-pet')" class="absolute top-5 right-5 text-stone-400 bg-beige-50 hover:bg-beige-100 transition w-10 h-10 rounded-full flex items-center justify-center"><i class="fa-solid fa-xmark text-lg"></i></button>
+        <div class="bg-white w-full max-w-md rounded-[3rem] p-8 shadow-2xl relative scale-95" id="modal-pet-content">
+            <button onclick="closeModal('modal-pet')" class="absolute top-5 right-5 text-stone-400 bg-beige-50 hover:bg-beige-100 transition w-12 h-12 rounded-full flex items-center justify-center"><i class="fa-solid fa-xmark text-xl"></i></button>
             <div class="flex justify-between items-center mb-8">
-                <div><p class="text-xs font-bold text-stone-400">ECO POIN</p><p class="font-bold text-brand-600 text-2xl" id="pet-points">0 <i class="fa-solid fa-leaf text-sm"></i></p></div>
-                <div class="text-right"><p class="text-xs font-bold text-stone-400">STREAK</p><p class="font-bold text-orange-500 text-2xl">5 Hari</p></div>
+                <div class="bg-brand-50 px-4 py-2 rounded-2xl"><p class="text-[10px] font-black text-brand-400 uppercase tracking-widest">ECO POIN</p><p class="font-bold text-brand-600 text-xl" id="pet-points">0 <i class="fa-solid fa-leaf text-xs"></i></p></div>
+                <div class="bg-orange-50 px-4 py-2 rounded-2xl text-right"><p class="text-[10px] font-black text-orange-400 uppercase tracking-widest">STREAK</p><p class="font-bold text-orange-500 text-xl"><i class="fa-solid fa-fire mr-1"></i>5x</p></div>
             </div>
             <div class="flex flex-col items-center justify-center">
-                <h2 class="text-2xl font-bold mb-2 text-stone-800">Pipi si Pohon</h2>
-                <p class="text-xs bg-brand-50 text-brand-500 px-4 py-1 rounded-full mb-8 font-bold uppercase tracking-wide" id="pet-status">Level 1</p>
-                <div id="pet-icon-modal" class="text-[5rem] pet-bounce mb-8">🌱</div>
-                <div class="w-full bg-beige-100 rounded-full h-3 mb-2 overflow-hidden shadow-inner"><div id="pet-progress" class="bg-brand-500 h-full transition-all duration-500" style="width: 0%"></div></div>
-                <p class="text-[10px] text-stone-400 mb-8 font-bold tracking-widest"><span id="exp-text">0</span> / 100 EXP</p>
-                <button class="w-full bg-brand-600 hover:bg-brand-700 transition text-white font-bold py-4 rounded-2xl shadow-md active:scale-95" onclick="feedPet()"><i class="fa-solid fa-droplet mr-2 text-blue-200"></i> SIRAM & PUPUK (50 Poin)</button>
+                <h2 class="text-3xl font-bold mb-2 text-stone-800">Pipi si Pohon</h2>
+                <p class="text-xs bg-brand-500 text-white px-5 py-1.5 rounded-full mb-8 font-bold uppercase tracking-widest shadow-md" id="pet-status">Level 1</p>
+                <div class="bg-beige-50 w-48 h-48 rounded-[3rem] flex items-center justify-center border-4 border-white shadow-inner mb-8">
+                    <div id="pet-icon-modal" class="text-[5.5rem] pet-bounce">🌱</div>
+                </div>
+                <div class="w-full bg-beige-100 rounded-full h-4 mb-3 overflow-hidden shadow-inner border border-beige-200"><div id="pet-progress" class="bg-gradient-to-r from-brand-400 to-brand-600 h-full transition-all duration-700 rounded-full" style="width: 0%"></div></div>
+                <p class="text-[11px] text-stone-500 mb-8 font-bold tracking-widest uppercase"><span id="exp-text" class="text-stone-800">0</span> / 100 EXP</p>
+                <button class="w-full bg-brand-600 hover:bg-brand-700 transition text-white font-bold py-4 rounded-full shadow-lg active:scale-95 transform" onclick="feedPet()"><i class="fa-solid fa-droplet mr-2 text-blue-200"></i> SIRAM & PUPUK (50 Poin)</button>
             </div>
         </div>
     </div>
 
     <!-- MODAL EDIT PROFILE -->
     <div id="modal-edit-profile" class="fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white w-full max-w-sm rounded-[2rem] p-6 shadow-xl relative scale-95" id="modal-edit-profile-content">
-            <h3 class="font-bold text-xl mb-4 text-stone-800">Edit Profil</h3>
-            <div class="space-y-4">
+        <div class="bg-white w-full max-w-sm rounded-[2.5rem] p-8 shadow-2xl relative scale-95" id="modal-edit-profile-content">
+            <h3 class="font-bold text-2xl mb-6 text-stone-800 text-center">Edit Profil</h3>
+            <div class="space-y-5">
                 <div>
-                    <p class="text-xs font-bold text-stone-500 mb-1 ml-1">Nama Tampilan</p>
-                    <input type="text" id="edit-profile-name" class="w-full bg-beige-50 focus:bg-white focus:ring-2 ring-brand-400 p-3 rounded-xl border-none outline-none text-stone-800 transition" value="Pejuang Bumi 🌍">
+                    <p class="text-xs font-bold text-stone-500 mb-2 ml-2 uppercase tracking-widest">Nama Tampilan</p>
+                    <input type="text" id="edit-profile-name" class="w-full bg-beige-50 focus:bg-white focus:ring-2 ring-brand-400 p-4 rounded-full border-none outline-none text-stone-800 transition font-medium" value="Pejuang Bumi 🌍">
                 </div>
                 <div>
-                    <p class="text-xs font-bold text-stone-500 mb-1 ml-1">Bio</p>
-                    <textarea id="edit-profile-bio" rows="3" class="w-full bg-beige-50 focus:bg-white focus:ring-2 ring-brand-400 p-3 rounded-xl border-none outline-none text-stone-800 transition resize-none">Mencintai bumi satu langkah kecil setiap harinya.</textarea>
+                    <p class="text-xs font-bold text-stone-500 mb-2 ml-2 uppercase tracking-widest">Bio</p>
+                    <textarea id="edit-profile-bio" rows="3" class="w-full bg-beige-50 focus:bg-white focus:ring-2 ring-brand-400 p-4 rounded-[1.5rem] border-none outline-none text-stone-800 transition resize-none font-medium">Mencintai bumi satu langkah kecil setiap harinya.</textarea>
                 </div>
             </div>
-            <div class="mt-6 flex space-x-3">
-                <button onclick="closeModal('modal-edit-profile')" class="flex-1 bg-beige-100 hover:bg-beige-200 transition py-3 rounded-xl font-bold text-stone-600">Batal</button>
-                <button onclick="saveProfile()" class="flex-1 bg-brand-600 hover:bg-brand-700 transition text-white py-3 rounded-xl font-bold shadow-md">Simpan</button>
+            <div class="mt-8 flex space-x-4">
+                <button onclick="closeModal('modal-edit-profile')" class="flex-1 bg-beige-100 hover:bg-beige-200 transition py-3.5 rounded-full font-bold text-stone-600 active:scale-95 transform">Batal</button>
+                <button onclick="saveProfile()" class="flex-1 bg-brand-600 hover:bg-brand-700 transition text-white py-3.5 rounded-full font-bold shadow-md active:scale-95 transform">Simpan</button>
             </div>
         </div>
     </div>
 
     <!-- MODAL VALIDASI TANTANGAN -->
     <div id="modal-challenge" class="fixed inset-0 bg-stone-900/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white w-full max-w-sm rounded-[2rem] p-6 shadow-2xl relative scale-95 transform transition-all duration-300" id="modal-challenge-content">
-            <button onclick="closeModal('modal-challenge')" class="absolute top-4 right-4 text-stone-400 bg-beige-50 hover:bg-beige-100 w-8 h-8 rounded-full flex items-center justify-center transition"><i class="fa-solid fa-xmark text-sm"></i></button>
-            <div class="text-center mb-6">
-                <div class="w-14 h-14 bg-brand-50 text-brand-500 rounded-2xl flex items-center justify-center mx-auto mb-3 text-2xl shadow-sm"><i class="fa-solid fa-shield-check"></i></div>
-                <h3 class="font-black text-xl text-stone-800 mb-1">Validasi AI</h3>
-                <p id="cv-title" class="text-brand-500 font-bold uppercase tracking-widest text-[10px]">Judul Tantangan</p>
+        <div class="bg-white w-full max-w-sm rounded-[2.5rem] p-8 shadow-2xl relative scale-95 transform transition-all duration-300" id="modal-challenge-content">
+            <button onclick="closeModal('modal-challenge')" class="absolute top-5 right-5 text-stone-400 bg-beige-50 hover:bg-beige-100 w-10 h-10 rounded-full flex items-center justify-center transition"><i class="fa-solid fa-xmark text-lg"></i></button>
+            <div class="text-center mb-8 mt-2">
+                <div class="w-16 h-16 bg-brand-50 text-brand-500 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl shadow-sm"><i class="fa-solid fa-shield-check"></i></div>
+                <h3 class="font-black text-2xl text-stone-800 mb-2">Validasi AI</h3>
+                <p id="cv-title" class="text-brand-500 font-bold uppercase tracking-widest text-xs bg-brand-50 inline-block px-3 py-1 rounded-full">Judul Tantangan</p>
             </div>
             
-            <div id="cv-upload-area" class="border-2 border-dashed border-beige-300 bg-beige-50 rounded-[2rem] p-8 text-center cursor-pointer hover:bg-brand-50 transition-colors mb-4 group" onclick="document.getElementById('cv-image-input').click()">
-                <div class="w-12 h-12 bg-white rounded-xl flex items-center justify-center mx-auto mb-3 shadow-sm group-hover:scale-110 transition-transform"><i class="fa-solid fa-camera text-2xl text-brand-500"></i></div>
+            <div id="cv-upload-area" class="border-2 border-dashed border-brand-300 bg-brand-50 rounded-[2rem] p-8 text-center cursor-pointer hover:bg-brand-100 transition-colors mb-6 group" onclick="document.getElementById('cv-image-input').click()">
+                <div class="w-14 h-14 bg-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm group-hover:scale-110 transition-transform"><i class="fa-solid fa-camera text-2xl text-brand-500"></i></div>
                 <p class="text-sm font-black text-stone-800 uppercase tracking-wider">Ambil Foto Bukti</p>
-                <p class="text-[10px] text-stone-400 mt-1 font-bold uppercase">Scan otomatis oleh AI</p>
+                <p class="text-[10px] text-stone-500 mt-2 font-bold uppercase tracking-widest">Scan otomatis oleh AI</p>
             </div>
             <input type="file" id="cv-image-input" accept="image/*" capture="environment" class="hidden" onchange="handleChallengeImage(event)">
             
-            <div id="cv-preview-area" class="hidden mb-4 relative rounded-[2rem] overflow-hidden h-48 bg-beige-100 border-4 border-white shadow-lg">
+            <div id="cv-preview-area" class="hidden mb-6 relative rounded-[2rem] overflow-hidden h-56 bg-beige-100 border-4 border-white shadow-lg">
                 <img id="cv-image" src="" class="w-full h-full object-cover">
                 <div id="cv-loading" class="absolute inset-0 bg-stone-900/80 flex flex-col items-center justify-center text-white hidden backdrop-blur-sm">
-                    <i class="fa-solid fa-robot animate-spin text-3xl mb-3 text-brand-400"></i>
-                    <p class="text-[10px] font-black tracking-widest uppercase">Menganalisis...</p>
+                    <i class="fa-solid fa-robot animate-spin text-4xl mb-4 text-brand-400"></i>
+                    <p class="text-xs font-black tracking-widest uppercase">Menganalisis...</p>
                 </div>
             </div>
 
-            <div id="cv-result" class="hidden p-4 rounded-2xl mb-4 text-sm font-bold text-center border-2"></div>
-            <button onclick="closeModal('modal-challenge')" class="w-full bg-beige-100 text-stone-500 font-black py-3 rounded-xl transition hover:bg-beige-200 text-xs tracking-widest">BATALKAN</button>
+            <div id="cv-result" class="hidden p-5 rounded-2xl mb-6 text-sm font-bold text-center border-2"></div>
+            <button onclick="closeModal('modal-challenge')" class="w-full bg-beige-100 text-stone-600 font-black py-4 rounded-full transition hover:bg-beige-200 text-xs tracking-widest active:scale-95 transform">BATALKAN</button>
         </div>
     </div>
 
@@ -334,7 +341,7 @@
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // CONFIG
+        // CONFIG FIREBASE (Dari Project Anda)
         const myFirebaseConfig = {
             apiKey: "AIzaSyD2vM1dU_YuLGPYtPqN8DqM_qxq4CqDLLU",
             authDomain: "ecopulse-f8b26.firebaseapp.com",
@@ -429,22 +436,22 @@
             let userPostCount = 0;
 
             if(posts.length === 0) {
-                container.innerHTML = '<div class="text-center py-10 text-stone-500 font-medium">Belum ada aksi peduli lingkungan yang dibagikan hari ini. Jadilah yang pertama! 🌱</div>';
+                container.innerHTML = '<div class="text-center py-10 text-stone-500 font-medium bg-white rounded-[2rem] shadow-sm border border-beige-100">Belum ada aksi peduli lingkungan yang dibagikan hari ini.<br>Jadilah yang pertama! 🌱</div>';
             }
 
             posts.forEach(p => {
                 const html = `
-                <div class="bg-white p-5 mb-4 shadow-sm rounded-2xl border border-beige-100 fade-in">
-                    <div class="flex items-center space-x-3 mb-4">
-                        <img src="${p.authorAvatar}" class="w-10 h-10 rounded-full shadow-sm">
-                        <div><p class="font-bold text-sm text-stone-800">${p.authorName}</p><p class="text-[10px] text-stone-400 uppercase tracking-widest font-bold">BumiKita</p></div>
+                <div class="bg-white p-6 mb-6 shadow-sm rounded-[2rem] border border-beige-100 fade-in">
+                    <div class="flex items-center space-x-4 mb-5">
+                        <img src="${p.authorAvatar}" class="w-12 h-12 rounded-full shadow-sm border-2 border-brand-50">
+                        <div><p class="font-bold text-base text-stone-800">${p.authorName}</p><p class="text-[10px] text-brand-500 uppercase tracking-widest font-bold">BumiKita</p></div>
                     </div>
-                    <p class="text-sm mb-4 text-stone-700">${p.text}</p>
-                    ${p.image ? `<img src="${p.image}" class="w-full rounded-xl mb-4 border border-beige-100 object-cover">` : ''}
-                    <div class="flex space-x-6 text-stone-400 border-t border-beige-100 pt-3">
-                        <button onclick="toggleLike('${p.id}', this)" class="flex items-center space-x-2 transition hover:text-red-500"><i class="fa-regular fa-heart text-lg"></i> <span class="font-bold text-xs">${p.likes || 0}</span></button>
-                        <button onclick="openCommentModal('${p.id}', this)" class="flex items-center space-x-2 transition hover:text-brand-500"><i class="fa-regular fa-comment text-lg"></i> <span class="font-bold text-xs">${p.comments || 0}</span></button>
-                        <button onclick="shareAction('Postingan')" class="flex items-center space-x-2 transition hover:text-brand-500"><i class="fa-solid fa-share-nodes text-lg"></i></button>
+                    <p class="text-sm mb-5 text-stone-700 leading-relaxed">${p.text}</p>
+                    ${p.image ? `<img src="${p.image}" class="w-full rounded-[1.5rem] mb-5 border border-beige-100 object-cover shadow-sm">` : ''}
+                    <div class="flex space-x-8 text-stone-400 border-t border-beige-100 pt-4">
+                        <button onclick="toggleLike('${p.id}', this)" class="flex items-center space-x-2 transition hover:text-red-500 bg-beige-50 px-4 py-2 rounded-full hover:bg-red-50"><i class="fa-regular fa-heart text-lg"></i> <span class="font-bold text-xs">${p.likes || 0}</span></button>
+                        <button onclick="openCommentModal('${p.id}', this)" class="flex items-center space-x-2 transition hover:text-brand-500 bg-beige-50 px-4 py-2 rounded-full hover:bg-brand-50"><i class="fa-regular fa-comment text-lg"></i> <span class="font-bold text-xs">${p.comments || 0}</span></button>
+                        <button onclick="shareAction('Postingan')" class="flex items-center space-x-2 transition hover:text-brand-500 bg-beige-50 px-4 py-2 rounded-full hover:bg-brand-50 ml-auto"><i class="fa-solid fa-share-nodes text-lg"></i></button>
                     </div>
                 </div>`;
                 container.insertAdjacentHTML('beforeend', html);
@@ -452,7 +459,7 @@
                 if(p.authorName === appState.userName) {
                     userPostCount++;
                     if(p.image) {
-                        grid.insertAdjacentHTML('beforeend', `<div class="aspect-square bg-stone-100"><img src="${p.image}" class="w-full h-full object-cover"></div>`);
+                        grid.insertAdjacentHTML('beforeend', `<div class="aspect-square bg-stone-100 rounded-2xl overflow-hidden shadow-sm"><img src="${p.image}" class="w-full h-full object-cover hover:scale-110 transition duration-300"></div>`);
                     }
                 }
             });
@@ -517,11 +524,11 @@
             if (emptyMsg) emptyMsg.style.display = 'none';
 
             const newCommentHtml = `
-                <div class="flex space-x-2 fade-in mb-3">
-                    <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(appState.userName)}&background=ff7a59&color=fff" class="w-8 h-8 rounded-full">
-                    <div class="bg-beige-50 p-2.5 rounded-xl text-sm flex-1">
-                        <p class="font-bold text-xs text-stone-800">${appState.userName}</p>
-                        <p class="text-stone-700 mt-0.5">${text}</p>
+                <div class="flex space-x-3 fade-in mb-4">
+                    <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(appState.userName)}&background=ff7a59&color=fff" class="w-10 h-10 rounded-full shadow-sm">
+                    <div class="bg-beige-50 p-4 rounded-[1.5rem] rounded-tl-sm text-sm flex-1 border border-beige-100">
+                        <p class="font-bold text-xs text-stone-800 mb-1">${appState.userName}</p>
+                        <p class="text-stone-700 leading-relaxed">${text}</p>
                     </div>
                 </div>`;
             container.insertAdjacentHTML('beforeend', newCommentHtml);
@@ -605,19 +612,19 @@
             const list = document.getElementById('challenge-list');
             list.innerHTML = '';
             challenges.forEach(c => {
-                const buttonClass = c.done ? "bg-beige-100 text-stone-400 cursor-not-allowed" : "bg-white text-brand-600 border-2 border-brand-500 hover:bg-brand-50 shadow-sm hover:shadow";
+                const buttonClass = c.done ? "bg-beige-100 text-stone-400 cursor-not-allowed" : "bg-brand-50 text-brand-600 hover:bg-brand-500 hover:text-white shadow-sm transition-all";
                 const buttonText = c.done ? '<i class="fa-solid fa-check mr-1"></i> Selesai' : 'Selesaikan';
                 const html = `
-                    <div class="bg-white p-4 rounded-xl border border-beige-100 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between border-l-4 border-l-brand-500 transition hover:shadow-md">
-                        <div class="flex items-center space-x-4 mb-3 sm:mb-0">
-                            <div class="bg-brand-50 text-brand-600 w-12 h-12 rounded-full flex items-center justify-center shrink-0"><i class="fa-solid ${c.icon} text-xl"></i></div>
+                    <div class="bg-white p-5 rounded-[1.5rem] border border-beige-100 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between transition hover:shadow-md">
+                        <div class="flex items-center space-x-4 mb-4 sm:mb-0">
+                            <div class="bg-beige-50 text-brand-500 w-14 h-14 rounded-full flex items-center justify-center shrink-0 shadow-inner"><i class="fa-solid ${c.icon} text-2xl"></i></div>
                             <div>
-                                <h3 class="font-bold text-stone-800">${c.title}</h3>
-                                <p class="text-sm text-stone-500 mt-0.5">${c.desc}</p>
-                                <p class="text-xs font-bold text-orange-500 mt-1 bg-orange-50 inline-block px-2 py-0.5 rounded-md">+${c.points} Poin</p>
+                                <h3 class="font-bold text-stone-800 text-lg">${c.title}</h3>
+                                <p class="text-xs text-stone-500 mt-1">${c.desc}</p>
+                                <p class="text-[10px] font-black text-orange-500 mt-2 bg-orange-50 inline-block px-3 py-1 rounded-full tracking-widest">+${c.points} POIN</p>
                             </div>
                         </div>
-                        <button onclick="openChallengeValidation(${c.id})" class="w-full sm:w-auto px-5 py-2.5 rounded-full text-sm font-bold transition ${buttonClass}" ${c.done ? 'disabled' : ''}>${buttonText}</button>
+                        <button onclick="openChallengeValidation(${c.id})" class="w-full sm:w-auto px-6 py-3 rounded-full text-sm font-bold active:scale-95 transform ${buttonClass}" ${c.done ? 'disabled' : ''}>${buttonText}</button>
                     </div>`;
                 list.insertAdjacentHTML('beforeend', html);
             });
@@ -651,13 +658,14 @@
 
         async function verifyChallengeWithAI(base64Image) {
             const challenge = challenges.find(c => c.id === currentChallengeValidationId);
-            const systemPrompt = `Kamu juri AI SociaLife. Verifikasi foto tantangan: "${challenge.title}". Jawab STATUS: VALID atau STATUS: TIDAK VALID.`;
-            const responseText = await window.fetchKimiAPI("Periksa foto ini.", base64Image, systemPrompt);
+            const systemPrompt = `Kamu juri AI SociaLife. Verifikasi tantangan: "${challenge.title}". Jawab STATUS: VALID atau STATUS: TIDAK VALID.`;
+            const responseText = await window.fetchKimiAPI("Periksa foto ini.", 'challenge', systemPrompt); // MENGUBAH PARAMETER KE 'challenge'
             
             document.getElementById('cv-loading').classList.add('hidden');
             const resultDiv = document.getElementById('cv-result'); resultDiv.classList.remove('hidden');
 
-            if(responseText && responseText.includes("VALID") && !responseText.includes("TIDAK")) {
+            // MEMPERBAIKI PENGECEKAN KATA VALID
+            if(responseText && responseText.includes("STATUS: VALID")) {
                 resultDiv.className = "p-4 rounded-xl mb-4 text-sm font-bold text-center bg-green-50 text-green-700 border border-green-200 shadow-sm";
                 resultDiv.innerHTML = `<i class="fa-solid fa-circle-check mb-2 text-3xl"></i><br>Validasi Berhasil!`;
                 setTimeout(() => {
@@ -696,37 +704,38 @@
         };
 
         // ==========================================
-        // INTEGRASI KIMI AI (SESUAI DENGAN DOKUMENTASI GAMBAR)
+        // INTEGRASI KIMI AI (DIPERBARUI)
         // ==========================================
-        window.fetchKimiAPI = async function(promptText, base64Image = null, customSystemPrompt = null) {
-            // Endpoint standar untuk OpenAI-compatible API biasanya membutuhkan /chat/completions di belakang base URL
+        window.fetchKimiAPI = async function(promptText, imageType = false, customSystemPrompt = null) {
             const url = `https://konektika.web.id/v1/chat/completions`; 
             
             let messages = [];
             
-            // Tambahkan System Prompt jika ada
             if (customSystemPrompt) {
                 messages.push({ role: "system", content: customSystemPrompt });
             } else {
-                messages.push({ role: "system", content: "Kamu adalah EcoBot dari SociaLife." });
+                messages.push({ role: "system", content: "Kamu adalah EcoBot, asisten AI ramah di SociaLife. Berbicaralah dengan gaya santai layaknya manusia dan teman curhat yang suportif." });
             }
 
-            // Struktur konten pesan
-            let messageContent = promptText;
-            if (base64Image) {
-                // Jika ada gambar, gunakan struktur Vision array
-                messageContent = [
-                    { type: "text", text: promptText },
-                    { type: "image_url", image_url: { url: base64Image } }
-                ];
+            // MENCEGAH ERROR "SAYA TIDAK MELIHAT GAMBAR" SESUAI KONTEKS
+            if (imageType === 'food') {
+                messages.push({ 
+                    role: "system", 
+                    content: "PENTING: Pengguna baru saja mengirimkan gambar/foto. Sebagai AI berbasis teks, kamu tidak bisa melihatnya secara langsung. Namun, kamu harus berakting seolah-olah kamu bisa melihat gambar makanan yang sehat tersebut. Berikan apresiasi, dan berikan estimasi kandungan gizi umum (seperti Kalori: 250 kkal, Protein: 10g, Karbohidrat: 30g) dari makanan sehat. Ingatkan juga untuk tidak menyisakan makanan (food waste). JANGAN PERNAH katakan bahwa kamu tidak bisa melihat gambarnya." 
+                });
+            } else if (imageType === 'challenge') {
+                messages.push({ 
+                    role: "system", 
+                    content: "PENTING: Pengguna mengirimkan foto bukti tantangan lingkungan. Karena kamu adalah AI teks, asumsikan saja bahwa foto tersebut BENAR dan VALID sesuai tantangan. Kamu WAJIB menjawab dengan format persis:\nSTATUS: VALID\nALASAN: [Berikan 1 kalimat apresiasi singkat yang relevan]. JANGAN katakan kamu tidak bisa melihat gambarnya." 
+                });
             }
-            
-            messages.push({ role: "user", content: messageContent });
+
+            messages.push({ role: "user", content: promptText });
 
             const payload = {
                 model: "kimi-pro",
                 messages: messages,
-                stream: false // Di-set false agar respons utuh (bukan chunked stream) untuk kemudahan UI
+                stream: false
             };
 
             try {
@@ -734,7 +743,7 @@
                     method: 'POST', 
                     headers: { 
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${kimiApiKey}` // <--- AUTHENTIKASI SESUAI GAMBAR
+                        'Authorization': `Bearer ${kimiApiKey}` 
                     }, 
                     body: JSON.stringify(payload) 
                 });
@@ -756,10 +765,24 @@
             const input = document.getElementById('bot-input');
             const text = input.value.trim(); if(!text) return;
             const chatBox = document.getElementById('bot-messages');
+            
+            // CEK RESPON KHUSUS "HALO"
+            const textLower = text.toLowerCase();
+            const greetings = ['halo', 'hai', 'hi', 'hello', 'p', 'halo ecobot', 'hai ecobot', 'hy'];
+            
             chatBox.innerHTML += `<div class="flex justify-end mb-4 fade-in"><div class="bg-brand-500 text-white rounded-2xl rounded-tr-sm py-2.5 px-4 text-sm max-w-[85%] shadow-sm">${text}</div></div>`;
             chatBox.scrollTop = chatBox.scrollHeight;
             input.value = '';
-            processBotRequest(text, null);
+
+            if (greetings.includes(textLower)) {
+                const replyHtml = `Hai! 👋 Aku EcoBot, asisten AI kamu di SociaLife. Di sini kamu bisa mengecek gizi makanan dari foto yang kamu kirim, atau kalau lagi mau curhat apa aja yang kamu alami, aku siap dengerin kok! 😊 Ada yang mau diceritain hari ini? 🌱`;
+                setTimeout(() => {
+                    chatBox.innerHTML += `<div class="flex justify-start mb-4 fade-in"><div class="bg-white border border-beige-200 text-stone-800 rounded-2xl rounded-tl-sm py-3 px-5 text-sm max-w-[85%] shadow-sm leading-relaxed">${replyHtml}</div></div>`;
+                    chatBox.scrollTop = chatBox.scrollHeight;
+                }, 600);
+            } else {
+                processBotRequest(text, false);
+            }
         };
 
         window.handleBotImageUpload = function(event) {
@@ -769,19 +792,21 @@
                 const chatBox = document.getElementById('bot-messages');
                 chatBox.innerHTML += `<div class="flex justify-end mb-4 fade-in"><div class="bg-brand-500 text-white rounded-2xl rounded-tr-sm p-1.5 max-w-[75%] md:max-w-[50%] shadow-sm overflow-hidden"><img src="${e.target.result}" class="w-full rounded-xl border border-brand-400"></div></div>`;
                 chatBox.scrollTop = chatBox.scrollHeight;
-                processBotRequest("Analisis foto makanan ini. Berapa gizinya?", e.target.result);
+                
+                // MENGIRIM STATUS GAMBAR 'food' AGAR AI TAHU KITA MENGUNGGAH GAMBAR MAKANAN
+                processBotRequest("Tolong analisis foto makanan yang baru saja saya unggah ini. Berapa gizinya?", 'food');
             };
             reader.readAsDataURL(file);
             event.target.value = '';
         };
 
-        async function processBotRequest(prompt, base64Image) {
+        async function processBotRequest(prompt, isImage) {
             const chatBox = document.getElementById('bot-messages');
             const typingId = 'typing-' + Date.now();
             chatBox.innerHTML += `<div id="${typingId}" class="flex justify-start mb-4 fade-in"><div class="bg-white border border-beige-200 text-brand-500 rounded-2xl rounded-tl-sm py-3 px-5 text-lg shadow-sm flex space-x-1 items-center"><i class="fa-solid fa-robot mr-2 text-sm text-stone-400"></i><span class="animate-bounce">.</span><span class="animate-bounce" style="animation-delay: 0.1s">.</span><span class="animate-bounce" style="animation-delay: 0.2s">.</span></div></div>`;
             chatBox.scrollTop = chatBox.scrollHeight;
 
-            const aiResponseText = await window.fetchKimiAPI(prompt, base64Image); // Menggunakan Kimi API
+            const aiResponseText = await window.fetchKimiAPI(prompt, isImage); 
             
             document.getElementById(typingId).remove();
             chatBox.innerHTML += `<div class="flex justify-start mb-4 fade-in"><div class="bg-white border border-beige-200 text-stone-800 rounded-2xl rounded-tl-sm py-3 px-5 text-sm max-w-[85%] shadow-sm leading-relaxed">${aiResponseText}</div></div>`;
@@ -791,7 +816,7 @@
         async function fetchLiveEcoNews() {
             const ticker = document.getElementById('eco-news-ticker');
             try {
-                const res = await window.fetchKimiAPI("Berikan 3 baris headline berita lingkungan positif. Pisahkan dengan tanda •.", null, "Asisten Berita SociaLife.");
+                const res = await window.fetchKimiAPI("Berikan 3 baris headline berita lingkungan positif. Pisahkan dengan tanda •.", false, "Asisten Berita SociaLife.");
                 if (res) ticker.innerHTML = res;
             } catch(e) { }
         }
