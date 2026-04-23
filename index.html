@@ -58,7 +58,7 @@
 
 <body class="bg-beige-50 flex flex-col md:flex-row text-stone-800 font-sans antialiased overflow-hidden" style="height: 100dvh;">
 
-    <!-- NAVBAR BAWAH: Dibuat melengkung penuh (rounded-[2rem]), melayang (mb-3 mx-auto), dan ukurannya lebih proporsional (h-[4.5rem]) -->
+    <!-- NAVBAR BAWAH -->
     <nav class="glass-header z-40 flex flex-row md:flex-col justify-around md:justify-start items-center md:items-stretch h-[4.5rem] md:h-full w-[calc(100%-1.5rem)] md:w-24 lg:w-64 border border-beige-200 md:border-y-0 md:border-l-0 md:border-r px-2 md:px-0 md:pt-6 shrink-0 transition-all bg-white/95 order-2 md:order-1 rounded-[2rem] md:rounded-none shadow-[0_8px_30px_rgba(0,0,0,0.08)] md:shadow-none mb-3 md:mb-0 mx-auto md:mx-0">
         <div class="hidden md:flex items-center justify-center lg:justify-start px-0 lg:px-6 mb-8 text-brand-600 w-full">
             <i class="fa-solid fa-earth-americas text-3xl lg:mr-3"></i>
@@ -90,9 +90,9 @@
     </nav>
 
     <!-- WRAPPER KONTEN UTAMA -->
-    <div class="flex-1 flex flex-col relative overflow-hidden bg-beige-50 w-full order-1 md:order-2 h-full">
+    <div class="flex-1 flex flex-col relative overflow-hidden bg-beige-50 w-full order-1 md:order-2 min-h-0">
         
-        <!-- HEADER MOBILE: Nama SociaLife dipindah ke tengah (justify-center) dan ukurannya diperkecil jadi text-lg -->
+        <!-- HEADER MOBILE -->
         <header class="glass-header px-4 pt-4 pb-3 shadow-sm z-20 md:hidden border-b border-beige-100 shrink-0">
             <div class="relative flex justify-center items-center">
                 <h1 class="text-lg font-black text-brand-600 tracking-tight">SociaLife</h1>
@@ -109,36 +109,41 @@
             </div>
         </div>
 
-        <main class="flex-1 overflow-y-auto relative w-full h-full">
+        <!-- KONTEN SCROLLABLE TRICT BOUNDS -->
+        <main class="flex-1 relative w-full overflow-hidden">
             
             <!-- FEED VIEW -->
-            <div id="view-feed" class="view-section fade-in max-w-2xl mx-auto pt-4 md:pt-6 px-4 pb-6">
-                <div class="bg-brand-100 border border-brand-300 p-3 mb-6 rounded-full flex items-center eco-news-glow shrink-0">
-                    <span class="bg-brand-500 text-white text-[10px] font-bold px-3 py-1.5 rounded-full mr-3 uppercase tracking-wider shrink-0 shadow-sm">Eco-News</span>
-                    <marquee class="text-xs font-medium text-brand-700" id="eco-news-ticker">Memuat berita lingkungan terbaru dari internet...</marquee>
-                </div>
-
-                <div class="bg-white p-5 mb-8 flex items-center space-x-4 shadow-sm md:rounded-[2rem] rounded-[1.5rem] border border-beige-100 shrink-0">
-                    <img id="feed-input-avatar" src="https://ui-avatars.com/api/?name=Anda&background=ff7a59&color=fff" alt="User" class="w-12 h-12 rounded-full shadow-sm">
-                    <div class="flex-1 bg-beige-50 rounded-full py-3 px-5 text-sm text-stone-500 cursor-pointer hover:bg-beige-200 transition border border-beige-100" onclick="openModal('modal-post')">
-                        Bagikan aksi lingkunganmu hari ini...
+            <div id="view-feed" class="view-section fade-in h-full w-full overflow-y-auto">
+                <div class="max-w-2xl mx-auto pt-4 md:pt-6 px-4 pb-6">
+                    <div class="bg-brand-100 border border-brand-300 p-3 mb-6 rounded-full flex items-center eco-news-glow shrink-0">
+                        <span class="bg-brand-500 text-white text-[10px] font-bold px-3 py-1.5 rounded-full mr-3 uppercase tracking-wider shrink-0 shadow-sm">Eco-News</span>
+                        <marquee class="text-xs font-medium text-brand-700" id="eco-news-ticker">Memuat berita lingkungan terbaru dari internet...</marquee>
                     </div>
-                    <button class="text-brand-500 hover:text-white hover:bg-brand-500 transition p-3 bg-brand-50 rounded-full w-12 h-12 flex items-center justify-center shadow-sm" onclick="openModal('modal-post')"><i class="fa-solid fa-camera"></i></button>
-                </div>
 
-                <div id="feed-container"></div>
+                    <div class="bg-white p-5 mb-8 flex items-center space-x-4 shadow-sm md:rounded-[2rem] rounded-[1.5rem] border border-beige-100 shrink-0">
+                        <img id="feed-input-avatar" src="https://ui-avatars.com/api/?name=Anda&background=ff7a59&color=fff" alt="User" class="w-12 h-12 rounded-full shadow-sm">
+                        <div class="flex-1 bg-beige-50 rounded-full py-3 px-5 text-sm text-stone-500 cursor-pointer hover:bg-beige-200 transition border border-beige-100" onclick="openModal('modal-post')">
+                            Bagikan aksi lingkunganmu hari ini...
+                        </div>
+                        <button class="text-brand-500 hover:text-white hover:bg-brand-500 transition p-3 bg-brand-50 rounded-full w-12 h-12 flex items-center justify-center shadow-sm" onclick="openModal('modal-post')"><i class="fa-solid fa-camera"></i></button>
+                    </div>
+
+                    <div id="feed-container"></div>
+                </div>
             </div>
 
             <!-- CHALLENGES VIEW -->
-            <div id="view-challenges" class="view-section hidden fade-in max-w-2xl mx-auto pt-4 md:pt-6 px-4 pb-6">
-                <div class="bg-white p-6 md:p-8 rounded-[2rem] shadow-sm border border-beige-100 mb-6">
-                    <h2 class="text-2xl font-bold mb-2 text-stone-800">Tantangan Hari Ini</h2>
-                    <p class="text-sm text-stone-500 mb-6">Selesaikan aksi untuk mengumpulkan poin!</p>
-                    <div class="space-y-5" id="challenge-list"></div>
+            <div id="view-challenges" class="view-section hidden fade-in h-full w-full overflow-y-auto">
+                <div class="max-w-2xl mx-auto pt-4 md:pt-6 px-4 pb-6">
+                    <div class="bg-white p-6 md:p-8 rounded-[2rem] shadow-sm border border-beige-100 mb-6">
+                        <h2 class="text-2xl font-bold mb-2 text-stone-800">Tantangan Hari Ini</h2>
+                        <p class="text-sm text-stone-500 mb-6">Selesaikan aksi untuk mengumpulkan poin!</p>
+                        <div class="space-y-5" id="challenge-list"></div>
+                    </div>
                 </div>
             </div>
 
-            <!-- CHATBOT VIEW: Ditambahkan lengkungan bawah (rounded-b-[2rem]) agar senada dengan navigasi -->
+            <!-- CHATBOT VIEW (Layout Flex yang Kaku Anti Tertutup Keyboard) -->
             <div id="view-chatbot" class="view-section hidden fade-in h-full flex flex-col bg-white rounded-b-[2rem] md:rounded-[2rem] md:my-4 md:mx-auto md:max-w-4xl border overflow-hidden shadow-sm">
                 <div class="p-5 bg-white border-b border-beige-100 flex items-center space-x-4 shadow-sm shrink-0 rounded-t-[2rem]">
                     <div class="w-12 h-12 bg-gradient-to-tr from-brand-500 to-brand-400 text-white rounded-full flex items-center justify-center shadow-sm"><i class="fa-solid fa-robot text-xl"></i></div>
@@ -157,20 +162,22 @@
             </div>
 
             <!-- MESSAGES VIEW -->
-            <div id="view-messages" class="view-section hidden fade-in max-w-2xl mx-auto pt-4 px-4 pb-6">
-                <div class="bg-white rounded-[2rem] shadow-sm p-5 border border-beige-100 cursor-pointer hover:bg-brand-50 transition" onclick="openGlobalChat()">
-                    <div class="flex items-center space-x-5">
-                        <div class="w-14 h-14 bg-gradient-to-tr from-brand-500 to-brand-400 text-white rounded-full flex items-center justify-center text-2xl shadow-sm"><i class="fa-solid fa-earth-asia"></i></div>
-                        <div class="flex-1">
-                            <h3 class="font-bold text-stone-800 text-lg">Obrolan Lingkungan Global</h3>
-                            <p class="text-xs text-stone-500 mt-1">Klik untuk bergabung bersama komunitas...</p>
+            <div id="view-messages" class="view-section hidden fade-in h-full w-full overflow-y-auto">
+                <div class="max-w-2xl mx-auto pt-4 px-4 pb-6">
+                    <div class="bg-white rounded-[2rem] shadow-sm p-5 border border-beige-100 cursor-pointer hover:bg-brand-50 transition" onclick="openGlobalChat()">
+                        <div class="flex items-center space-x-5">
+                            <div class="w-14 h-14 bg-gradient-to-tr from-brand-500 to-brand-400 text-white rounded-full flex items-center justify-center text-2xl shadow-sm"><i class="fa-solid fa-earth-asia"></i></div>
+                            <div class="flex-1">
+                                <h3 class="font-bold text-stone-800 text-lg">Obrolan Lingkungan Global</h3>
+                                <p class="text-xs text-stone-500 mt-1">Klik untuk bergabung bersama komunitas...</p>
+                            </div>
+                            <i class="fa-solid fa-chevron-right text-stone-300"></i>
                         </div>
-                        <i class="fa-solid fa-chevron-right text-stone-300"></i>
                     </div>
                 </div>
             </div>
 
-            <!-- CHAT DETAIL VIEW: Ditambahkan lengkungan bawah (rounded-b-[2rem]) agar senada dengan navigasi -->
+            <!-- CHAT DETAIL VIEW (Layout Flex Anti Tertutup Keyboard) -->
             <div id="view-chat-detail" class="view-section hidden fade-in h-full flex flex-col bg-white rounded-b-[2rem] md:rounded-[2rem] md:my-4 md:mx-auto md:max-w-4xl border overflow-hidden shadow-sm">
                 <div class="p-5 border-b border-beige-100 flex items-center space-x-4 bg-white shrink-0 shadow-sm rounded-t-[2rem]">
                     <button onclick="closeGlobalChat()" class="text-stone-500 hover:text-brand-600 p-2 rounded-full hover:bg-beige-50 transition w-10 h-10 flex items-center justify-center"><i class="fa-solid fa-arrow-left text-lg"></i></button>
@@ -185,29 +192,31 @@
             </div>
 
             <!-- PROFILE VIEW -->
-            <div id="view-profile" class="view-section hidden fade-in max-w-2xl mx-auto pt-4 px-4 pb-6">
-                <div class="bg-white rounded-[2.5rem] p-6 md:p-8 shadow-sm border border-beige-100 mb-8">
-                    <div class="flex items-center space-x-6 mb-8">
-                        <div class="flex items-center justify-center w-24 h-24 rounded-full border-4 border-brand-100 shadow-md overflow-hidden shrink-0">
-                            <img id="main-profile-avatar" src="https://ui-avatars.com/api/?name=Anda&background=ff7a59&color=fff&size=256" class="w-full h-full object-cover">
+            <div id="view-profile" class="view-section hidden fade-in h-full w-full overflow-y-auto">
+                <div class="max-w-2xl mx-auto pt-4 px-4 pb-6">
+                    <div class="bg-white rounded-[2.5rem] p-6 md:p-8 shadow-sm border border-beige-100 mb-8">
+                        <div class="flex items-center space-x-6 mb-8">
+                            <div class="flex items-center justify-center w-24 h-24 rounded-full border-4 border-brand-100 shadow-md overflow-hidden shrink-0">
+                                <img id="main-profile-avatar" src="https://ui-avatars.com/api/?name=Anda&background=ff7a59&color=fff&size=256" class="w-full h-full object-cover">
+                            </div>
+                            <div class="flex-1 grid grid-cols-3 gap-2 text-center text-stone-800 bg-beige-50 p-4 rounded-[1.5rem]">
+                                <div><p class="font-bold text-xl" id="profile-post-count">0</p><p class="text-[10px] text-stone-500 font-bold uppercase tracking-widest mt-1">Posts</p></div>
+                                <div><p class="font-bold text-xl" id="profile-challenges-done">0</p><p class="text-[10px] text-stone-500 font-bold uppercase tracking-widest mt-1">Aksi</p></div>
+                                <div><p class="font-bold text-xl">124</p><p class="text-[10px] text-stone-500 font-bold uppercase tracking-widest mt-1">Pengikut</p></div>
+                            </div>
                         </div>
-                        <div class="flex-1 grid grid-cols-3 gap-2 text-center text-stone-800 bg-beige-50 p-4 rounded-[1.5rem]">
-                            <div><p class="font-bold text-xl" id="profile-post-count">0</p><p class="text-[10px] text-stone-500 font-bold uppercase tracking-widest mt-1">Posts</p></div>
-                            <div><p class="font-bold text-xl" id="profile-challenges-done">0</p><p class="text-[10px] text-stone-500 font-bold uppercase tracking-widest mt-1">Aksi</p></div>
-                            <div><p class="font-bold text-xl">124</p><p class="text-[10px] text-stone-500 font-bold uppercase tracking-widest mt-1">Fans</p></div>
-                        </div>
+                        <h3 class="font-bold text-xl text-stone-800 flex items-center" id="profile-name-display">EcoUser_8271</h3>
+                        <p class="text-xs text-brand-600 font-bold bg-brand-50 inline-block px-3 py-1.5 rounded-full mt-2 mb-3" id="profile-username-handle">@ecouser</p>
+                        <p class="text-sm text-stone-500 mb-6 leading-relaxed" id="profile-bio-display">Menjaga bumi satu langkah kecil.</p>
+                        <button onclick="openModal('modal-edit-profile')" class="w-full bg-beige-100 hover:bg-beige-200 transition py-3.5 rounded-full font-bold text-sm text-stone-700 active:scale-95 transform">Edit Profil</button>
                     </div>
-                    <h3 class="font-bold text-xl text-stone-800 flex items-center" id="profile-name-display">EcoUser_8271</h3>
-                    <p class="text-xs text-brand-600 font-bold bg-brand-50 inline-block px-3 py-1.5 rounded-full mt-2 mb-3" id="profile-username-handle">@ecouser</p>
-                    <p class="text-sm text-stone-500 mb-6 leading-relaxed" id="profile-bio-display">Menjaga bumi satu langkah kecil.</p>
-                    <button onclick="openModal('modal-edit-profile')" class="w-full bg-beige-100 hover:bg-beige-200 transition py-3.5 rounded-full font-bold text-sm text-stone-700 active:scale-95 transform">Edit Profil</button>
+                    <div id="profile-grid-content" class="grid grid-cols-3 gap-2 pb-10"></div>
                 </div>
-                <div id="profile-grid-content" class="grid grid-cols-3 gap-2 pb-10"></div>
             </div>
         </main>
 
         <!-- DRAGGABLE PET WIDGET -->
-        <div id="floating-pet-widget" class="fixed bottom-6 right-4 z-[60] bg-white p-3 rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-brand-100 pet-bounce cursor-pointer flex items-center space-x-2 group touch-none" style="user-select: none;">
+        <div id="floating-pet-widget" class="fixed bottom-24 md:bottom-6 right-4 z-[60] bg-white p-3 rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-brand-100 pet-bounce cursor-pointer flex items-center space-x-2 group touch-none" style="user-select: none;">
             <div id="floating-pet-icon" class="text-3xl pointer-events-none">🌱</div>
             <span class="hidden group-hover:block text-xs font-bold text-brand-600 px-2 pointer-events-none">Level <span id="pet-level-float">1</span></span>
         </div>
@@ -242,18 +251,18 @@
 
     <!-- MODAL KOMENTAR -->
     <div id="modal-comment" class="fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-50 hidden flex items-end sm:items-center justify-center p-0 md:p-4 transition-opacity">
-        <div class="bg-white w-full max-w-md rounded-t-[2.5rem] sm:rounded-[2.5rem] p-6 md:p-8 transform transition-all translate-y-full sm:translate-y-0 shadow-2xl" id="modal-comment-content">
-            <div class="flex justify-between items-center mb-4 border-b border-beige-100 pb-4">
+        <div class="bg-white w-full max-w-md rounded-t-[2.5rem] sm:rounded-[2.5rem] p-6 md:p-8 transform transition-all translate-y-full sm:translate-y-0 shadow-2xl flex flex-col h-[70vh] sm:h-auto" id="modal-comment-content">
+            <div class="flex justify-between items-center mb-4 border-b border-beige-100 pb-4 shrink-0">
                 <h3 class="font-bold text-xl text-stone-800">Komentar</h3>
                 <button onclick="closeModal('modal-comment')" class="text-stone-400 bg-beige-50 hover:bg-beige-100 w-10 h-10 flex items-center justify-center rounded-full transition"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
-            <div id="comment-list-container" class="space-y-4 mb-4 max-h-60 overflow-y-auto pr-2">
+            <div id="comment-list-container" class="space-y-4 mb-4 overflow-y-auto flex-1 pr-2">
                 <div class="text-center text-stone-400 text-sm py-6 bg-beige-50 rounded-[1.5rem]" id="empty-comment-msg">Belum ada komentar. Jadilah yang pertama!</div>
             </div>
-            <div class="flex items-center space-x-3 pt-4 border-t border-beige-100">
+            <div class="flex items-center space-x-3 pt-4 border-t border-beige-100 shrink-0">
                 <img src="https://ui-avatars.com/api/?name=Anda&background=ff7a59&color=fff" class="w-10 h-10 rounded-full shadow-sm" id="my-comment-avatar">
-                <input type="text" id="new-comment-text" placeholder="Tambahkan komentar..." class="flex-1 bg-beige-50 border-none rounded-full py-3 px-5 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-500 text-sm transition shadow-inner" onkeypress="if(event.key === 'Enter') submitComment()">
-                <button onclick="submitComment()" class="text-brand-600 hover:text-brand-700 transition w-10 h-10 rounded-full flex items-center justify-center shadow-md active:scale-95 transform"><i class="fa-solid fa-paper-plane"></i></button>
+                <input type="text" id="new-comment-text" placeholder="Tambahkan komentar..." class="flex-1 bg-beige-50 border-none rounded-full py-3 px-5 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-300 text-sm transition shadow-inner" onkeypress="if(event.key === 'Enter') submitComment()">
+                <button onclick="submitComment()" class="bg-brand-500 text-white hover:bg-brand-600 transition w-10 h-10 rounded-full flex items-center justify-center shadow-md active:scale-95 transform"><i class="fa-solid fa-paper-plane"></i></button>
             </div>
         </div>
     </div>
@@ -331,7 +340,7 @@
     <!-- SCRIPT FIREBASE & LOGIC -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // CONFIG FIREBASE
@@ -348,18 +357,15 @@
         // CONFIG KIMI AI
         const kimiApiKey = "knkt-UVdl8puDh2MGS6Ivp2duOgZD"; 
         
-        const appId = 'socialife-global';
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'socialife-global';
         let firebaseApp, auth, db, currentUser = null;
         let useFirebase = true;
 
-        // ----------------------------------------------------
-        // PERSISTENSI DATA & DAILY RESET LOGIC
-        // ----------------------------------------------------
+        // PERSISTENSI DATA LOKAL & DAILY RESET
         let appState = JSON.parse(localStorage.getItem('socialife_state'));
-        const todayDate = new Date().toDateString(); // Contoh: "Thu Apr 23 2026"
+        const todayDate = new Date().toDateString();
 
         if (!appState) {
-            // AKUN BARU
             const randomNum = Math.floor(1000 + Math.random() * 9000); 
             appState = { 
                 points: 0, exp: 0, level: 1, aksiCount: 0,    
@@ -369,13 +375,10 @@
                 userBio: "Menjaga bumi satu langkah kecil setiap harinya. 🌱"
             };
         } else {
-            // AKUN LAMA - CEK DAILY RESET
             if (appState.lastLoginDate !== todayDate) {
-                appState.completedChallengeIds = []; // RESET TANTANGAN HARIAN
+                appState.completedChallengeIds = []; 
                 appState.lastLoginDate = todayDate;  
-                console.log("Hari baru: Tantangan harian di-refresh!");
             }
-            // Pastikan field baru tersedia
             if (!appState.completedChallengeIds) appState.completedChallengeIds = [];
         }
         localStorage.setItem('socialife_state', JSON.stringify(appState));
@@ -471,7 +474,7 @@
             document.getElementById('profile-post-count').innerText = userPostCount;
         };
 
-        // INTERAKSI
+        // INTERAKSI (LIKE & KOMENTAR & POST)
         window.toggleLike = async (id, btn) => {
             if(!id || !currentUser) return;
             const icon = btn.querySelector('i');
@@ -483,11 +486,76 @@
             try { await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'posts', id), { likes: likes }); } catch(e){}
         };
 
+        let currentCommentPostId = null;
+        let currentCommentBtn = null;
+
+        window.openCommentModal = (postId, btn) => {
+            currentCommentPostId = postId;
+            currentCommentBtn = btn;
+            document.getElementById('new-comment-text').value = '';
+            document.getElementById('my-comment-avatar').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(appState.userName)}&background=ff7a59&color=fff`;
+            const container = document.getElementById('comment-list-container');
+            container.innerHTML = '<div class="text-center text-stone-400 text-sm py-6 bg-beige-50 rounded-[1.5rem]" id="empty-comment-msg">Belum ada komentar. Jadilah yang pertama!</div>';
+            window.openModal('modal-comment');
+        };
+
+        window.submitComment = async () => {
+            const input = document.getElementById('new-comment-text');
+            const text = input.value.trim(); if(!text) return;
+            
+            let newCommentCount = 1;
+            if(currentCommentBtn) {
+                const countSpan = currentCommentBtn.querySelector('span');
+                newCommentCount = (parseInt(countSpan.innerText) || 0) + 1;
+                countSpan.innerText = newCommentCount;
+            }
+
+            const container = document.getElementById('comment-list-container');
+            const emptyMsg = document.getElementById('empty-comment-msg');
+            if (emptyMsg) emptyMsg.style.display = 'none';
+
+            const newCommentHtml = `
+                <div class="flex space-x-3 fade-in mb-4">
+                    <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(appState.userName)}&background=ff7a59&color=fff" class="w-10 h-10 rounded-full shadow-sm">
+                    <div class="bg-beige-50 p-4 rounded-[1.5rem] rounded-tl-sm text-sm flex-1 border border-beige-100">
+                        <p class="font-bold text-xs text-stone-800 mb-1">${appState.userName}</p>
+                        <p class="text-stone-700 leading-relaxed">${text}</p>
+                    </div>
+                </div>`;
+            container.insertAdjacentHTML('beforeend', newCommentHtml);
+            container.scrollTop = container.scrollHeight;
+            input.value = '';
+            window.showToast("Komentar ditambahkan!");
+
+            if (currentUser && currentCommentPostId && !currentCommentPostId.startsWith('local')) {
+                try { await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'posts', currentCommentPostId), { comments: newCommentCount }); } 
+                catch (e) { console.error(e); }
+            }
+        };
+
+        let currentPostImageBase64 = null;
         window.submitPost = async () => {
             const text = document.getElementById('new-post-text').value;
             if(!text.trim() && !currentPostImageBase64) return;
             const newPost = { authorName: appState.userName, authorAvatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(appState.userName)}&background=ff7a59&color=fff`, text, image: currentPostImageBase64, timestamp: Date.now(), likes: 0, comments: 0 };
-            if(currentUser) await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'posts'), newPost);
+            
+            // Add Optimistically to top
+            const container = document.getElementById('feed-container');
+            const html = `
+                <div class="bg-white p-6 mb-6 shadow-sm rounded-[2rem] border border-beige-100 fade-in">
+                    <div class="flex items-center space-x-4 mb-5">
+                        <img src="${newPost.authorAvatar}" class="w-12 h-12 rounded-full border-2 border-brand-50 shadow-sm">
+                        <div><p class="font-bold text-base text-stone-800">${newPost.authorName}</p><p class="text-[10px] text-brand-500 uppercase tracking-widest font-bold">Baru Saja</p></div>
+                    </div>
+                    <p class="text-sm mb-5 text-stone-700 leading-relaxed">${newPost.text}</p>
+                    ${newPost.image ? `<img src="${newPost.image}" class="w-full rounded-[1.5rem] mb-5 border border-beige-100 object-cover shadow-sm">` : ''}
+                </div>`;
+            container.insertAdjacentHTML('afterbegin', html);
+
+            if(currentUser) {
+                try { await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'posts'), newPost); } 
+                catch(e) { console.error(e); }
+            }
             window.closeModal('modal-post'); document.getElementById('new-post-text').value = ''; window.removePostImage(); window.showToast("🎉 Berhasil dipos!");
         };
 
@@ -497,22 +565,34 @@
             if(e.target.files[0]) r.readAsDataURL(e.target.files[0]);
         };
 
-        window.submitComment = async () => {
-            const input = document.getElementById('new-comment-text');
+        // GLOBAL CHAT & KIMI AI
+        window.sendGlobalMessage = async function() {
+            const input = document.getElementById('dm-input');
             const text = input.value.trim(); if(!text) return;
-            const container = document.getElementById('comment-list-container');
-            const emptyMsg = document.getElementById('empty-comment-msg');
-            if(emptyMsg) emptyMsg.style.display = 'none';
-            const html = `
-                <div class="flex space-x-3 fade-in mb-4">
-                    <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(appState.userName)}&background=ff7a59&color=fff" class="w-10 h-10 rounded-full shadow-sm">
-                    <div class="bg-beige-50 p-4 rounded-[1.5rem] rounded-tl-sm text-sm flex-1 border border-beige-100"><p class="font-bold text-xs text-stone-800">${appState.userName}</p><p class="text-stone-700 leading-relaxed">${text}</p></div>
-                </div>`;
-            container.insertAdjacentHTML('beforeend', html); container.scrollTop = container.scrollHeight;
-            input.value = ''; window.showToast("Komentar ditambahkan!");
+            input.value = ''; 
+            
+            // Optimistic update
+            const dmBox = document.getElementById('dm-messages');
+            dmBox.innerHTML += `<div class="flex justify-end mb-3 fade-in"><div class="bg-brand-500 text-white rounded-2xl rounded-tr-sm py-2 px-3 text-sm max-w-[80%] shadow-sm">${text}</div></div>`;
+            dmBox.scrollTop = dmBox.scrollHeight;
+
+            if (currentUser) {
+                try { await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'global_chat'), { text: text, userId: currentUser.uid, authorName: appState.userName, timestamp: Date.now() }); } 
+                catch(e) { console.error(e); }
+            }
         };
 
-        // KIMI AI INTEGRATION
+        window.renderGlobalChat = function(messages) {
+            const dmBox = document.getElementById('dm-messages');
+            dmBox.innerHTML = '<div class="flex justify-center mb-4"><span class="text-[10px] text-stone-500 bg-beige-200 px-3 py-1 rounded-full font-semibold">Ruang Obrolan Sedunia</span></div>';
+            messages.forEach(msg => {
+                const isMe = msg.userId === (currentUser ? currentUser.uid : '');
+                if (isMe) { dmBox.innerHTML += `<div class="flex justify-end mb-3 fade-in"><div class="bg-brand-500 text-white rounded-2xl rounded-tr-sm py-2 px-3 text-sm max-w-[80%] shadow-sm">${msg.text}</div></div>`; } 
+                else { dmBox.innerHTML += `<div class="flex justify-start mb-3 fade-in"><div class="flex flex-col max-w-[80%]"><span class="text-[10px] text-stone-500 ml-2 mb-0.5 font-bold">${msg.authorName}</span><div class="bg-white border border-beige-100 text-stone-800 rounded-2xl rounded-tl-sm py-2 px-3 text-sm shadow-sm">${msg.text}</div></div></div>`; }
+            });
+            dmBox.scrollTop = dmBox.scrollHeight;
+        };
+
         window.fetchKimiAPI = async function(promptText, imageType = false, customSystemPrompt = null) {
             const url = `https://konektika.web.id/v1/chat/completions`; 
             let messages = [{ role: "system", content: customSystemPrompt || "Kamu asisten SociaLife." }];
@@ -557,13 +637,14 @@
             const chatBox = document.getElementById('bot-messages');
             const tid = 'typing-' + Date.now();
             chatBox.innerHTML += `<div id="${tid}" class="flex justify-start mb-4 fade-in text-brand-500 font-bold"><i class="fa-solid fa-robot mr-2"></i> ...</div>`;
+            chatBox.scrollTop = chatBox.scrollHeight;
             const res = await window.fetchKimiAPI(prompt, type);
             document.getElementById(tid).remove();
             chatBox.innerHTML += `<div class="flex justify-start mb-4 fade-in"><div class="bg-white border border-beige-200 text-stone-800 rounded-2xl rounded-tl-sm py-3 px-5 text-sm max-w-[85%] shadow-sm leading-relaxed">${res}</div></div>`;
             chatBox.scrollTop = chatBox.scrollHeight;
         }
 
-        // TANTANGAN
+        // TANTANGAN LOGIC
         window.renderChallenges = () => {
             const list = document.getElementById('challenge-list');
             list.innerHTML = '';
@@ -627,10 +708,10 @@
         const doD = (e) => { if (!isDragging) return; const cX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX; const cY = e.type.includes('mouse') ? e.clientY : e.touches[0].clientY; const dx = cX - dragX, dy = cY - dragY; if (Math.abs(dx) > 5 || Math.abs(dy) > 5) hasDragged = true; let nL = initL + dx, nT = initT + dy; const mX = window.innerWidth - petWidget.offsetWidth, mY = window.innerHeight - petWidget.offsetHeight; petWidget.style.bottom = 'auto'; petWidget.style.right = 'auto'; petWidget.style.left = Math.max(0, Math.min(nL, mX)) + 'px'; petWidget.style.top = Math.max(0, Math.min(nT, mY)) + 'px'; if (e.type.includes('touch')) e.preventDefault(); };
         const stopD = () => { if (!isDragging) return; isDragging = false; petWidget.classList.add('pet-bounce'); petWidget.style.transition = ''; if (!hasDragged) window.openModal('modal-pet'); else localStorage.setItem('petPos', JSON.stringify({ x: petWidget.getBoundingClientRect().left, y: petWidget.getBoundingClientRect().top })); };
 
-        petWidget.addEventListener('mousedown', startD); document.addEventListener('mousemove', doD); document.addEventListener('mouseup', stopD);
-        petWidget.addEventListener('touchstart', startD); document.addEventListener('touchmove', doD, { passive: false }); document.addEventListener('touchend', stopD);
+        petWidget.addEventListener('mousedown', startD); document.addEventListener('mousemove', doD, { passive: false }); document.addEventListener('mouseup', stopD);
+        petWidget.addEventListener('touchstart', startD, { passive: true }); document.addEventListener('touchmove', doD, { passive: false }); document.addEventListener('touchend', stopD);
 
-        // GLOBALS
+        // UI UTILS
         window.switchTab = (id, el) => { document.querySelectorAll('.view-section').forEach(v => v.classList.add('hidden')); document.getElementById('view-'+id).classList.remove('hidden'); document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active')); el.classList.add('active'); if(document.getElementById('desktop-page-title')) document.getElementById('desktop-page-title').innerText = id.charAt(0).toUpperCase() + id.slice(1); };
         window.openModal = (id) => { document.getElementById(id).classList.remove('hidden'); setTimeout(() => document.getElementById(id + '-content').classList.remove('translate-y-full', 'scale-95'), 10); };
         window.closeModal = (id) => { document.getElementById(id + '-content').classList.add('translate-y-full', 'scale-95'); setTimeout(() => document.getElementById(id).classList.add('hidden'), 300); };
@@ -640,22 +721,52 @@
         window.closeGlobalChat = () => { document.querySelectorAll('.view-section').forEach(v => v.classList.add('hidden')); document.getElementById('view-messages').classList.remove('hidden'); };
         window.removePostImage = () => { currentPostImageBase64 = null; document.getElementById('post-image-preview').classList.add('hidden'); };
 
-        // FIREBASE CONNECT
-        onAuthStateChanged(auth, (u) => {
-            if (u) {
-                currentUser = u;
-                onSnapshot(doc(db, 'artifacts', appId, 'users', u.uid, 'profile', 'main'), (s) => { if(s.exists()){ appState = {...appState, ...s.data()}; localStorage.setItem('socialife_state', JSON.stringify(appState)); window.updateStats(); } });
-                onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'posts'), (s) => { const ps = []; s.forEach(d => ps.push({id: d.id, ...d.data()})); ps.sort((a,b) => b.timestamp - a.timestamp); window.renderPosts(ps); });
-                onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'global_chat'), (s) => { const ms = []; s.forEach(d => ms.push({id: d.id, ...d.data()})); ms.sort((a,b) => a.timestamp - b.timestamp); window.renderGlobalChat(ms); });
-            }
-        });
-        signInAnonymously(auth);
+        // FIREBASE CONNECT & AUTH FLOW
+        const initApp = async () => {
+            if (auth) {
+                const checkAuth = async () => {
+                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                        try { await signInWithCustomToken(auth, __initial_auth_token); } catch(e) { await signInAnonymously(auth); }
+                    } else {
+                        try { await signInAnonymously(auth); } catch(e) { console.error("Auth gagal", e); }
+                    }
+                };
+                
+                await checkAuth();
 
-        window.updateStats(); window.renderChallenges();
-        setTimeout(async () => {
-            const newsRes = await window.fetchKimiAPI("Berikan 3 baris headline berita lingkungan positif singkat dipisahkan •.", false);
-            if(newsRes) document.getElementById('eco-news-ticker').innerHTML = newsRes;
-        }, 2000);
+                onAuthStateChanged(auth, (user) => {
+                    if (user) {
+                        currentUser = user;
+                        // Ambil Profil dari Cloud
+                        onSnapshot(doc(db, 'artifacts', appId, 'users', user.uid, 'profile', 'main'), (s) => { 
+                            if(s.exists()){ appState = {...appState, ...s.data()}; localStorage.setItem('socialife_state', JSON.stringify(appState)); window.updateStats(); } 
+                        });
+                        // Feed Posts
+                        onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'posts'), (s) => { 
+                            const ps = []; s.forEach(d => ps.push({id: d.id, ...d.data()})); 
+                            ps.sort((a,b) => b.timestamp - a.timestamp); window.renderPosts(ps); 
+                        });
+                        // Global Chat
+                        onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'global_chat'), (s) => { 
+                            const ms = []; s.forEach(d => ms.push({id: d.id, ...d.data()})); 
+                            ms.sort((a,b) => a.timestamp - b.timestamp); window.renderGlobalChat(ms); 
+                        });
+                    }
+                });
+            } else {
+                // Fallback Mode Offline
+                window.renderPosts([]);
+            }
+
+            window.updateStats(); 
+            window.renderChallenges();
+            setTimeout(async () => {
+                const newsRes = await window.fetchKimiAPI("Berikan 3 baris headline berita lingkungan positif singkat dipisahkan •.", false);
+                if(newsRes) document.getElementById('eco-news-ticker').innerHTML = newsRes;
+            }, 2000);
+        };
+
+        window.onload = initApp;
 
     </script>
 </body>
