@@ -359,15 +359,22 @@
         let firebaseApp, auth, db, currentUser = null;
         let useFirebase = true;
 
-        // PERSISTENSI DATA CLOUD & LOKAL
-        let appState = JSON.parse(localStorage.getItem('socialife_state')) || { 
-            points: 450, 
-            exp: 30, 
-            level: 1, 
-            aksiCount: 24,
-            userName: "Pejuang Bumi 🌍",
-            userBio: "Mencintai bumi satu langkah kecil setiap harinya."
-        };
+        // PERSISTENSI DATA CLOUD & LOKAL (Dengan Fitur Akun Baru Otomatis)
+        let appState = JSON.parse(localStorage.getItem('socialife_state'));
+
+        // Cek jika pengguna baru pertama kali masuk
+        if (!appState) {
+            const randomNum = Math.floor(1000 + Math.random() * 9000); // Hasilkan 4 digit angka acak
+            appState = { 
+                points: 0,       // Poin kembali 0 untuk akun baru
+                exp: 0,          // EXP kembali 0
+                level: 1,        // Mulai dari level 1
+                aksiCount: 0,    // Belum ada tantangan yang diselesaikan
+                userName: "EcoUser_" + randomNum, // Nama acak, contoh: EcoUser_8492
+                userBio: "Halo! Saya baru bergabung untuk mulai menjaga bumi kita. 🌱"
+            };
+            localStorage.setItem('socialife_state', JSON.stringify(appState));
+        }
 
         const saveState = async () => {
             localStorage.setItem('socialife_state', JSON.stringify(appState));
