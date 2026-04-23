@@ -328,7 +328,7 @@
         </div>
     </div>
 
-    <!-- Firebase & Core Logic -->
+    <!-- Firebase & Core Logic (Diperbarui dengan Kimi AI) -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
@@ -345,7 +345,9 @@
             appId: "1:369786445975:web:ebfe8a06019761572309d2"
         }; 
 
-        const apiKey = "AIzaSyAiOKxoWlyKt78wx5rn5GbZHJpoa4uHgOc"; 
+        // KONFIGURASI KIMI AI
+        const kimiApiKey = "<YOUR_API_KEY>"; // <-- SILAKAN ISI API KEY KIMI ANDA DI SINI
+        
         const appId = 'socialife-global';
         let firebaseApp, auth, db, currentUser = null;
         let useFirebase = true;
@@ -363,11 +365,9 @@
         const saveState = async () => {
             localStorage.setItem('socialife_state', JSON.stringify(appState));
             window.updateStats();
-            // Simpan Profil ke Firebase Cloud (Realtime Account Data)
             if (useFirebase && currentUser) {
-                try {
-                    await setDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'profile', 'main'), appState);
-                } catch(e) { console.error("Gagal sinkronisasi data cloud", e); }
+                try { await setDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'profile', 'main'), appState); } 
+                catch(e) { console.error("Gagal sinkronisasi data cloud", e); }
             }
         };
 
@@ -396,7 +396,6 @@
             document.getElementById('floating-pet-icon').innerText = petIcons[idx];
             document.getElementById('pet-status').innerText = "LEVEL " + appState.level;
 
-            // Update Semua Teks Profil & Avatar secara Real-time
             document.getElementById('profile-name-display').innerText = appState.userName;
             document.getElementById('profile-bio-display').innerText = appState.userBio;
             document.getElementById('edit-profile-name').value = appState.userName;
@@ -450,7 +449,6 @@
                 </div>`;
                 container.insertAdjacentHTML('beforeend', html);
 
-                // Sinkronisasi otomatis gambar yang Anda post ke halaman Profil
                 if(p.authorName === appState.userName) {
                     userPostCount++;
                     if(p.image) {
@@ -587,7 +585,7 @@
         window.saveProfile = () => { 
             appState.userName = document.getElementById('edit-profile-name').value;
             appState.userBio = document.getElementById('edit-profile-bio').value;
-            saveState(); // Otomatis simpan ke Cloud dan Lokal
+            saveState(); 
             window.closeModal('modal-edit-profile');
             window.showToast("Profil berhasil diperbarui!");
         };
@@ -654,7 +652,7 @@
         async function verifyChallengeWithAI(base64Image) {
             const challenge = challenges.find(c => c.id === currentChallengeValidationId);
             const systemPrompt = `Kamu juri AI SociaLife. Verifikasi foto tantangan: "${challenge.title}". Jawab STATUS: VALID atau STATUS: TIDAK VALID.`;
-            const responseText = await window.fetchGeminiAPI("Periksa foto ini.", base64Image, systemPrompt);
+            const responseText = await window.fetchKimiAPI("Periksa foto ini.", base64Image, systemPrompt);
             
             document.getElementById('cv-loading').classList.add('hidden');
             const resultDiv = document.getElementById('cv-result'); resultDiv.classList.remove('hidden');
@@ -675,7 +673,7 @@
             }
         }
 
-        // GLOBAL CHAT & GEMINI AI
+        // GLOBAL CHAT
         window.sendGlobalMessage = async function() {
             const input = document.getElementById('dm-input');
             const text = input.value.trim(); if(!text) return;
@@ -697,20 +695,61 @@
             dmBox.scrollTop = dmBox.scrollHeight;
         };
 
-        window.fetchGeminiAPI = async function(promptText, base64Image = null, customSystemPrompt = null) {
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-            let parts = [{ text: promptText }];
-            if(base64Image) {
-                const mimeMatch = base64Image.match(/data:(.*?);base64,/);
-                if(mimeMatch) parts.push({ inlineData: { mimeType: mimeMatch[1], data: base64Image.split(',')[1] } });
+        // ==========================================
+        // INTEGRASI KIMI AI (SESUAI DENGAN DOKUMENTASI GAMBAR)
+        // ==========================================
+        window.fetchKimiAPI = async function(promptText, base64Image = null, customSystemPrompt = null) {
+            // Endpoint standar untuk OpenAI-compatible API biasanya membutuhkan /chat/completions di belakang base URL
+            const url = `https://konektika.web.id/v1/chat/completions`; 
+            
+            let messages = [];
+            
+            // Tambahkan System Prompt jika ada
+            if (customSystemPrompt) {
+                messages.push({ role: "system", content: customSystemPrompt });
+            } else {
+                messages.push({ role: "system", content: "Kamu adalah EcoBot dari SociaLife." });
             }
-            const payload = { contents: [{ parts: parts }], systemInstruction: { parts: [{ text: customSystemPrompt || "Kamu adalah EcoBot dari SociaLife." }] } };
+
+            // Struktur konten pesan
+            let messageContent = promptText;
+            if (base64Image) {
+                // Jika ada gambar, gunakan struktur Vision array
+                messageContent = [
+                    { type: "text", text: promptText },
+                    { type: "image_url", image_url: { url: base64Image } }
+                ];
+            }
+            
+            messages.push({ role: "user", content: messageContent });
+
+            const payload = {
+                model: "kimi-pro",
+                messages: messages,
+                stream: false // Di-set false agar respons utuh (bukan chunked stream) untuk kemudahan UI
+            };
+
             try {
-                const response = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                const response = await fetch(url, { 
+                    method: 'POST', 
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${kimiApiKey}` // <--- AUTHENTIKASI SESUAI GAMBAR
+                    }, 
+                    body: JSON.stringify(payload) 
+                });
+                
                 const result = await response.json();
-                if (result.candidates) return result.candidates[0].content.parts[0].text.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
+                
+                if (result.choices && result.choices.length > 0) {
+                    return result.choices[0].message.content.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
+                }
+                
                 return "Sistem AI sedang sibuk 🌍";
-            } catch (error) { return "Koneksi terganggu 📡"; }
+            } catch (error) { 
+                console.error("API Error:", error);
+                return "Koneksi terganggu 📡"; 
+            }
         };
 
         window.sendBotMessage = function() {
@@ -742,7 +781,8 @@
             chatBox.innerHTML += `<div id="${typingId}" class="flex justify-start mb-4 fade-in"><div class="bg-white border border-beige-200 text-brand-500 rounded-2xl rounded-tl-sm py-3 px-5 text-lg shadow-sm flex space-x-1 items-center"><i class="fa-solid fa-robot mr-2 text-sm text-stone-400"></i><span class="animate-bounce">.</span><span class="animate-bounce" style="animation-delay: 0.1s">.</span><span class="animate-bounce" style="animation-delay: 0.2s">.</span></div></div>`;
             chatBox.scrollTop = chatBox.scrollHeight;
 
-            const aiResponseText = await window.fetchGeminiAPI(prompt, base64Image);
+            const aiResponseText = await window.fetchKimiAPI(prompt, base64Image); // Menggunakan Kimi API
+            
             document.getElementById(typingId).remove();
             chatBox.innerHTML += `<div class="flex justify-start mb-4 fade-in"><div class="bg-white border border-beige-200 text-stone-800 rounded-2xl rounded-tl-sm py-3 px-5 text-sm max-w-[85%] shadow-sm leading-relaxed">${aiResponseText}</div></div>`;
             chatBox.scrollTop = chatBox.scrollHeight;
@@ -751,7 +791,7 @@
         async function fetchLiveEcoNews() {
             const ticker = document.getElementById('eco-news-ticker');
             try {
-                const res = await window.fetchGeminiAPI("Berikan 3 baris headline berita lingkungan positif. Pisahkan dengan tanda •.", null, "Asisten Berita SociaLife.");
+                const res = await window.fetchKimiAPI("Berikan 3 baris headline berita lingkungan positif. Pisahkan dengan tanda •.", null, "Asisten Berita SociaLife.");
                 if (res) ticker.innerHTML = res;
             } catch(e) { }
         }
