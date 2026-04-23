@@ -359,21 +359,27 @@
         let firebaseApp, auth, db, currentUser = null;
         let useFirebase = true;
 
-        // PERSISTENSI DATA CLOUD & LOKAL (Dengan Fitur Akun Baru Otomatis)
+        // PERSISTENSI DATA CLOUD & LOKAL (Dengan Fitur Akun Baru Otomatis & Tantangan)
         let appState = JSON.parse(localStorage.getItem('socialife_state'));
 
         // Cek jika pengguna baru pertama kali masuk
         if (!appState) {
-            const randomNum = Math.floor(1000 + Math.random() * 9000); // Hasilkan 4 digit angka acak
+            const randomNum = Math.floor(1000 + Math.random() * 9000); 
             appState = { 
-                points: 0,       // Poin kembali 0 untuk akun baru
-                exp: 0,          // EXP kembali 0
-                level: 1,        // Mulai dari level 1
-                aksiCount: 0,    // Belum ada tantangan yang diselesaikan
-                userName: "EcoUser_" + randomNum, // Nama acak, contoh: EcoUser_8492
+                points: 0,       
+                exp: 0,          
+                level: 1,        
+                aksiCount: 0,    
+                completedChallengeIds: [], // Menyimpan riwayat tantangan
+                userName: "EcoUser_" + randomNum, 
                 userBio: "Halo! Saya baru bergabung untuk mulai menjaga bumi kita. 🌱"
             };
             localStorage.setItem('socialife_state', JSON.stringify(appState));
+        }
+
+        // Penanganan untuk akun lama agar tidak error
+        if (!appState.completedChallengeIds) {
+            appState.completedChallengeIds = [];
         }
 
         const saveState = async () => {
@@ -392,8 +398,10 @@
         } catch(e) { useFirebase = false; }
 
         const challenges = [
-            { id: 1, title: "Bawa Botol Minum", points: 20, desc: "Kurangi sampah botol plastik.", done: false, icon: "fa-bottle-water" },
-            { id: 8, title: "Tanam Tanaman Baru", points: 100, desc: "Tanam bibit pohon hari ini.", done: false, icon: "fa-seedling" }
+            { id: 1, title: "Bawa Botol Minum", points: 20, desc: "Kurangi sampah botol plastik.", icon: "fa-bottle-water" },
+            { id: 2, title: "Gunakan Transportasi Umum", points: 50, desc: "Naik bus, KRL, atau angkot.", icon: "fa-bus" },
+            { id: 3, title: "Habiskan Makanan", points: 25, desc: "Cegah terjadinya food waste.", icon: "fa-utensils" },
+            { id: 8, title: "Tanam Tanaman Baru", points: 100, desc: "Tanam bibit pohon hari ini.", icon: "fa-seedling" }
         ];
 
         // STATS & SINKRONISASI UI PROFIL
@@ -614,13 +622,16 @@
             window.showToast(`Tautan ${type} berhasil disalin! 🔗`);
         };
 
-        // CHALLENGES
+        // CHALLENGES - DIPERBAIKI MENGGUNAKAN DATA APPSTATE
         window.renderChallenges = function() {
             const list = document.getElementById('challenge-list');
             list.innerHTML = '';
             challenges.forEach(c => {
-                const buttonClass = c.done ? "bg-beige-100 text-stone-400 cursor-not-allowed" : "bg-brand-50 text-brand-600 hover:bg-brand-500 hover:text-white shadow-sm transition-all";
-                const buttonText = c.done ? '<i class="fa-solid fa-check mr-1"></i> Selesai' : 'Selesaikan';
+                // Cek apakah ID tantangan ini sudah ada di daftar selesai
+                const isDone = appState.completedChallengeIds.includes(c.id);
+                
+                const buttonClass = isDone ? "bg-beige-100 text-stone-400 cursor-not-allowed" : "bg-brand-50 text-brand-600 hover:bg-brand-500 hover:text-white shadow-sm transition-all";
+                const buttonText = isDone ? '<i class="fa-solid fa-check mr-1"></i> Selesai' : 'Selesaikan';
                 const html = `
                     <div class="bg-white p-5 rounded-[1.5rem] border border-beige-100 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between transition hover:shadow-md">
                         <div class="flex items-center space-x-4 mb-4 sm:mb-0">
@@ -631,7 +642,7 @@
                                 <p class="text-[10px] font-black text-orange-500 mt-2 bg-orange-50 inline-block px-3 py-1 rounded-full tracking-widest">+${c.points} POIN</p>
                             </div>
                         </div>
-                        <button onclick="openChallengeValidation(${c.id})" class="w-full sm:w-auto px-6 py-3 rounded-full text-sm font-bold active:scale-95 transform ${buttonClass}" ${c.done ? 'disabled' : ''}>${buttonText}</button>
+                        <button onclick="openChallengeValidation(${c.id})" class="w-full sm:w-auto px-6 py-3 rounded-full text-sm font-bold active:scale-95 transform ${buttonClass}" ${isDone ? 'disabled' : ''}>${buttonText}</button>
                     </div>`;
                 list.insertAdjacentHTML('beforeend', html);
             });
@@ -639,7 +650,10 @@
 
         let currentChallengeValidationId = null;
         window.openChallengeValidation = function(id) {
-            const challenge = challenges.find(c => c.id === id); if(challenge.done) return;
+            const challenge = challenges.find(c => c.id === id); 
+            // Cek dua kali, hentikan jika sudah selesai
+            if(!challenge || appState.completedChallengeIds.includes(id)) return;
+            
             currentChallengeValidationId = id;
             document.getElementById('cv-title').innerText = challenge.title;
             document.getElementById('cv-upload-area').classList.remove('hidden');
@@ -665,20 +679,28 @@
 
         async function verifyChallengeWithAI(base64Image) {
             const challenge = challenges.find(c => c.id === currentChallengeValidationId);
-            const systemPrompt = `Kamu juri AI SociaLife. Verifikasi tantangan: "${challenge.title}". Jawab STATUS: VALID atau STATUS: TIDAK VALID.`;
-            const responseText = await window.fetchKimiAPI("Periksa foto ini.", 'challenge', systemPrompt); // MENGUBAH PARAMETER KE 'challenge'
+            const systemPrompt = `Kamu juri AI SociaLife. Verifikasi foto tantangan: "${challenge.title}". Jawab STATUS: VALID atau STATUS: TIDAK VALID.`;
+            const responseText = await window.fetchKimiAPI("Periksa foto ini.", 'challenge', systemPrompt); 
             
             document.getElementById('cv-loading').classList.add('hidden');
             const resultDiv = document.getElementById('cv-result'); resultDiv.classList.remove('hidden');
 
-            // MEMPERBAIKI PENGECEKAN KATA VALID
-            if(responseText && responseText.includes("STATUS: VALID")) {
+            if(responseText && responseText.includes("VALID") && !responseText.includes("TIDAK")) {
                 resultDiv.className = "p-4 rounded-xl mb-4 text-sm font-bold text-center bg-green-50 text-green-700 border border-green-200 shadow-sm";
                 resultDiv.innerHTML = `<i class="fa-solid fa-circle-check mb-2 text-3xl"></i><br>Validasi Berhasil!`;
                 setTimeout(() => {
                     const c = challenges.find(x => x.id === currentChallengeValidationId);
-                    c.done = true; appState.points += c.points; appState.aksiCount++;
-                    saveState(); window.renderChallenges(); window.closeModal('modal-challenge');
+                    
+                    // Pastikan tantangan belum pernah ditambahkan sebelumnya
+                    if (!appState.completedChallengeIds.includes(c.id)) {
+                        appState.completedChallengeIds.push(c.id);
+                        appState.points += c.points; 
+                        appState.aksiCount++;
+                        saveState(); 
+                        window.renderChallenges(); 
+                    }
+                    
+                    window.closeModal('modal-challenge');
                     window.showToast(`+${c.points} Poin didapat!`);
                 }, 2500);
             } else {
