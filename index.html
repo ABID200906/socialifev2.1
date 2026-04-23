@@ -65,25 +65,34 @@
             <h1 class="text-2xl font-bold hidden lg:block tracking-tight">SociaLife</h1>
         </div>
 
-        <button onclick="switchTab('feed', this)" class="nav-btn active flex flex-col md:flex-row items-center md:justify-center lg:justify-start w-full h-full md:h-auto md:py-4 lg:px-6 space-y-1 md:space-y-0 hover:text-brand-500 hover:bg-brand-50 transition md:rounded-r-full lg:rounded-full md:mx-2 lg:mx-3">
+        <!-- Tombol Beranda -->
+        <button onclick="switchTab('feed', this)" class="nav-btn active flex flex-col md:flex-row items-center justify-center lg:justify-start w-full h-full md:h-auto md:py-4 lg:px-6 space-y-1 md:space-y-0 hover:text-brand-500 hover:bg-brand-50 transition md:rounded-r-full lg:rounded-full md:mx-2 lg:mx-3">
             <i class="fa-solid fa-house text-xl md:text-2xl lg:w-8 transition-transform duration-200"></i>
             <span class="text-[10px] md:text-base md:hidden lg:block mt-1 md:mt-0 font-medium text-center">Beranda</span>
         </button>
-        <button onclick="switchTab('challenges', this)" class="nav-btn flex flex-col md:flex-row items-center md:justify-center lg:justify-start w-full h-full md:h-auto md:py-4 lg:px-6 space-y-1 md:space-y-0 hover:text-brand-500 hover:bg-brand-50 transition md:rounded-r-full lg:rounded-full md:mx-2 lg:mx-3">
+        
+        <!-- Tombol Tantangan -->
+        <button onclick="switchTab('challenges', this)" class="nav-btn flex flex-col md:flex-row items-center justify-center lg:justify-start w-full h-full md:h-auto md:py-4 lg:px-6 space-y-1 md:space-y-0 hover:text-brand-500 hover:bg-brand-50 transition md:rounded-r-full lg:rounded-full md:mx-2 lg:mx-3">
             <i class="fa-solid fa-clipboard-list text-xl md:text-2xl lg:w-8 transition-transform duration-200"></i>
             <span class="text-[10px] md:text-base md:hidden lg:block mt-1 md:mt-0 font-medium text-center">Tantangan</span>
         </button>
+        
+        <!-- Tombol EcoBot (Tetap dipertahankan karena sudah proporsional) -->
         <button onclick="switchTab('chatbot', this)" class="nav-btn flex flex-col md:flex-row items-center md:justify-center lg:justify-start w-full h-full md:h-auto md:py-4 lg:px-6 space-y-1 md:space-y-0 hover:text-brand-500 transition relative group md:rounded-r-full lg:rounded-full md:mx-2 lg:mx-3 md:hover:bg-brand-50 mt-1 md:mt-2">
             <div class="absolute md:relative -top-5 md:top-0 bg-gradient-to-tr from-brand-500 to-brand-400 text-white w-14 h-14 md:w-8 md:h-8 lg:w-10 lg:h-10 rounded-full flex items-center justify-center shadow-md border-4 border-white md:border-none group-hover:scale-110 transition-all duration-300 md:mr-0 lg:mr-3 shrink-0">
                 <i class="fa-solid fa-robot text-2xl md:text-lg"></i>
             </div>
             <span class="text-[10px] md:text-base font-bold text-brand-600 md:font-medium md:text-inherit mt-7 md:mt-0 md:hidden lg:block">EcoBot</span>
         </button>
-        <button onclick="switchTab('messages', this)" class="nav-btn flex flex-col md:flex-row items-center md:justify-center lg:justify-start w-full h-full md:h-auto md:py-4 lg:px-6 space-y-1 md:space-y-0 hover:text-brand-500 hover:bg-brand-50 transition md:rounded-r-full lg:rounded-full md:mx-2 lg:mx-3 relative">
+        
+        <!-- Tombol Pesan -->
+        <button onclick="switchTab('messages', this)" class="nav-btn flex flex-col md:flex-row items-center justify-center lg:justify-start w-full h-full md:h-auto md:py-4 lg:px-6 space-y-1 md:space-y-0 hover:text-brand-500 hover:bg-brand-50 transition md:rounded-r-full lg:rounded-full md:mx-2 lg:mx-3 relative">
             <i class="fa-solid fa-message text-xl md:text-2xl transition-transform duration-200 lg:mr-3"></i>
             <span class="text-[10px] md:text-base md:hidden lg:block mt-1 md:mt-0 font-medium text-center">Pesan</span>
         </button>
-        <button onclick="switchTab('profile', this)" class="nav-btn flex flex-col md:flex-row items-center md:justify-center lg:justify-start w-full h-full md:h-auto md:py-4 lg:px-6 space-y-1 md:space-y-0 hover:text-brand-500 hover:bg-brand-50 transition md:rounded-r-full lg:rounded-full md:mx-2 lg:mx-3">
+        
+        <!-- Tombol Profil -->
+        <button onclick="switchTab('profile', this)" class="nav-btn flex flex-col md:flex-row items-center justify-center lg:justify-start w-full h-full md:h-auto md:py-4 lg:px-6 space-y-1 md:space-y-0 hover:text-brand-500 hover:bg-brand-50 transition md:rounded-r-full lg:rounded-full md:mx-2 lg:mx-3">
             <i class="fa-regular fa-user text-xl md:text-2xl lg:w-8 transition-transform duration-200"></i>
             <span class="text-[10px] md:text-base md:hidden lg:block mt-1 md:mt-0 font-medium text-center">Profil</span>
         </button>
